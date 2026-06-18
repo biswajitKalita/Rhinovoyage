@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-
 function copyFolderSync(from, to) {
   if (!fs.existsSync(to)) {
     fs.mkdirSync(to, { recursive: true });
@@ -14,10 +13,8 @@ function copyFolderSync(from, to) {
     }
   });
 }
-
 const srcDir = path.join(__dirname, 'src');
 const destDir = path.join(__dirname, 'public/src');
-
 if (fs.existsSync(srcDir)) {
   console.log('Copying src directory into public/src for Vercel deployment...');
   copyFolderSync(srcDir, destDir);
