@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Dashboard — RhinoVoyage</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --orange: #E8651A;
+    --orange-dark: #C4511A;
+    --orange-light: #F5874A;
+    --orange-pale: #FDF0E8;
+    --green: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-dark: #0d1f16;
+    --cream: #FBF7F0;
+    --cream-dark: #F0E8D8;
+    --text-dark: #1A1209;
+    --text-mid: #4A3728;
+    --text-muted: #8A7060;
+    --white: #FFFFFF;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Navigation Header */
+  nav {
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .logo img {
+    height: 40px;
+    object-fit: contain;
+  }
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .nav-user span {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .btn-logout {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--white);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover {
+    border-color: var(--orange);
+    color: var(--orange-light);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Main Layout */
+  .dashboard-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 3rem auto;
+    padding: 0 2rem;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 2.5rem;
+  }
+
+  /* Left Column: Profile Card */
+  .profile-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    height: fit-content;
+    border: 1px solid var(--cream-dark);
+  }
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+    background: var(--orange-pale);
+    color: var(--orange-dark);
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    border: 2px solid var(--orange);
+  }
+  .profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .profile-role {
+    display: inline-block;
+    background: var(--green);
+    color: var(--white);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 50px;
+    margin: 0 auto 1.5rem;
+    display: table;
+  }
+  .profile-detail {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 1rem;
+    border-top: 1px solid var(--cream-dark);
+  }
+  .profile-detail strong {
+    color: var(--text-dark);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Right Column: Bookings Panel */
+  .bookings-panel {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+  }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+  .panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+  }
+  .btn-new-booking {
+    background: var(--orange);
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(232, 101, 26, 0.2);
+  }
+  .btn-new-booking:hover {
+    background: var(--orange-light);
+    transform: translateY(-1px);
+  }
+
+  /* Bookings Table / Grid */
+  .bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  .empty-state h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .booking-card {
+    border: 1px solid var(--cream-dark);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .booking-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border-color: rgba(232, 101, 26, 0.3);
+  }
+
+  .booking-main h4 {
+    font-size: 1.05rem;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+    text-transform: capitalize;
+  }
+  .booking-main p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .booking-date {
+    font-size: 0.88rem;
+    color: var(--text-mid);
+  }
+  .booking-date strong {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .booking-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .booking-price span {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* Status Badges */
+  .badge {
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    width: fit-content;
+  }
+  .badge-pending {
+    background: #FFF8E1;
+    color: #F57F17;
+    border: 1px solid #FFE082;
+  }
+  .badge-approved {
+    background: #E8F5E9;
+    color: #2E7D32;
+    border: 1px solid #A5D6A7;
+  }
+  .badge-cancelled {
+    background: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #FFCDD2;
+  }
+
+  /* Footer */
+  footer {
+    background: var(--green-dark);
+    color: rgba(255, 255, 255, 0.4);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  @media (max-width: 960px) {
+    .dashboard-container {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 768px) {
+    .booking-card {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      text-align: center;
+    }
+    .badge {
+      margin: 0 auto;
+    }
+  }
+  @media (max-width: 575px) {
+    .dashboard-container {
+      padding: 0 1rem;
+      margin: 1.5rem auto;
+    }
+    .bookings-panel {
+      padding: 1.5rem 1rem;
+    }
+    .profile-card {
+      padding: 1.5rem 1rem;
+    }
+    .panel-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .panel-title {
+      font-size: 1.45rem;
+    }
+  }
+</style>
+<script src="./config.js"></script>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <img src="./logo.png" alt="RhinoVoyage Logo">
+    </a>
+    <div class="nav-user">
+      <span id="nav-user-greeting">Welcome, Traveler</span>
+      <button class="btn-logout" onclick="handleLogout()">Log Out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- DASHBOARD GRID -->
+<div class="dashboard-container">
+  
+  <!-- LEFT: User Profile -->
+  <div class="profile-card">
+    <div class="profile-avatar" id="prof-initial">T</div>
+    <div class="profile-name" id="prof-name">Traveler Name</div>
+    <div class="profile-role">Travel Partner</div>
+    
+    <div class="profile-detail">
+      <strong>Email Address</strong>
+      <span id="prof-email">email@example.com</span>
+    </div>
+    <div class="profile-detail">
+      <strong>WhatsApp Number</strong>
+      <span id="prof-phone">+91 XXXXX XXXXX</span>
+    </div>
+    <div class="profile-detail">
+      <strong>Account Created</strong>
+      <span id="prof-joined">June 2026</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: Bookings Manager -->
+  <div class="bookings-panel">
+    <!-- Alerts / Notifications -->
+    <div id="notificationsSection" style="margin-bottom: 2rem; display: none;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem; color: var(--orange-dark); display: flex; align-items: center; gap: 8px;">
+        🔔 Alerts & Confirmations
+      </h3>
+      <div id="notificationsList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <!-- Alerts render dynamically -->
+      </div>
+    </div>
+
+    <div class="panel-header">
+      <h2 class="panel-title">My Bookings</h2>
+      <a href="index.html#booking" class="btn-new-booking">+ Request New Booking</a>
+    </div>
+
+    <div class="bookings-list" id="bookingsList">
+      <!-- Loader State -->
+      <div style="text-align: center; padding: 3rem;">Loading your bookings...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 RhinoVoyage. All rights reserved. | Private User Dashboard Session</p>
+</footer>
+
+<script>
+  // Session check
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+  if (!token || !user || user.role !== 'user') {
+    // Clear storage and redirect to login
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  // Populate profile info
+  document.getElementById('nav-user-greeting').innerText = `Welcome, ${user.name.split(' ')[0]}`;
+  document.getElementById('prof-initial').innerText = user.name[0].toUpperCase();
+  document.getElementById('prof-name').innerText = user.name;
+  document.getElementById('prof-email').innerText = user.email;
+  document.getElementById('prof-phone').innerText = user.phone;
+  document.getElementById('prof-joined').innerText = new Date(user.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long'
+  });
+
+  // Fetch bookings
+  async function fetchMyBookings() {
+    const listContainer = document.getElementById('bookingsList');
+    
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/bookings/my-bookings`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch bookings.');
+      }
+
+      listContainer.innerHTML = '';
+
+      if (data.bookings.length === 0) {
+        listContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🗺️</div>
+            <h3>No Bookings Found</h3>
+            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1.5rem;">You haven't requested any custom tours or rentals yet.</p>
+            <a href="index.html#booking" class="btn-new-booking" style="display:inline-block;">Book Your First Trip Now</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Sort bookings by creation date descending
+      data.bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      data.bookings.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'booking-card';
+
+        // Calculate a dummy price or display payment method
+        const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
+        const formattedDate = new Date(b.pickupDate).toLocaleDateString('en-US', {
+          weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+        });
+
+        const statusClass = b.status.toLowerCase();
+        
+        card.innerHTML = `
+          <div class="booking-main">
+            <h4>${b.vehicle}</h4>
+            <p>${serviceLabel} · ${b.details.substring(0, 40) || 'No specific requests'}${b.details.length > 40 ? '...' : ''}</p>
+          </div>
+          <div class="booking-date">
+            <strong>Pickup Date</strong>
+            ${formattedDate}
+          </div>
+          <div class="booking-price">
+            ${b.paymentMethod.toUpperCase()}
+            <span>Payment Mode</span>
+          </div>
+          <div>
+            <div class="badge badge-${statusClass}">${b.status}</div>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+
+    } catch (err) {
+      listContainer.innerHTML = `
+        <div style="text-align:center; padding: 2rem; color: var(--orange-dark); font-weight: 700;">
+          Error loading bookings: ${err.message}
+        </div>
+      `;
+    }
+  }
+
+  // Fetch Notifications
+  async function fetchNotifications() {
+    const section = document.getElementById('notificationsSection');
+    const list = document.getElementById('notificationsList');
+    
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/notifications`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      
+      if (!response.ok) throw new Error(data.message || 'Failed to fetch notifications.');
+      
+      const unreadNotifications = data.notifications.filter(n => !n.read);
+      
+      if (unreadNotifications.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+      
+      section.style.display = 'block';
+      list.innerHTML = '';
+      
+      unreadNotifications.forEach(n => {
+        const card = document.createElement('div');
+        card.style.background = 'var(--orange-pale)';
+        card.style.border = '1px solid var(--orange-light)';
+        card.style.borderRadius = '12px';
+        card.style.padding = '0.9rem 1.25rem';
+        card.style.display = 'flex';
+        card.style.justifyContent = 'space-between';
+        card.style.alignItems = 'center';
+        card.style.gap = '1rem';
+        card.style.boxShadow = '0 2px 10px rgba(232, 101, 26, 0.04)';
+        
+        card.innerHTML = `
+          <p style="font-size: 0.88rem; color: var(--text-dark); font-weight: 600; line-height: 1.5;">${n.message}</p>
+          <button onclick="dismissNotification('${n.id}')" style="background: none; border: none; color: var(--orange-dark); font-weight: 700; cursor: pointer; font-size: 0.8rem; font-family: 'Nunito', sans-serif; white-space: nowrap; padding: 4px 8px; border-radius: 4px;">
+            Dismiss
+          </button>
+        `;
+        list.appendChild(card);
+      });
+    } catch (err) {
+      console.error('Error fetching notifications:', err);
+    }
+  }
+
+  // Dismiss Notification API request
+  async function dismissNotification(id) {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/notifications/${id}/read`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        fetchNotifications();
+      }
+    } catch (err) {
+      console.error('Error dismissing notification:', err);
+    }
+  }
+
+  function handleLogout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  // Load dashboard items on load
+  fetchMyBookings();
+  fetchNotifications();
+</script>
+
+</body>
+</html>

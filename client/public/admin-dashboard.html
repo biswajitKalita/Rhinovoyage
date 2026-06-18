@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — RhinoVoyage Control Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --orange: #E8651A;
+    --orange-dark: #C4511A;
+    --orange-light: #F5874A;
+    --orange-pale: #FDF0E8;
+    --green: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-dark: #0d1f16;
+    --cream: #FBF7F0;
+    --cream-dark: #F0E8D8;
+    --text-dark: #1A1209;
+    --text-mid: #4A3728;
+    --text-muted: #8A7060;
+    --white: #FFFFFF;
+    --shadow: 0 4px 24px rgba(13, 31, 22, 0.06);
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Navigation Header */
+  nav {
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    gap: 12px;
+  }
+  .logo img {
+    height: 40px;
+    object-fit: contain;
+  }
+  .logo-badge {
+    background: var(--orange);
+    color: var(--white);
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .btn-logout {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--white);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover {
+    border-color: var(--orange);
+    color: var(--orange-light);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Dashboard Layout */
+  .dashboard-wrapper {
+    max-width: 1400px;
+    width: 100%;
+    margin: 2.5rem auto;
+    padding: 0 2rem;
+    flex: 1;
+  }
+
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+  .page-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  /* Metrics Cards Grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .metric-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .metric-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+  .metric-info {
+    flex: 1;
+  }
+  .metric-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.1;
+  }
+  .metric-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  /* Color themes for metrics */
+  .metric-all .metric-icon { background: #E8F5E9; color: var(--green); }
+  .metric-pending .metric-icon { background: #FFF8E1; color: #F57F17; }
+  .metric-approved .metric-icon { background: #E3F2FD; color: #1565C0; }
+  .metric-cancelled .metric-icon { background: #FFEBEE; color: #C62828; }
+
+  /* Booking Management Table Section */
+  .table-section {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+  }
+  
+  .table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .table-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  /* Filter / Search */
+  .search-wrapper {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 450px;
+  }
+  .search-input {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    background: var(--cream);
+    outline: none;
+    transition: all 0.2s;
+  }
+  .search-input:focus {
+    border-color: var(--orange);
+    background: var(--white);
+  }
+  .filter-select {
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    background: var(--cream);
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* Booking Table */
+  .booking-table-container {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+  th {
+    padding: 1rem;
+    background: var(--cream);
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--cream-dark);
+  }
+  td {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid var(--cream-dark);
+    color: var(--text-mid);
+    vertical-align: middle;
+  }
+  tr:hover td {
+    background: rgba(240, 232, 216, 0.15);
+  }
+
+  .td-bold {
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .td-sub {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* Badges */
+  .badge {
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+  }
+  .badge-pending { background: #FFF8E1; color: #F57F17; border: 1px solid #FFE082; }
+  .badge-approved { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+  .badge-cancelled { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+
+  /* Table Actions */
+  .action-buttons {
+    display: flex;
+    gap: 6px;
+  }
+  .btn-action {
+    border: none;
+    background: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-approve {
+    background: #E8F5E9;
+    color: #2E7D32;
+    border: 1px solid #C8E6C9;
+  }
+  .btn-approve:hover {
+    background: #2E7D32;
+    color: var(--white);
+  }
+  .btn-cancel {
+    background: #FFEEEB;
+    color: #D32F2F;
+    border: 1px solid #FFCDD2;
+  }
+  .btn-cancel:hover {
+    background: #D32F2F;
+    color: var(--white);
+  }
+  .btn-delete {
+    background: var(--cream);
+    color: var(--text-muted);
+    border: 1px solid var(--cream-dark);
+  }
+  .btn-delete:hover {
+    background: var(--text-dark);
+    color: var(--white);
+  }
+
+  /* Empty state */
+  .empty-row {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+  }
+
+  /* Footer */
+  footer {
+    background: var(--green-dark);
+    color: rgba(255, 255, 255, 0.4);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    margin-top: 4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  @media (max-width: 960px) {
+    .metrics-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .metrics-grid {
+      grid-template-columns: 1fr;
+    }
+    .search-wrapper {
+      flex-direction: column;
+    }
+  }
+  @media (max-width: 575px) {
+    .dashboard-wrapper {
+      padding: 0 1rem;
+      margin: 1.5rem auto;
+    }
+    .table-section {
+      padding: 1.5rem 1rem;
+    }
+    .table-controls {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+    }
+    .page-title {
+      font-size: 1.75rem;
+    }
+  }
+</style>
+<script src="./config.js"></script>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <img src="./logo.png" alt="RhinoVoyage Logo">
+      <span class="logo-badge">Console</span>
+    </a>
+    <div class="nav-user">
+      <span id="admin-name" style="font-size: 0.9rem; font-weight: 700;">Admin User</span>
+      <button class="btn-logout" onclick="handleLogout()">Log Out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT WRAPPER -->
+<div class="dashboard-wrapper">
+  
+  <div class="page-header">
+    <h1 class="page-title">Booking Management</h1>
+    <p class="page-subtitle">Review, approve, or cancel client heritage tours and car rentals.</p>
+  </div>
+
+  <!-- METRICS CARDS -->
+  <div class="metrics-grid">
+    <div class="metric-card metric-all">
+      <div class="metric-icon">🗺️</div>
+      <div class="metric-info">
+        <div class="metric-num" id="metric-total">0</div>
+        <div class="metric-label">Total Queries</div>
+      </div>
+    </div>
+    <div class="metric-card metric-pending">
+      <div class="metric-icon">⏳</div>
+      <div class="metric-info">
+        <div class="metric-num" id="metric-pending">0</div>
+        <div class="metric-label">Pending Reviews</div>
+      </div>
+    </div>
+    <div class="metric-card metric-approved">
+      <div class="metric-icon">✅</div>
+      <div class="metric-info">
+        <div class="metric-num" id="metric-approved">0</div>
+        <div class="metric-label">Approved Trips</div>
+      </div>
+    </div>
+    <div class="metric-card metric-cancelled">
+      <div class="metric-icon">❌</div>
+      <div class="metric-info">
+        <div class="metric-num" id="metric-cancelled">0</div>
+        <div class="metric-label">Cancelled</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div style="display: flex; gap: 15px; margin-bottom: 2rem; border-bottom: 2px solid var(--cream-dark); padding-bottom: 10px;">
+    <button id="tab-bookings-btn" onclick="switchTab('bookings')" style="background: none; border: none; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700; color: var(--green); border-bottom: 3px solid var(--green); padding: 5px 10px; cursor: pointer; transition: all 0.2s; outline: none;">
+      📅 Bookings
+    </button>
+    <button id="tab-drivers-btn" onclick="switchTab('drivers')" style="background: none; border: none; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-muted); padding: 5px 10px; cursor: pointer; transition: all 0.2s; outline: none;">
+      🚗 Driver Partners
+    </button>
+  </div>
+
+  <!-- BOOKINGS SECTION -->
+  <div class="table-section" id="bookings-section">
+    <div class="table-controls">
+      <h3 class="table-title">Incoming Trip Requests</h3>
+      
+      <div class="search-wrapper">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search by name, vehicle, or phone..." oninput="filterBookings()">
+        <select class="filter-select" id="filterStatus" onchange="filterBookings()">
+          <option value="All">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- BOOKINGS TABLE -->
+    <div class="booking-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Client Info</th>
+            <th>Service Details</th>
+            <th>Pickup Date</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsTableBody">
+          <tr>
+            <td colspan="6" class="empty-row">Loading booking requests...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DRIVERS SECTION -->
+  <div class="table-section" id="drivers-section" style="display: none;">
+    <div class="table-controls">
+      <h3 class="table-title">Driver Partner Approvals</h3>
+      
+      <div class="search-wrapper" style="max-width: 650px; display: flex; gap: 10px; flex: 1; justify-content: flex-end; align-items: center;">
+        <input type="text" class="search-input" id="driverSearchInput" placeholder="Search by name, license, or phone..." oninput="filterDrivers()">
+        <select class="filter-select" id="filterDriverStatus" onchange="filterDrivers()">
+          <option value="All">All Verification Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+        <button class="btn-new-booking" onclick="openAddDriverModal()" style="padding: 0.6rem 1rem; white-space: nowrap; height: 100%;">+ Add Driver</button>
+      </div>
+    </div>
+
+    <!-- DRIVERS TABLE -->
+    <div class="booking-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Driver Info</th>
+            <th>Credentials</th>
+            <th>Verification Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="driversTableBody">
+          <tr>
+            <td colspan="4" class="empty-row">Loading driver partners...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 RhinoVoyage Control Panel. Secure Administrator Session.</p>
+</footer>
+
+<script>
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+  // Verify Admin session
+  if (!token || !user || user.role !== 'admin') {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  document.getElementById('admin-name').innerText = user.name;
+
+  let allBookings = [];
+
+  // Fetch all bookings
+  async function fetchAllBookings() {
+    try {
+      // First pre-fetch drivers list so it is ready for rendering dropdowns
+      await fetchDriversListOnly();
+
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/bookings`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch bookings.');
+      }
+
+      allBookings = data.bookings;
+      
+      // Sort bookings by creation date descending
+      allBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      updateMetrics();
+      renderBookings(allBookings);
+
+    } catch (err) {
+      document.getElementById('bookingsTableBody').innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-row" style="color: var(--orange-dark); font-weight:700;">
+            Error loading bookings: ${err.message}
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function updateMetrics() {
+    const total = allBookings.length;
+    const pending = allBookings.filter(b => b.status === 'Pending').length;
+    const approved = allBookings.filter(b => b.status === 'Approved').length;
+    const cancelled = allBookings.filter(b => b.status === 'Cancelled').length;
+
+    document.getElementById('metric-total').innerText = total;
+    document.getElementById('metric-pending').innerText = pending;
+    document.getElementById('metric-approved').innerText = approved;
+    document.getElementById('metric-cancelled').innerText = cancelled;
+  }
+
+  function renderBookings(bookingsList) {
+    const tbody = document.getElementById('bookingsTableBody');
+    tbody.innerHTML = '';
+
+    if (bookingsList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-row">No bookings match the filters.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    bookingsList.forEach(b => {
+      const tr = document.createElement('tr');
+
+      const clientInfo = `
+        <div class="td-bold">${b.name}</div>
+        <div class="td-sub">${b.phone}</div>
+      `;
+
+      const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
+      const serviceDetails = `
+        <div class="td-bold">${b.vehicle}</div>
+        <div class="td-sub">${serviceLabel} · ${b.details || 'No spec requirements'}</div>
+      `;
+
+      const pickupDate = new Date(b.pickupDate).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+
+      const statusClass = b.status.toLowerCase();
+      const statusBadge = `<div class="badge badge-${statusClass}">${b.status}</div>`;
+
+      // Get verified drivers dropdown options
+      const approvedDrivers = allDrivers.filter(d => d.verificationStatus === 'Approved');
+      let approvedDriversOptions = `<option value="">-- Unassigned --</option>`;
+      approvedDrivers.forEach(d => {
+        const isSelected = b.driverId === d.id ? 'selected' : '';
+        approvedDriversOptions += `<option value="${d.id}" ${isSelected}>${d.name}</option>`;
+      });
+
+      const selectDisabled = b.status === 'Cancelled' ? 'disabled' : '';
+      const driverSelector = `
+        <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Assign:</span>
+          <select class="filter-select" style="padding: 2px 6px; font-size: 0.78rem; border-radius: 4px; background: var(--cream);" ${selectDisabled} onchange="assignDriverToBooking('${b.id}', this.value)">
+            ${approvedDriversOptions}
+          </select>
+        </div>
+      `;
+
+      // Define action buttons depending on current status
+      let actionButtons = '';
+      if (b.status === 'Pending') {
+        actionButtons = `
+          <button class="btn-action btn-approve" onclick="updateStatus('${b.id}', 'Approved')">Approve</button>
+          <button class="btn-action btn-cancel" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>
+        `;
+      } else if (b.status === 'Approved') {
+        actionButtons = `
+          <button class="btn-action btn-cancel" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>
+        `;
+      } else if (b.status === 'Cancelled') {
+        actionButtons = `
+          <button class="btn-action btn-approve" onclick="updateStatus('${b.id}', 'Approved')">Approve</button>
+        `;
+      }
+
+      actionButtons += `<button class="btn-action btn-delete" onclick="deleteBooking('${b.id}')">Delete</button>`;
+
+      tr.innerHTML = `
+        <td>${clientInfo}</td>
+        <td>${serviceDetails}</td>
+        <td class="td-bold">${pickupDate}</td>
+        <td style="text-transform: uppercase; font-size: 0.8rem; font-weight:700;">${b.paymentMethod}</td>
+        <td>
+          ${statusBadge}
+          ${driverSelector}
+        </td>
+        <td><div class="action-buttons">${actionButtons}</div></td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Update Status API call
+  async function updateStatus(id, newStatus) {
+    try {
+      const response = await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update status.');
+      }
+
+      // Update local state & re-render
+      const bookingIndex = allBookings.findIndex(b => b.id === id);
+      if (bookingIndex !== -1) {
+        allBookings[bookingIndex].status = newStatus;
+      }
+
+      updateMetrics();
+      filterBookings();
+
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  }
+
+  // Delete Booking API call
+  async function deleteBooking(id) {
+    if (!confirm('Are you sure you want to permanently delete this booking request?')) return;
+
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/bookings/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to delete booking.');
+      }
+
+      // Remove from local list
+      allBookings = allBookings.filter(b => b.id !== id);
+
+      updateMetrics();
+      filterBookings();
+
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  }
+
+  // Live filter function
+  function filterBookings() {
+    const searchVal = document.getElementById('searchInput').value.toLowerCase();
+    const statusVal = document.getElementById('filterStatus').value;
+
+    const filtered = allBookings.filter(b => {
+      const matchesSearch = 
+        b.name.toLowerCase().includes(searchVal) ||
+        b.vehicle.toLowerCase().includes(searchVal) ||
+        b.phone.toLowerCase().includes(searchVal);
+
+      const matchesStatus = statusVal === 'All' || b.status === statusVal;
+
+      return matchesSearch && matchesStatus;
+    });
+
+    renderBookings(filtered);
+  }
+
+  function handleLogout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  // Tab switching
+  function switchTab(tab) {
+    const bookingsSection = document.getElementById('bookings-section');
+    const driversSection = document.getElementById('drivers-section');
+    const bookingsBtn = document.getElementById('tab-bookings-btn');
+    const driversBtn = document.getElementById('tab-drivers-btn');
+
+    if (tab === 'bookings') {
+      bookingsSection.style.display = 'block';
+      driversSection.style.display = 'none';
+      bookingsBtn.style.color = 'var(--green)';
+      bookingsBtn.style.borderBottom = '3px solid var(--green)';
+      driversBtn.style.color = 'var(--text-muted)';
+      driversBtn.style.borderBottom = 'none';
+    } else {
+      bookingsSection.style.display = 'none';
+      driversSection.style.display = 'block';
+      driversBtn.style.color = 'var(--green)';
+      driversBtn.style.borderBottom = '3px solid var(--green)';
+      bookingsBtn.style.color = 'var(--text-muted)';
+      bookingsBtn.style.borderBottom = 'none';
+      fetchDrivers();
+    }
+  }
+
+  // Fetch all drivers
+  async function fetchDrivers() {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/users/drivers`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch drivers.');
+      }
+      allDrivers = data.drivers;
+      renderDrivers(allDrivers);
+    } catch (err) {
+      document.getElementById('driversTableBody').innerHTML = `
+        <tr>
+          <td colspan="4" class="empty-row" style="color: var(--orange-dark); font-weight:700;">
+            Error loading drivers: ${err.message}
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // Pre-fetch drivers only (no render)
+  async function fetchDriversListOnly() {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/users/drivers`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        allDrivers = data.drivers;
+      }
+    } catch (err) {
+      console.error('Error pre-fetching drivers for dropdown:', err);
+    }
+  }
+
+  function renderDrivers(driversList) {
+    const tbody = document.getElementById('driversTableBody');
+    tbody.innerHTML = '';
+
+    if (driversList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="empty-row">No driver partners found matching the filters.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    driversList.forEach(d => {
+      const tr = document.createElement('tr');
+
+      const driverInfo = `
+        <div class="td-bold">${d.name}</div>
+        <div class="td-sub">${d.phone} · ${d.email}</div>
+      `;
+
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const serverBase = apiBase.replace('/api', '');
+
+      const aadharLink = d.aadharPhoto 
+        ? `<a href="${serverBase}${d.aadharPhoto}" target="_blank" style="color: var(--orange-dark); font-weight: 700; text-decoration: underline; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px;">📄 View Aadhar Photo</a>` 
+        : '<span style="color: var(--text-muted); font-size: 0.78rem;">No Photo Uploaded</span>';
+      
+      const licenseLink = d.licensePhoto 
+        ? `<a href="${serverBase}${d.licensePhoto}" target="_blank" style="color: var(--orange-dark); font-weight: 700; text-decoration: underline; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px; margin-top: 2px;">📄 View License Photo</a>` 
+        : '<span style="color: var(--text-muted); font-size: 0.78rem;">No Photo Uploaded</span>';
+
+      const credentials = `
+        <div><strong>Aadhar:</strong> ${d.aadhar || 'N/A'} ${aadharLink}</div>
+        <div style="margin-top: 6px;"><strong>License:</strong> ${d.license || 'N/A'} ${licenseLink}</div>
+      `;
+
+      const statusVal = d.verificationStatus || 'Pending';
+      const statusClass = statusVal.toLowerCase() === 'approved' ? 'approved' : statusVal.toLowerCase() === 'rejected' ? 'cancelled' : 'pending';
+      const statusBadge = `<div class="badge badge-${statusClass}">${statusVal}</div>`;
+
+      let actionButtons = '';
+      if (statusVal === 'Pending') {
+        actionButtons = `
+          <button class="btn-action btn-approve" onclick="verifyDriver('${d.id}', 'Approved')">Approve</button>
+          <button class="btn-action btn-cancel" onclick="verifyDriver('${d.id}', 'Rejected')">Reject</button>
+        `;
+      } else if (statusVal === 'Approved') {
+        actionButtons = `
+          <button class="btn-action btn-cancel" onclick="verifyDriver('${d.id}', 'Rejected')">Reject / Revoke</button>
+        `;
+      } else if (statusVal === 'Rejected') {
+        actionButtons = `
+          <button class="btn-action btn-approve" onclick="verifyDriver('${d.id}', 'Approved')">Approve</button>
+        `;
+      }
+
+      tr.innerHTML = `
+        <td>${driverInfo}</td>
+        <td>${credentials}</td>
+        <td>${statusBadge}</td>
+        <td><div class="action-buttons">${actionButtons}</div></td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Update verification status
+  async function verifyDriver(id, newStatus) {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/users/drivers/${id}/verify`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update verification status.');
+      }
+
+      // Update local driver item
+      const index = allDrivers.findIndex(d => d.id === id);
+      if (index !== -1) {
+        allDrivers[index].verificationStatus = newStatus;
+      }
+      filterDrivers();
+      
+      // Also fetch drivers again to make sure all verified drivers list for assignment is fresh
+      fetchDrivers();
+
+    } catch (err) {
+      alert(`Error updating driver status: ${err.message}`);
+    }
+  }
+
+  // Search/Filter drivers
+  function filterDrivers() {
+    const searchVal = document.getElementById('driverSearchInput').value.toLowerCase();
+    const statusVal = document.getElementById('filterDriverStatus').value;
+
+    const filtered = allDrivers.filter(d => {
+      const matchesSearch = 
+        d.name.toLowerCase().includes(searchVal) ||
+        (d.aadhar && d.aadhar.includes(searchVal)) ||
+        (d.license && d.license.toLowerCase().includes(searchVal)) ||
+        d.phone.includes(searchVal);
+
+      const matchesStatus = statusVal === 'All' || d.verificationStatus === statusVal;
+
+      return matchesSearch && matchesStatus;
+    });
+
+    renderDrivers(filtered);
+  }
+
+  // Assign driver to booking
+  async function assignDriverToBooking(bookingId, driverId) {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/bookings/${bookingId}/assign-driver`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ driverId: driverId || null })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to assign driver.');
+      }
+
+      const bookingIndex = allBookings.findIndex(b => b.id === bookingId);
+      if (bookingIndex !== -1) {
+        allBookings[bookingIndex].driverId = driverId || '';
+        allBookings[bookingIndex].driverName = data.booking.driverName || '';
+      }
+      
+      alert(data.message);
+
+    } catch (err) {
+      alert(`Error assigning driver: ${err.message}`);
+      renderBookings(allBookings);
+    }
+  }
+
+  // Add Driver helper functions
+  function openAddDriverModal() {
+    document.getElementById('addDriverModal').style.display = 'flex';
+  }
+
+  function closeAddDriverModal() {
+    document.getElementById('addDriverModal').style.display = 'none';
+    document.getElementById('add-drv-name').value = '';
+    document.getElementById('add-drv-email').value = '';
+    document.getElementById('add-drv-phone').value = '';
+    document.getElementById('add-drv-password').value = '';
+    document.getElementById('add-drv-aadhar').value = '';
+    document.getElementById('add-drv-aadhar-photo').value = '';
+    document.getElementById('add-drv-license').value = '';
+    document.getElementById('add-drv-license-photo').value = '';
+  }
+
+  function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function submitAddDriverForm() {
+    const name = document.getElementById('add-drv-name').value;
+    const email = document.getElementById('add-drv-email').value;
+    const phone = document.getElementById('add-drv-phone').value;
+    const password = document.getElementById('add-drv-password').value;
+    const aadhar = document.getElementById('add-drv-aadhar').value;
+    const license = document.getElementById('add-drv-license').value;
+    
+    const aadharFile = document.getElementById('add-drv-aadhar-photo').files[0];
+    const licenseFile = document.getElementById('add-drv-license-photo').files[0];
+
+    if (!aadharFile || !licenseFile) {
+      alert('Please select both Aadhar and Driving License document photos.');
+      return;
+    }
+
+    try {
+      const aadharPhoto = await readFileAsBase64(aadharFile);
+      const licensePhoto = await readFileAsBase64(licenseFile);
+
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/users/drivers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          password,
+          aadhar,
+          license,
+          aadharPhoto,
+          licensePhoto
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create driver partner.');
+      }
+
+      alert(data.message);
+      closeAddDriverModal();
+      fetchDrivers(); // Refresh list
+    } catch (err) {
+      alert(`Error creating driver: ${err.message}`);
+    }
+  }
+
+  // Init fetch
+  fetchAllBookings();
+</script>
+
+<!-- ADD DRIVER MODAL -->
+<div id="addDriverModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 31, 22, 0.6); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+  <div style="background: var(--white); border-radius: 16px; width: 100%; max-width: 500px; padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--cream-dark); position: relative; max-height: 90vh; overflow-y: auto;">
+    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--green-dark);">Add New Driver Partner</h3>
+    
+    <form onsubmit="event.preventDefault(); submitAddDriverForm();">
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Full Name</label>
+        <input type="text" id="add-drv-name" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="Driver's Full Name">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Email Address</label>
+        <input type="email" id="add-drv-email" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="driver@email.com">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">WhatsApp Phone</label>
+        <input type="tel" id="add-drv-phone" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="WhatsApp Number">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Account Password</label>
+        <input type="password" id="add-drv-password" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="Create a temporary password">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Aadhar Card Number</label>
+        <input type="text" id="add-drv-aadhar" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="12-digit number" pattern="\d{12}" title="Please enter exactly 12 digits">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Upload Aadhar Photo</label>
+        <input type="file" id="add-drv-aadhar-photo" required accept="image/*" style="width: 100%;">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Driving License Number</label>
+        <input type="text" id="add-drv-license" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="AS-XX-XXXX-XXXXXXX">
+      </div>
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Upload License Photo</label>
+        <input type="file" id="add-drv-license-photo" required accept="image/*" style="width: 100%;">
+      </div>
+      
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" class="btn-action btn-delete" onclick="closeAddDriverModal()" style="padding: 0.6rem 1.2rem;">Cancel</button>
+        <button type="submit" class="btn-action btn-approve" style="padding: 0.6rem 1.5rem; background: var(--green); color: var(--white); border-color: var(--green);">Register & Approve</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cancellation Policy — RhinoVoyage</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --orange: #E8651A;
+    --orange-dark: #C4511A;
+    --green: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-dark: #0d1f16;
+    --cream: #FBF7F0;
+    --cream-dark: #F0E8D8;
+    --text-dark: #1A1209;
+    --text-mid: #4A3728;
+    --text-muted: #8A7060;
+    --white: #FFFFFF;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header Navigation */
+  nav {
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  .nav-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .logo img {
+    height: 40px;
+    object-fit: contain;
+  }
+  .btn-back {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--white);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-back:hover {
+    border-color: var(--orange);
+    color: var(--orange-dark);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Main Container */
+  .container {
+    max-width: 1000px;
+    width: 100%;
+    margin: 3rem auto;
+    padding: 0 2rem;
+    flex: 1;
+  }
+
+  .content-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 3rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--green-dark);
+    margin-bottom: 0.5rem;
+  }
+  .last-updated {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    border-bottom: 1px dashed var(--cream-dark);
+    padding-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--green);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    margin-bottom: 1.25rem;
+  }
+
+  ul {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+  li {
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    margin-bottom: 0.5rem;
+  }
+
+  .highlight-box {
+    background: var(--orange-pale);
+    border-left: 4px solid var(--orange);
+    padding: 1.25rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1.5rem;
+    background-color: #FDF0E8;
+  }
+  .highlight-box p {
+    margin-bottom: 0;
+    color: var(--orange-dark);
+    font-weight: 600;
+  }
+
+  /* Footer */
+  footer {
+    background: var(--green-dark);
+    color: rgba(255, 255, 255, 0.4);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: auto;
+  }
+  footer a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer a:hover {
+    color: var(--orange);
+  }
+
+  @media (max-width: 575px) {
+    .container {
+      padding: 0 1rem;
+      margin: 1.5rem auto;
+    }
+    .content-card {
+      padding: 1.5rem 1.25rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <img src="./logo.png" alt="RhinoVoyage Logo">
+    </a>
+    <a href="index.html" class="btn-back">← Back to Homepage</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+  <div class="content-card">
+    <h1>Cancellation Policy</h1>
+    <div class="last-updated">Last Updated: June 18, 2026</div>
+
+    <p>At RhinoVoyage, we understand that travel plans can change unexpectedly. This Cancellation Policy outlines our terms regarding booking cancellations for car rentals, package tours, and custom itineraries. We aim to balance flexibility for our travelers with fair commitments to our local drivers and guides.</p>
+
+    <h2>1. Car Rental Cancellations</h2>
+    <p>For standard vehicle rentals (Sedan, Luxury, SUV/MUV, or Tempo Traveller) without tour packages:</p>
+    <ul>
+      <li><strong>Cancellation 24 hours or more before pickup:</strong> Fully free cancellation. Any deposit or booking advance paid will be credited back in full.</li>
+      <li><strong>Cancellation within 24 hours of pickup:</strong> A cancellation fee equivalent to 50% of the single-day rental fare will be charged.</li>
+      <li><strong>No-Show or failure to coordinate:</strong> If a traveler is not present at the pickup location within 2 hours of the scheduled time without notice, the trip is flagged as a "No-Show" and is non-refundable.</li>
+    </ul>
+
+    <div class="highlight-box">
+      <p>ℹ️ Flight & Train Delays: If your flight to Dibrugarh/Guwahati or train to Sivasagar is delayed, please notify us immediately. No cancellation fees will be charged for adjustments made due to verified transportation delays.</p>
+    </div>
+
+    <h2>2. Tour Package & Custom Itinerary Cancellations</h2>
+    <p>For custom heritage trails, multi-day Northeast explorer circuits, or group packages:</p>
+    <ul>
+      <li><strong>Cancellation 7 days or more before the tour start:</strong> Full refund of package deposit.</li>
+      <li><strong>Cancellation between 3 and 7 days before the tour:</strong> 50% refund of the deposit.</li>
+      <li><strong>Cancellation within 72 hours of the tour:</strong> The booking deposit is non-refundable, as local accommodation reservations and vehicle blockages will have already been finalized.</li>
+    </ul>
+
+    <h2>3. Force Majeure & Natural Circumstances</h2>
+    <p>Travel routes in the Northeast of India (especially to hill areas such as Arunachal Pradesh, Nagaland, or Meghalaya) are occasionally subject to extreme weather conditions, landslides, floods, or administrative blockades.</p>
+    <ul>
+      <li>If RhinoVoyage is forced to cancel a trip due to unsafe road conditions, natural disasters, or government orders, the traveler will be offered a <strong>100% refund</strong> or the option to reschedule with no penalty.</li>
+      <li>If a route is blocked mid-trip, we will adjust the itinerary to provide safe alternative destinations. Any savings from shortened routes will be refunded, and additional costs for modified accommodations will be shared transparently.</li>
+    </ul>
+
+    <h2>4. How to Request a Cancellation</h2>
+    <p>To request a cancellation, you can choose one of the following methods:</p>
+    <ul>
+      <li>Log in to your <strong>User Dashboard</strong>, locate the booking under your Travel Requests list, and click on the cancellation options (if available).</li>
+      <li>Directly contact our booking support desk via WhatsApp at <strong>+91 9864820229</strong> or <strong>+91 9954253585</strong>.</li>
+      <li>Send an email stating your booking ID and cancellation request to <strong>rhinovoyage@gmail.com</strong>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 RhinoVoyage. All rights reserved. | <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a> · <a href="cancellation.html">Cancellation Policy</a> · <a href="refund.html">Refund Policy</a> · <a href="billing.html">GST / Billing</a></p>
+</footer>
+
+</body>
+</html>

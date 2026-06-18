@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refund Policy — RhinoVoyage</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --orange: #E8651A;
+    --orange-dark: #C4511A;
+    --green: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-dark: #0d1f16;
+    --cream: #FBF7F0;
+    --cream-dark: #F0E8D8;
+    --text-dark: #1A1209;
+    --text-mid: #4A3728;
+    --text-muted: #8A7060;
+    --white: #FFFFFF;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header Navigation */
+  nav {
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  .nav-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .logo img {
+    height: 40px;
+    object-fit: contain;
+  }
+  .btn-back {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--white);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-back:hover {
+    border-color: var(--orange);
+    color: var(--orange-dark);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Main Container */
+  .container {
+    max-width: 1000px;
+    width: 100%;
+    margin: 3rem auto;
+    padding: 0 2rem;
+    flex: 1;
+  }
+
+  .content-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 3rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--green-dark);
+    margin-bottom: 0.5rem;
+  }
+  .last-updated {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    border-bottom: 1px dashed var(--cream-dark);
+    padding-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--green);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    margin-bottom: 1.25rem;
+  }
+
+  ul {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+  li {
+    font-size: 0.95rem;
+    color: var(--text-mid);
+    margin-bottom: 0.5rem;
+  }
+
+  .highlight-box {
+    background: var(--orange-pale);
+    border-left: 4px solid var(--orange);
+    padding: 1.25rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1.5rem;
+    background-color: #FDF0E8;
+  }
+  .highlight-box p {
+    margin-bottom: 0;
+    color: var(--orange-dark);
+    font-weight: 600;
+  }
+
+  /* Footer */
+  footer {
+    background: var(--green-dark);
+    color: rgba(255, 255, 255, 0.4);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: auto;
+  }
+  footer a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer a:hover {
+    color: var(--orange);
+  }
+
+  @media (max-width: 575px) {
+    .container {
+      padding: 0 1rem;
+      margin: 1.5rem auto;
+    }
+    .content-card {
+      padding: 1.5rem 1.25rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <img src="./logo.png" alt="RhinoVoyage Logo">
+    </a>
+    <a href="index.html" class="btn-back">← Back to Homepage</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+  <div class="content-card">
+    <h1>Refund Policy</h1>
+    <div class="last-updated">Last Updated: June 18, 2026</div>
+
+    <p>This Refund Policy details the refund process, eligibility guidelines, and timelines for bookings processed through RhinoVoyage. We are dedicated to ensuring a transparent refund process for all our travelers in Assam and the Northeast.</p>
+
+    <h2>1. Refund Eligibility</h2>
+    <p>Refunds are initiated only for cancellations that comply with our active <a href="cancellation.html" style="color: var(--green-mid); font-weight: 600; text-decoration: underline;">Cancellation Policy</a>:</p>
+    <ul>
+      <li><strong>Compliant Cancellations:</strong> Fully eligible for refunds if cancelled within the free cancellation windows (24+ hours for vehicle rentals, 7+ days for tour packages).</li>
+      <li><strong>System Cancellations:</strong> If a trip is cancelled by RhinoVoyage due to guide shortages, vehicle maintenance issues, or road blockages, the traveler is eligible for a 100% refund.</li>
+      <li><strong>Disaster Cancellations:</strong> Cancellations triggered by unexpected landslides, river floods, or local political bandhs are fully eligible for refunds or free rescheduling credits.</li>
+    </ul>
+
+    <div class="highlight-box">
+      <p>⚠️ Processing Timeline: All approved refund requests are processed within 5 to 7 business days. Funds are credited back using the payment details provided at the time of claim validation.</p>
+    </div>
+
+    <h2>2. Processing Methods</h2>
+    <p>Since booking payments are flexible, refunds are settled using the following payment systems:</p>
+    <ul>
+      <li><strong>UPI Accounts:</strong> Direct transfer to the user's UPI handle (Google Pay, PhonePe, Paytm, or BHIM). This is the fastest method.</li>
+      <li><strong>Bank Accounts:</strong> IMPS/NEFT bank transfer. Travelers must provide their bank name, account holder name, account number, and IFSC code to coordinate the transaction.</li>
+    </ul>
+
+    <h2>3. Non-Refundable Scenarios</h2>
+    <p>RhinoVoyage is unable to provide refunds in the following circumstances:</p>
+    <ul>
+      <li>No-shows where the traveler fails to arrive at the pickup location without notifying our support desk.</li>
+      <li>Mid-trip changes or cancellations requested by the traveler once the tour has commenced.</li>
+      <li>Refusal of service by the driver due to traveler misconduct, illegal activity, or failure to present valid identity proof at the time of boarding.</li>
+      <li>Government permit fees (such as ILPs for Arunachal Pradesh or entrance fees for Kaziranga Wildlife Safari) once they have already been processed and issued.</li>
+    </ul>
+
+    <h2>4. Disputed Claims</h2>
+    <p>For any disputes regarding cancellation charges or refund amounts, please contact our dispute resolution team at <strong>rhinovoyage@gmail.com</strong> with your booking ID and receipts. We review all disputes on a case-by-case basis and aim to resolve them within 3 business days.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 RhinoVoyage. All rights reserved. | <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a> · <a href="cancellation.html">Cancellation Policy</a> · <a href="refund.html">Refund Policy</a> · <a href="billing.html">GST / Billing</a></p>
+</footer>
+
+</body>
+</html>

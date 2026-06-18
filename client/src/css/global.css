@@ -1,0 +1,174 @@
+/* =========================
+   GLOBAL RESET + VARIABLES
+========================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Color Variables */
+:root {
+    --orange: #E8651A;
+    --orange-dark: #C4511A;
+    --orange-light: #F5874A;
+    --orange-pale: #FDF0E8;
+
+    --green: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-light: #52B788;
+
+    --cream: #FBF7F0;
+    --cream-dark: #F0E8D8;
+
+    --brown: #6B4226;
+    --gold: #C8951A;
+
+    --text-dark: #1A1209;
+    --text-mid: #4A3728;
+    --text-muted: #8A7060;
+
+    --white: #FFFFFF;
+
+    --shadow: 0 4px 32px rgba(26, 18, 9, 0.12);
+    --shadow-sm: 0 2px 12px rgba(26, 18, 9, 0.08);
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Body */
+body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* Section base */
+section {
+    padding: 6rem 2rem;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Section heading */
+.section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.75rem;
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.2;
+}
+
+.section-title em {
+    color: var(--orange);
+    font-style: italic;
+}
+
+/* =========================
+   DESTINATIONS MARQUEE
+========================= */
+.destinations-strip {
+    background: var(--green);
+    padding: 1.2rem 0;
+    overflow: hidden;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.marquee-track {
+    display: flex;
+    gap: 0;
+    white-space: nowrap;
+    animation: marquee 30s linear infinite;
+}
+
+.marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 3.5rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.marquee-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--orange-light);
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(-50%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* =========================
+   TOAST NOTIFICATION
+========================= */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--green);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: none;
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Mobile responsive resets */
+@media (max-width: 575px) {
+    section {
+        padding: 4rem 1rem;
+    }
+    .container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}

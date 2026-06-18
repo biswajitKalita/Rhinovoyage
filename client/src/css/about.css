@@ -1,0 +1,219 @@
+/* =========================
+   ABOUT SECTION
+========================= */
+
+.about {
+    background: white;
+}
+
+/* Layout */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+}
+
+/* Left visual card */
+.about-visual {
+    position: relative;
+}
+
+.about-main-card {
+    background: linear-gradient(to top, rgba(27, 67, 50, 0.9) 0%, rgba(27, 67, 50, 0.35) 100%), url('../../public/rang-ghar.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 16px;
+    padding: 2.5rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+/* Background effects */
+.about-card-pattern {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 70% 30%, rgba(232, 101, 26, 0.3) 0%, transparent 60%),
+        radial-gradient(circle at 20% 80%, rgba(82, 183, 136, 0.2) 0%, transparent 50%);
+}
+
+.about-card-ornament {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    opacity: 0.15;
+}
+
+/* Badge */
+.about-badge {
+    position: absolute;
+    top: -1.5rem;
+    right: 1.5rem;
+    background: var(--orange);
+    color: white;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(232, 101, 26, 0.35);
+    z-index: 5;
+}
+
+.about-badge .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.about-badge .txt {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+/* Card content */
+.about-card-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.about-card-content p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Small feature cards */
+.about-side-card {
+    background: var(--cream);
+    border: 1px solid var(--cream-dark);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.about-side-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--orange-pale);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-side-icon svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--orange);
+}
+
+.about-side-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.about-side-card p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* About logo above text on the right */
+.about-logo-wrapper {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.about-logo-img {
+    height: 250px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 24px rgba(26, 18, 9, 0.09));
+    transition: transform 0.3s ease;
+}
+
+.about-logo-img:hover {
+    transform: translateY(-2px);
+}
+
+.about-text {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    line-height: 1.9;
+    margin: 1.5rem 0;
+}
+
+/* Features list */
+.about-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.feat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.feat-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--orange);
+    border-radius: 50%;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 960px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 575px) {
+    .about-main-card {
+        height: 320px;
+        padding: 1.5rem;
+    }
+    .about-badge {
+        top: -1rem;
+        right: 1rem;
+        padding: 0.6rem 1rem;
+    }
+    .about-badge .num {
+        font-size: 1.5rem;
+    }
+    .about-badge .txt {
+        font-size: 0.6rem;
+    }
+    .about-card-content h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.25rem;
+    }
+    .about-logo-img {
+        height: 140px;
+    }
+    .about-text {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+    .about-features {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    .feat-item {
+        font-size: 0.85rem;
+    }
+}

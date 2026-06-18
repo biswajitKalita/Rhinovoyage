@@ -1,0 +1,92 @@
+[
+  {
+    "id": "mpy3i3iac2qsx",
+    "createdAt": "2026-06-03T13:21:41.698Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your trip request for Maruti Ertiga on Jun 13, 2026 has been cancelled. Please contact support. ⚠️",
+    "read": true,
+    "updatedAt": "2026-06-03T13:22:07.659Z"
+  },
+  {
+    "id": "mpy3i53mfjbf5",
+    "createdAt": "2026-06-03T13:21:43.762Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your trip request for Maruti Ertiga on Jun 13, 2026 has been confirmed! 🎉",
+    "read": true,
+    "updatedAt": "2026-06-18T05:31:25.064Z"
+  },
+  {
+    "id": "mqjbvdm4gonl9",
+    "createdAt": "2026-06-18T09:59:07.948Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your trip request for SUV / MUV Rental on Jun 26, 2026 has been confirmed! 🎉",
+    "read": true,
+    "updatedAt": "2026-06-18T10:19:03.888Z"
+  },
+  {
+    "id": "mqjbve3jpxc2d",
+    "createdAt": "2026-06-18T09:59:08.575Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your trip request for Luxury Sedan Rental on Jul 1, 2026 has been confirmed! 🎉",
+    "read": true,
+    "updatedAt": "2026-06-18T10:19:04.320Z"
+  },
+  {
+    "id": "mqjbvejipn00g",
+    "createdAt": "2026-06-18T09:59:09.150Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your trip request for Gateway to Assam on Jul 3, 2026 has been confirmed! 🎉",
+    "read": true,
+    "updatedAt": "2026-06-18T10:19:04.651Z"
+  },
+  {
+    "id": "mqjc2upwm54xz",
+    "createdAt": "2026-06-18T10:04:56.708Z",
+    "userId": "mqjc2uk0dpu1p",
+    "message": "New trip assigned to you for suv_car_model_1781764157470 on Jun 25, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqjc9tnrpw8hf",
+    "createdAt": "2026-06-18T10:10:21.927Z",
+    "userId": "mqjc97fcxajfg",
+    "message": "New trip assigned to you for suv_car_model_1781764157470 on Jun 25, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqjcaroqjvu6j",
+    "createdAt": "2026-06-18T10:11:06.026Z",
+    "userId": "mqjc2uk0dpu1p",
+    "message": "New trip assigned to you for suv_car_model_1781764157470 on Jun 25, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqjcau53yi1jv",
+    "createdAt": "2026-06-18T10:11:09.207Z",
+    "userId": "mqjc97fcxajfg",
+    "message": "New trip assigned to you for suv_car_model_1781764157470 on Jun 25, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqjcki6o8lo68",
+    "createdAt": "2026-06-18T10:18:40.272Z",
+    "userId": "mqjcj9ow32ld4",
+    "message": "New trip assigned to you for suv_car_model_1781764157470 on Jun 25, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqjnfv764a9z3",
+    "createdAt": "2026-06-18T15:22:59.634Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your trip request for SUV / MUV Rental on Jul 8, 2026 has been confirmed! 🎉",
+    "read": true,
+    "updatedAt": "2026-06-18T15:27:23.138Z"
+  },
+  {
+    "id": "mqjng5i8inqvp",
+    "createdAt": "2026-06-18T15:23:12.993Z",
+    "userId": "mqjc2uk0dpu1p",
+    "message": "New trip assigned to you for SUV / MUV Rental on Jul 8, 2026. 🚗",
+    "read": false
+  }
+]

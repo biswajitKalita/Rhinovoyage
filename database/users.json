@@ -1,0 +1,102 @@
+[
+  {
+    "id": "mpy2yjhhmny0d",
+    "createdAt": "2026-06-03T13:06:29.285Z",
+    "name": "RhinoVoyage Admin",
+    "email": "admin@rhinovoyage.com",
+    "password": "$2a$10$qb7OvyDCJK4tflWhWVDcP.xIqJ.DLY4Fxwzp8VBzD4WfL24gKfc6e",
+    "phone": "+91 94350 12345",
+    "role": "admin"
+  },
+  {
+    "id": "mpy301r94pb4t",
+    "createdAt": "2026-06-03T13:07:39.621Z",
+    "name": "Biswajit Kalita",
+    "email": "jogeswarkalita20@gmail.com",
+    "password": "$2a$10$IEReY437ehZpAvQMJ162DeZXXbQY0I2zYQeynwq2UBvGQwaOhegim",
+    "phone": "09864820229",
+    "role": "user"
+  },
+  {
+    "id": "mqjakngxozzco",
+    "createdAt": "2026-06-18T09:22:47.889Z",
+    "name": "Biswajit Kalita",
+    "email": "biswajitkalitajaan@gmail.com",
+    "password": "$2a$10$W3/T2qxgv80KIjlk6wR6OOLFgrQXUcg0xpMbUA8oh278ft8DxteAS",
+    "phone": "9864820229",
+    "role": "user"
+  },
+  {
+    "id": "mqjc2uk0dpu1p",
+    "createdAt": "2026-06-18T10:04:56.496Z",
+    "name": "Rohan Borah",
+    "email": "test_driver_1781777096327@example.com",
+    "password": "$2a$10$sAQt2FlFzsCHY0k42ho/F.Tj9SI3SvIIy34GpryITV9JqZvN7QOGu",
+    "phone": "9954253585",
+    "role": "driver",
+    "aadhar": "123456789012",
+    "license": "AS-04-2026-0001234",
+    "verificationStatus": "Approved",
+    "updatedAt": "2026-06-18T15:23:07.715Z"
+  },
+  {
+    "id": "mqjc97fcxajfg",
+    "createdAt": "2026-06-18T10:09:53.112Z",
+    "name": "Bhargab Gogoi",
+    "email": "admin_added_driver_1781777392985@example.com",
+    "password": "$2a$10$okDFB7l18lm85ByYIQc2Z.d0B91fSw47yPxrhrGAnPnP68CxjYnja",
+    "phone": "9864820229",
+    "role": "driver",
+    "aadhar": "987654321098",
+    "license": "AS-04-2026-9999999",
+    "aadharPhoto": "/public/uploads/aadhar_1781777393110_vczni.png",
+    "licensePhoto": "/public/uploads/license_1781777393111_l4pn0.png",
+    "verificationStatus": "Approved",
+    "updatedAt": "2026-06-18T15:23:06.885Z"
+  },
+  {
+    "id": "mqjcde8gcjlx4",
+    "createdAt": "2026-06-18T10:13:08.560Z",
+    "name": "Nilav Kalita",
+    "email": "nilav1@gmial.com",
+    "password": "$2a$10$IDBgnlh1hnT0OGbQQF9okeAAoSNlKJSD1HgjQszI8q3U8VoFtxnnC",
+    "phone": "9954652358",
+    "role": "driver",
+    "aadhar": "889652458487",
+    "license": "AS-06-56-7654",
+    "aadharPhoto": "/public/uploads/aadhar_1781777588558_kl27m.png",
+    "licensePhoto": "/public/uploads/license_1781777588560_77l1b.jpeg",
+    "verificationStatus": "Rejected",
+    "updatedAt": "2026-06-18T10:18:13.625Z"
+  },
+  {
+    "id": "mqjcf12yd7mju",
+    "createdAt": "2026-06-18T10:14:24.826Z",
+    "name": "Bhargab Gogoi",
+    "email": "admin_added_driver_1781777664710@example.com",
+    "password": "$2a$10$fK./oAdJgNR44Zs2WEHvs.lH9gwlaNSlH48GYvZJpaH1Jywhx5E8W",
+    "phone": "9864820229",
+    "role": "driver",
+    "aadhar": "987654321098",
+    "license": "AS-04-2026-9999999",
+    "aadharPhoto": "/public/uploads/aadhar_1781777664825_rml1e.png",
+    "licensePhoto": "/public/uploads/license_1781777664826_ks75l.png",
+    "verificationStatus": "Rejected",
+    "updatedAt": "2026-06-18T10:18:51.728Z"
+  },
+  {
+    "id": "mqjcj9ow32ld4",
+    "createdAt": "2026-06-18T10:17:42.608Z",
+    "name": "notyu",
+    "email": "dri@gmail.com",
+    "password": "$2a$10$lj8/dXAtY2q/MspmBuqoieQHkP3JaAifKR7WFpu76ehu3TUChU3rm",
+    "phone": "7524685424",
+    "role": "driver",
+    "aadhar": "889652457878",
+    "license": "AS-06-56-7677",
+    "aadharPhoto": "/public/uploads/aadhar_1781777862606_lmwy4.png",
+    "licensePhoto": "/public/uploads/license_1781777862607_v1cef.jpeg",
+    "verificationStatus": "Rejected",
+    "updatedAt": "2026-06-18T10:18:52.224Z"
+  }
+]

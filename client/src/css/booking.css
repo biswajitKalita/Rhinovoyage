@@ -1,0 +1,293 @@
+/* =========================
+   BOOKING SECTION
+========================= */
+
+.booking {
+    background: var(--cream);
+}
+
+/* Layout */
+.booking-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+/* Left info */
+.booking-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.booking-info h2 em {
+    color: var(--orange);
+}
+
+.booking-info p {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+/* Assurance list */
+.booking-assurance {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.assurance-item {
+    display: flex;
+    gap: 12px;
+}
+
+.assurance-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--orange-pale);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.assurance-item h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.assurance-item p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.assurance-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--orange);
+}
+
+/* =========================
+   FORM BOX
+========================= */
+
+.booking-form {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+}
+
+.booking-form h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.booking-form .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+/* Form rows */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* Inputs */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    background: var(--cream);
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--orange);
+    background: white;
+}
+
+/* Service type buttons */
+.service-type-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.stype-btn {
+    padding: 0.6rem;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--cream);
+}
+
+.stype-btn input {
+    display: none;
+}
+
+.stype-btn:has(input:checked), .stype-btn.checked {
+    border-color: var(--orange);
+    background: var(--orange-pale);
+}
+
+.stype-btn:has(input:checked) .stype-label, .stype-btn.checked .stype-label {
+    color: var(--orange-dark);
+}
+
+/* Payment */
+.payment-methods {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.pay-opt {
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    padding: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.pay-opt.selected {
+    border-color: var(--orange);
+    background: var(--orange-pale);
+}
+
+/* Submit button */
+.btn-book {
+    width: 100%;
+    background: var(--orange);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(232, 101, 26, 0.35);
+    transition: all 0.25s;
+}
+
+.btn-book:hover {
+    background: var(--orange-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(232, 101, 26, 0.4);
+}
+
+.btn-book svg {
+    width: 18px;
+    height: 18px;
+    fill: white;
+}
+
+/* Note */
+.form-note {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 960px) {
+    .booking-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-methods {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 575px) {
+    .booking-form {
+        padding: 1.5rem 1.25rem;
+    }
+    
+    .booking-form h3 {
+        font-size: 1.35rem;
+    }
+    
+    .booking-form .subtitle {
+        margin-bottom: 1.5rem;
+    }
+    
+    .service-type-group {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .stype-btn {
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-align: left;
+    }
+    
+    .stype-btn .stype-icon {
+        margin-bottom: 0;
+        font-size: 1.1rem;
+    }
+    
+    .stype-btn .stype-label {
+        font-size: 0.8rem;
+    }
+}
+
+/* Custom Tour Customization Fields */
+#custom_tour_fields {
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    #custom_tour_fields {
+        grid-template-columns: 1fr;
+    }
+}

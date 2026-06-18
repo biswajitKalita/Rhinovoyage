@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tour Itinerary Details — RhinoVoyage</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../src/css/global.css?v=4.0">
+<link rel="stylesheet" href="../src/css/navbar.css?v=4.0">
+<link rel="stylesheet" href="../src/css/footer.css?v=4.0">
+<style>
+  :root {
+    --orange: #E8651A;
+    --orange-dark: #C4511A;
+    --orange-light: #F5874A;
+    --orange-pale: #FDF0E8;
+    --green: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-dark: #0d1f16;
+    --cream: #FBF7F0;
+    --cream-dark: #F0E8D8;
+    --text-dark: #1A1209;
+    --text-mid: #4A3728;
+    --text-muted: #8A7060;
+    --white: #FFFFFF;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--text-dark);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  nav.scrolled {
+    background: var(--green-dark);
+    box-shadow: 0 2px 24px rgba(0,0,0,0.25);
+  }
+
+  /* Header Section */
+  .itinerary-hero {
+    padding: 8rem 2rem 4rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pkg-v1 { background: linear-gradient(135deg, #0d2b1e 0%, #1B4332 40%, #2D6A4F 100%); }
+  .pkg-v2 { background: linear-gradient(135deg, #4a1c0a 0%, #8B3A1A 40%, #C4511A 100%); }
+  .pkg-v3 { background: linear-gradient(135deg, #1a2a4a 0%, #1B3A6A 40%, #2D5EA8 100%); }
+  .pkg-v4 { background: linear-gradient(135deg, #2a1a0a 0%, #6B4226 40%, #9A6B42 100%); }
+  .pkg-v5 { background: linear-gradient(135deg, #0a2a1a 0%, #1B5232 40%, #2D8A4F 100%); }
+  .pkg-v6 { background: linear-gradient(135deg, #1a2a0a 0%, #3A5A1A 40%, #628A2D 100%); }
+
+  .hero-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+  }
+
+  .hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+    background: var(--orange);
+  }
+
+  .hero-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.85;
+    font-weight: 500;
+  }
+
+  /* Split Container */
+  .details-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 3rem auto;
+    padding: 0 2rem;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+  }
+
+  /* Left: Timeline */
+  .timeline-section {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--cream-dark);
+  }
+
+  .timeline-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid var(--cream-dark);
+    font-weight: 700;
+  }
+
+  .modal-timeline {
+    position: relative;
+    padding-left: 2rem;
+    border-left: 2px solid var(--orange-pale);
+    margin-left: 0.5rem;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+  }
+
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: calc(-2rem - 6px);
+    top: 0.25rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--orange);
+    border: 2px solid var(--white);
+    box-shadow: 0 0 0 4px var(--orange-pale);
+  }
+
+  .timeline-day {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .timeline-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+  }
+
+  /* Right: Info Card */
+  .info-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .sidebar-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--cream-dark);
+    position: sticky;
+    top: 100px;
+  }
+
+  .sidebar-price {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1.5px solid var(--cream-dark);
+  }
+
+  .sidebar-price .label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .sidebar-price .amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--orange);
+    margin: 4px 0;
+  }
+
+  .sidebar-price .per {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .sidebar-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .sidebar-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text-mid);
+  }
+
+  .sidebar-detail-icon {
+    font-size: 1.25rem;
+  }
+
+  .sidebar-includes {
+    margin-bottom: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1.5px solid var(--cream-dark);
+  }
+
+  .sidebar-includes h4 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .sidebar-inc-item {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar-inc-item::before {
+    content: '✓';
+    color: var(--green-mid);
+    font-weight: bold;
+  }
+
+  .btn-book-tour {
+    width: 100%;
+    display: block;
+    background: var(--orange);
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 14px rgba(232, 101, 26, 0.3);
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-book-tour:hover {
+    background: var(--orange-light);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(232, 101, 26, 0.4);
+  }
+
+  @media (max-width: 960px) {
+    .details-container {
+      grid-template-columns: 1fr;
+    }
+    .sidebar-card {
+      position: static;
+    }
+  }
+
+  @media (max-width: 575px) {
+    .itinerary-hero {
+      padding: 6.5rem 1rem 3rem;
+    }
+    .details-container {
+      padding: 0 1rem;
+      margin: 1.5rem auto;
+      gap: 1.5rem;
+    }
+    .timeline-section {
+      padding: 1.5rem 1.25rem;
+    }
+    .sidebar-card {
+      padding: 1.5rem 1.25rem;
+    }
+    .hero-content h1 {
+      font-size: 1.8rem;
+    }
+    .hero-meta {
+      gap: 0.75rem 1.25rem;
+      font-size: 0.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="navbar" class="scrolled">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon" style="background: transparent; width: 160px; height: 60px;">
+        <img src="./logo.png" alt="RhinoVoyage Logo" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="login.html" id="nav-portal-link">Login / Join</a></li>
+      <li><a href="index.html#packages">Packages</a></li>
+      <li><a href="index.html#sivasagar">Sivasagar</a></li>
+      <li><a href="index.html#reviews">Reviews</a></li>
+      <li><a href="index.html#about">About Us</a></li>
+    </ul>
+    <a href="index.html#booking" class="nav-cta">Book Now</a>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- HERO HEADER -->
+<section class="itinerary-hero pkg-v2" id="hero-header">
+  <div class="hero-pattern"></div>
+  <div class="hero-content">
+    <div class="hero-badge" id="hero-badge">Popular</div>
+    <h1 id="pkg-title">Tour Itinerary Details</h1>
+    <div class="hero-meta">
+      <span id="meta-duration">⏳ -</span>
+      <span id="meta-region">📍 -</span>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN DETAILS CONTAINER -->
+<div class="details-container">
+  
+  <!-- LEFT: Day-by-Day Timeline -->
+  <section class="timeline-section">
+    <h2>Detailed Day-Wise Itinerary</h2>
+    <div class="modal-timeline" id="timeline-container">
+      <!-- Loaded dynamically -->
+      <div style="text-align: center; padding: 3rem; color: var(--text-muted);">Loading itinerary details...</div>
+    </div>
+  </section>
+
+  <!-- RIGHT: Sidebar Info & Booking -->
+  <aside class="info-sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-price">
+        <div class="label">Starting From</div>
+        <div class="amount" id="sidebar-price">-</div>
+        <div class="per">per person (customizable)</div>
+      </div>
+      
+      <div class="sidebar-details">
+        <div class="sidebar-detail-item">
+          <span class="sidebar-detail-icon">⏳</span>
+          <span id="sidebar-duration">-</span>
+        </div>
+        <div class="sidebar-detail-item">
+          <span class="sidebar-detail-icon">🚙</span>
+          <span id="sidebar-vehicle">-</span>
+        </div>
+        <div class="sidebar-detail-item">
+          <span class="sidebar-detail-icon">📍</span>
+          <span id="sidebar-starting">Starts & Ends in Sivasagar</span>
+        </div>
+      </div>
+
+      <div class="sidebar-includes">
+        <h4>Package Highlights</h4>
+        <div id="highlights-container">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <button class="btn-book-tour" onclick="bookThisTour()">Book This Tour</button>
+    </div>
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid" style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; padding: 1.5rem 0;">
+    <p>© 2026 RhinoVoyage. All rights reserved. | Sivasagar Travel Partner</p>
+    <div class="social-links">
+      <a href="#" class="social-link">f</a>
+      <a href="#" class="social-link">in</a>
+      <a href="#" class="social-link">wa</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../src/js/packages-data.js"></script>
+<script src="../src/js/main.js"></script>
+<script>
+  // Update portal link based on authentication status
+  const navToken = localStorage.getItem('token');
+  const navUser = JSON.parse(localStorage.getItem('user') || 'null');
+  const portalLink = document.getElementById('nav-portal-link');
+  if (portalLink && navToken && navUser) {
+    portalLink.innerText = 'Dashboard';
+    portalLink.href = navUser.role === 'admin' ? 'admin-dashboard.html' : 'user-dashboard.html';
+  }
+
+  // Load package details from URL search query
+  const params = new URLSearchParams(window.location.search);
+  const packageKey = params.get('package');
+
+  let activePackage = null;
+
+  if (packageKey) {
+    activePackage = packagesData.find(p => p.key === packageKey);
+  }
+
+  if (!activePackage) {
+    // Redirect back if no valid package is provided
+    alert('Invalid package selected. Redirecting back to home page.');
+    window.location.href = 'index.html';
+  } else {
+    // Populate page content
+    document.title = `${activePackage.title} — Itinerary Details`;
+    
+    // Header class gradient mapping
+    const heroHeader = document.getElementById('hero-header');
+    if (heroHeader && activePackage.class) {
+      heroHeader.className = `itinerary-hero ${activePackage.class}`;
+    }
+
+    document.getElementById('hero-badge').innerText = activePackage.badge || 'Featured';
+    document.getElementById('pkg-title').innerText = activePackage.title;
+    document.getElementById('meta-duration').innerText = `⏳ ${activePackage.duration}`;
+    document.getElementById('meta-region').innerText = `📍 ${activePackage.region}`;
+
+    document.getElementById('sidebar-price').innerText = activePackage.price;
+    document.getElementById('sidebar-duration').innerText = activePackage.duration;
+    document.getElementById('sidebar-vehicle').innerText = activePackage.vehicle;
+
+    // Load highlights
+    const highlightsContainer = document.getElementById('highlights-container');
+    highlightsContainer.innerHTML = '';
+    activePackage.includes.forEach(inc => {
+      const item = document.createElement('div');
+      item.className = 'sidebar-inc-item';
+      item.innerText = inc;
+      highlightsContainer.appendChild(item);
+    });
+
+    // Load day-by-day itinerary
+    const timelineContainer = document.getElementById('timeline-container');
+    timelineContainer.innerHTML = '';
+    activePackage.days.forEach(day => {
+      let descHtml = '';
+      if (day.list && day.list.length > 0) {
+        descHtml = '<ul style="list-style: none; padding-left: 0; margin-top: 8px; margin-bottom: 0;">';
+        day.list.forEach(item => {
+          descHtml += `<li style="position: relative; padding-left: 1.25rem; margin-bottom: 8px; font-size: 0.88rem; color: var(--text-mid); line-height: 1.5; font-weight: 500;">
+            <span style="position: absolute; left: 0; top: 0.45rem; width: 6px; height: 6px; background: var(--orange); border-radius: 50%;"></span>
+            ${item}
+          </li>`;
+        });
+        descHtml += '</ul>';
+      } else {
+        descHtml = `<p style="font-size: 0.88rem; color: var(--text-mid); line-height: 1.6; margin-top: 6px;">${day.desc}</p>`;
+      }
+
+      const timelineItem = document.createElement('div');
+      timelineItem.className = 'timeline-item';
+      timelineItem.innerHTML = `
+        <div class="timeline-dot"></div>
+        <div class="timeline-day">${day.day}</div>
+        <div class="timeline-title">${day.title}</div>
+        ${descHtml}
+      `;
+      timelineContainer.appendChild(timelineItem);
+    });
+  }
+
+  function bookThisTour() {
+    if (activePackage) {
+      window.location.href = `index.html?bookPackage=${encodeURIComponent(activePackage.key)}#booking`;
+    }
+  }
+</script>
+
+</body>
+</html>

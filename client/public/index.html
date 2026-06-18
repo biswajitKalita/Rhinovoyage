@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RhinoVoyage — Explore Northeast India</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../src/css/global.css?v=4.0">
+<link rel="stylesheet" href="../src/css/navbar.css?v=4.0">
+<link rel="stylesheet" href="../src/css/hero.css?v=4.0">
+<link rel="stylesheet" href="../src/css/about.css?v=4.0">
+<link rel="stylesheet" href="../src/css/packages.css?v=4.0">
+<link rel="stylesheet" href="../src/css/rentals.css?v=4.0">
+<link rel="stylesheet" href="../src/css/spotlight.css?v=4.0">
+<link rel="stylesheet" href="../src/css/booking.css?v=4.0">
+<link rel="stylesheet" href="../src/css/testimonials.css?v=4.0">
+<link rel="stylesheet" href="../src/css/footer.css?v=4.0">
+<script src="./config.js"></script>
+</head>
+<body>
+ 
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon" style="background: transparent; width: 160px; height: 60px;">
+        <img src="./logo.png" alt="RhinoVoyage Logo" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="logo-text" style="display: none;">RhinoVoyage<span>Explore The World</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="login.html" id="nav-portal-link">Login / Join</a></li>
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#sivasagar">Sivasagar</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#about">About Us</a></li>
+    </ul>
+    <a href="#booking" class="nav-cta">Book Now</a>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero" id="home">
+  <div class="hero-pattern"></div>
+  <div class="hero-grid-lines"></div>
+  <img class="hero-illustration" src="./sivadol.jpg" alt="RhinoVoyage Art">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Explore the Unexplored</div>
+    <h1>Discover Northeast India's <em>Majestic Beauty</em></h1>
+    <p>Assam's premier travel partner. Rent a premium car or book custom heritage tours with us today.</p>
+    <div class="hero-buttons">
+      <a href="#booking" class="btn-primary">Book Now</a>
+      <a href="#packages" class="btn-secondary">Explore Packages</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">Verified</div>
+        <div class="stat-label">Local Drivers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Booking Support</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    Scroll Down
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- DESTINATIONS MARQUEE STRIP -->
+<div class="destinations-strip">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="marquee-dot"></span>Sivasagar</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Kaziranga</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Majuli Island</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Guwahati</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Dibrugarh</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Haflong Hills</div>
+    <!-- Duplicate for seamless scrolling -->
+    <div class="marquee-item"><span class="marquee-dot"></span>Sivasagar</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Kaziranga</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Majuli Island</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Guwahati</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Dibrugarh</div>
+    <div class="marquee-item"><span class="marquee-dot"></span>Haflong Hills</div>
+  </div>
+</div>
+
+<!-- ABOUT SECTION -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-label">Who We Are</div>
+    <h2 class="section-title">Northeast India's Premier <em>Travel Partner</em></h2>
+    <div class="about-grid" style="margin-top: 3rem;">
+      <div class="about-visual">
+        <div class="about-main-card">
+          <div class="about-card-pattern"></div>
+          <div class="about-card-ornament">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="white" opacity="0.2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </div>
+          <div class="about-card-content">
+            <h3>Explore Assam Safely</h3>
+            <p>Our fleet is fully sanitized and maintained to the highest standards, ensuring a smooth and worry-free travel experience across Northeast India.</p>
+          </div>
+        </div>
+        
+        <div class="about-side-card" style="margin-top: 2rem;">
+          <div class="about-side-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+          </div>
+          <div>
+            <h4>Local Travel Experts</h4>
+            <p>Our drivers are locals who know every route, destination, and history, acting as your guide throughout the journey.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="about-content">
+        <div class="about-logo-wrapper">
+          <img src="./logo.png" alt="RhinoVoyage Logo" class="about-logo-img">
+        </div>
+        <p class="about-text">
+          RhinoVoyage was founded with a single mission: to open up the wonders of Assam and Northeast India to travelers looking for premium, safe, and culturally rich experiences. From the ancient temples of Sivasagar to the tea gardens of Dibrugarh and the wildlife of Kaziranga, we ensure your journey is seamless and unforgettable.
+        </p>
+        <div class="about-features">
+          <div class="feat-item">
+            <div class="feat-dot"></div>
+            <span>Sanitized Premium Fleet</span>
+          </div>
+          <div class="feat-item">
+            <div class="feat-dot"></div>
+            <span>Expert Local Guides/Drivers</span>
+          </div>
+          <div class="feat-item">
+            <div class="feat-dot"></div>
+            <span>Customized Tour Packages</span>
+          </div>
+          <div class="feat-item">
+            <div class="feat-dot"></div>
+            <span>24/7 Roadside Assistance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES SECTION -->
+<section class="packages" id="packages">
+  <div class="container">
+    <div class="packages-header" style="flex-direction: column; align-items: flex-start; gap: 1.5rem; margin-bottom: 2.5rem;">
+      <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+          <div class="section-label">Popular Packages</div>
+          <h2 class="section-title">Northeast India's <em>Best Tour Circuits</em></h2>
+        </div>
+        <!-- Search bar -->
+        <div class="pkg-search-container" style="position: relative; width: 100%; max-width: 320px;">
+          <input type="text" id="pkg-search-input" placeholder="Search destinations (e.g. Tawang, Dawki)..." oninput="filterPackages()" style="width: 100%; padding: 12px 20px; border-radius: 50px; border: 1.5px solid var(--cream-dark); font-family: 'Nunito', sans-serif; font-size: 0.88rem; background: var(--white); box-shadow: var(--shadow-sm); outline: none; transition: border-color 0.2s;">
+        </div>
+      </div>
+      
+      <!-- Filter tabs -->
+      <div class="pkg-filters" style="display: flex; gap: 0.5rem; flex-wrap: wrap; width: 100%; padding-bottom: 0.75rem; border-bottom: 1.5px solid var(--cream-dark);">
+        <button class="pkg-filter-btn active" onclick="setRegionFilter('All', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">All Regions</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Assam', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Assam</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Meghalaya', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Meghalaya</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Arunachal', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Arunachal</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Nagaland', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Nagaland</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Sikkim', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Sikkim & Bengal</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Bhutan', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Bhutan</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Tripura', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Tripura</button>
+      </div>
+    </div>
+    
+    <!-- Packages Slider Wrapper -->
+    <div class="packages-slider-wrapper">
+      <!-- Left Arrow -->
+      <button class="slider-arrow prev-arrow" onclick="slidePackages('left')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-dark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      
+      <!-- Slider Container -->
+      <div class="packages-slider-container">
+        <!-- Packages Grid -->
+        <div class="packages-grid" id="packages-container">
+          <!-- Will be loaded dynamically from packages-data.js -->
+        </div>
+      </div>
+
+      <!-- Right Arrow -->
+      <button class="slider-arrow next-arrow" onclick="slidePackages('right')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-dark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- FLEET / RENTAL SECTION -->
+<section class="rentals" id="rentals">
+  <div class="container">
+    <div class="section-label">Our Fleet</div>
+    <h2 class="section-title">Rent Our Premium <em>Cars</em></h2>
+    
+    <div class="fleet-grid" style="margin-top: 3rem;">
+      <!-- Sedan -->
+      <div class="category-card" onclick="selectCarCategory('Sedan')">
+        <img src="./sedan.png" alt="Sedan Category">
+        <div class="category-overlay">
+          <span class="btn-book-now">BOOK NOW</span>
+          <span class="category-name">SEDAN</span>
+        </div>
+      </div>
+
+      <!-- Luxury -->
+      <div class="category-card" onclick="selectCarCategory('Luxury')">
+        <img src="./luxury.png" alt="Luxury Category">
+        <div class="category-overlay">
+          <span class="btn-book-now">BOOK NOW</span>
+          <span class="category-name">LUXURY</span>
+        </div>
+      </div>
+
+      <!-- SUV -->
+      <div class="category-card" onclick="selectCarCategory('SUV')">
+        <img src="./suv.png" alt="SUV Category">
+        <div class="category-overlay">
+          <span class="btn-book-now">BOOK NOW</span>
+          <span class="category-name">SUV</span>
+        </div>
+      </div>
+
+      <!-- Bus -->
+      <div class="category-card" onclick="selectCarCategory('Bus')">
+        <img src="./bus.png" alt="Bus Category">
+        <div class="category-overlay">
+          <span class="btn-book-now">BOOK NOW</span>
+          <span class="category-name">BUS</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="rental-cta-bar">
+      <div>
+        <h3>Need to Rent a Premium Car?</h3>
+        <p>All vehicles come with a professional local driver. Perfect for outstation travels, custom heritage tours, and corporate commutes.</p>
+      </div>
+      <a href="#booking" class="btn-primary">Book Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- SIVASAGAR HERITAGE SPOTLIGHT BANNER -->
+<section class="sivasagar-banner" id="sivasagar">
+  <div class="siva-bg-glow"></div>
+  <div class="siva-content">
+    <div class="section-label">Heritage Spotlight</div>
+    <h2>Explore Sivasagar: The Ahom Capital</h2>
+    <p>Discover the rich history of the Ahom kingdom. Visit Asia's oldest amphitheater (Rang Ghar), the multi-storied underground palace (Talatal Ghar), and the tallest Shiva temple in India (Shivadol).</p>
+    <div class="siva-highlights">
+      <div class="siva-h">Rang Ghar</div>
+      <div class="siva-h">Talatal Ghar</div>
+      <div class="siva-h">Shiva Dol</div>
+      <div class="siva-h">Burial Maidams</div>
+    </div>
+    <a href="./sivasagar.html" class="btn-primary" style="background: var(--orange);">View Heritage Tour Details</a>
+  </div>
+</section>
+
+<!-- BOOKING FORM SECTION -->
+<section class="booking" id="booking">
+  <div class="container booking-grid">
+    <div class="booking-info">
+      <h2>Book Your <em>Northeast Journey</em></h2>
+      <p>Fill out the form to request a booking. Our team will review your requirements and confirm your booking via WhatsApp within 30 minutes.</p>
+      
+      <div class="booking-assurance">
+        <div class="assurance-item">
+          <div class="assurance-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <div>
+            <h4>Instant Confirmation</h4>
+            <p>Quick booking processing with WhatsApp status updates.</p>
+          </div>
+        </div>
+        
+        <div class="assurance-item">
+          <div class="assurance-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/></svg>
+          </div>
+          <div>
+            <h4>No Hidden Fees</h4>
+            <p>All parking, toll charges, and fuel costs are included in the price.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <form class="booking-form" onsubmit="event.preventDefault(); submitBooking();">
+      <h3>Booking Request Form</h3>
+      <p class="subtitle">Quick details for your trip quote</p>
+      
+      <div class="form-group">
+        <label>Select Service Type</label>
+        <div class="service-type-group">
+          <div class="stype-btn checked" onclick="selectService(this)">
+            <input type="radio" name="service_type" value="car_rental" checked style="display:none;">
+            <span class="stype-icon">🚙</span>
+            <span class="stype-label">Car Rental</span>
+          </div>
+          <div class="stype-btn" onclick="selectService(this)">
+            <input type="radio" name="service_type" value="tour_package" style="display:none;">
+            <span class="stype-icon">🗺️</span>
+            <span class="stype-label">Tour Package</span>
+          </div>
+          <div class="stype-btn" onclick="selectService(this)">
+            <input type="radio" name="service_type" value="both" style="display:none;">
+            <span class="stype-icon">🌟</span>
+            <span class="stype-label">Custom Tour</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" required placeholder="Enter full name">
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" required placeholder="Enter WhatsApp number">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pickup_date">Pickup Date</label>
+          <input type="date" id="pickup_date" required>
+        </div>
+        <div class="form-group" id="vehicle_select_group">
+          <label for="vehicle_select">Select Vehicle</label>
+          <select id="vehicle_select">
+            <option value="Sedan Rental" selected>Sedan Car (Swift Dzire or similar)</option>
+            <option value="Luxury Sedan Rental">Luxury Sedan (Audi, BMW, or similar)</option>
+            <option value="SUV / MUV Rental">SUV / MUV (Innova Crysta or similar)</option>
+            <option value="Bus / Tempo Traveller Rental">Tempo Traveller / Mini Bus (13-26 Seats)</option>
+          </select>
+        </div>
+        <div class="form-group" id="package_select_group" style="display: none;">
+          <label for="package_select">Select Tour Package</label>
+          <select id="package_select">
+            <option value="Sivasagar Heritage Trail" selected>Sivasagar Heritage Trail (2 Days / 1 Night)</option>
+            <option value="Kaziranga - Shillong - Cherrapunji - Guwahati Explorer">Kaziranga - Shillong - Cherrapunji - Guwahati Explorer (7 Days / 6 Nights)</option>
+            <option value="Meghalaya & Dawki Highlights">Meghalaya & Dawki Highlights (4 Days / 3 Nights)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-row" id="custom_tour_fields" style="display: none;">
+        <div class="form-group">
+          <label for="return_date">Return Date (End of Tour)</label>
+          <input type="date" id="return_date">
+        </div>
+        <div class="form-group">
+          <label for="pickup_time">Pickup Time</label>
+          <input type="time" id="pickup_time">
+        </div>
+        <div class="form-group">
+          <label for="traveler_count">Number of Travelers</label>
+          <input type="number" id="traveler_count" min="1" max="100" value="1" placeholder="e.g. 4">
+        </div>
+      </div>
+      
+      <div class="form-row" id="rental_fields">
+        <div class="form-group">
+          <label for="pickup_location">Pickup Location (From)</label>
+          <input type="text" id="pickup_location" required placeholder="e.g. Guwahati Airport, Sivasagar Town">
+        </div>
+        <div class="form-group">
+          <label for="drop_location">Drop Location (To)</label>
+          <input type="text" id="drop_location" required placeholder="e.g. Kaziranga, Shivadol Sivasagar">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="details">Trips details / Requirements</label>
+        <textarea id="details" placeholder="e.g. extra stops, flight details, special requests"></textarea>
+      </div>
+      <button type="submit" class="btn-book">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        Send Booking Request
+      </button>
+      <div class="form-note">🔒 Secured by end-to-end encryption.</div>
+    </form>
+  </div>
+</section>
+
+<!-- TESTIMONIALS SECTION -->
+<section class="testimonials" id="reviews">
+  <div class="container">
+    <div class="section-label">Reviews</div>
+    <h2 class="section-title">What Our Travelers <em>Say About Us</em></h2>
+    
+    <div class="testi-grid" style="margin-top: 3rem;">
+      <div class="testi-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-quote">“</div>
+        <p class="testi-text">Booked an Ertiga from Rhino Voyage for my trip from Sivasagar to Dibrugarh Airport. The car was clean and comfortable, the driver was polite and professional, and the fare was reasonable. Overall, a smooth and pleasant experience. Highly recommended !!!</p>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div>
+            <div class="testi-name">Arup Jyoti Lahkar</div>
+            <div class="testi-detail">Tezpur, Assam</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="testi-card featured-t">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-quote">“</div>
+        <p class="testi-text">Had a great trip from Majuli to Shillong with Rhino Voyage. The journey was comfortable, the car was clean, and the driver was very humble and professional. Everything went smoothly, making the trip enjoyable. Thanks, Rhino Voyage, for the excellent service. Highly recommended!</p>
+        <div class="testi-author">
+          <div class="testi-avatar g">M</div>
+          <div>
+            <div class="testi-name">Modon Kalita</div>
+            <div class="testi-detail">Majuli, Assam</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="testi-card">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-quote">“</div>
+        <p class="testi-text">Had a wonderful trip from Sivasagar to Arunachal Pradesh with Rhino Voyage. The car was clean and comfortable, the driver was polite and professional, and the entire journey was smooth and enjoyable. Thanks to Rhino Voyage for the excellent service and making the trip memorable.</p>
+        <div class="testi-author">
+          <div class="testi-avatar b">D</div>
+          <div>
+            <div class="testi-name">Deepak Tomar</div>
+            <div class="testi-detail">Delhi, India</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo" style="align-items: center;">
+        <div class="footer-logo-icon" style="background: transparent; width: 160px; height: 60px; display: flex; align-items: center; justify-content: flex-start; border-radius: 0;">
+          <img src="./logo.png" alt="RhinoVoyage Logo" style="width: 100%; height: 100%; object-fit: contain; object-position: left center;">
+        </div>
+        <div class="footer-logo-text" style="display: none;">RhinoVoyage</div>
+      </div>
+      <p>Assam's premier travel partner. Explore the world with us.</p>
+      <div class="footer-contact-item"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>+91 9864820229, +91 9954253585</div>
+      <div class="footer-contact-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>rhinovoyage@gmail.com</div>
+      <div class="footer-contact-item"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>LKB Road, Amulapatty, Sivasagar, Assam — 785640</div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#packages">Travel Packages</a></li>
+        <li><a href="#rentals">School Vehicles</a></li>
+        <li><a href="#rentals">Corporate Rentals</a></li>
+        <li><a href="#sivasagar">Sivasagar Tour</a></li>
+        <li><a href="#booking">Book Now</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Destinations</h4>
+      <ul>
+        <li><a href="#booking">Sivasagar</a></li>
+        <li><a href="#booking">Kaziranga</a></li>
+        <li><a href="#booking">Majuli Island</a></li>
+        <li><a href="#booking">Guwahati</a></li>
+        <li><a href="#booking">Dibrugarh</a></li>
+        <li><a href="#booking">Haflong Hills</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Policies</h4>
+      <ul>
+        <li><a href="cancellation.html">Cancellation Policy</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="refund.html">Refund Policy</a></li>
+        <li><a href="billing.html">GST / Billing</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 RhinoVoyage. All rights reserved. | <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="cancellation.html">Cancellation</a> · <a href="refund.html">Refunds</a> · <a href="billing.html">GST & Billing</a></p>
+    <div class="social-links">
+      <a href="#" class="social-link">f</a>
+      <a href="#" class="social-link">in</a>
+      <a href="#" class="social-link">yt</a>
+      <a href="#" class="social-link">wa</a>
+    </div>
+  </div>
+</footer>
+
+
+
+<div class="toast" id="toast">✅ Booking request sent! We'll confirm via WhatsApp within 30 minutes.</div>
+
+<script src="../src/js/packages-data.js"></script>
+<script src="../src/js/main.js"></script>
+<script>
+  // High-fidelity images mapping for packages
+  const packageImages = {
+    "Sivasagar Heritage Trail": "./rang-ghar.jpg",
+    "Meghalaya & Dawki Highlights": "https://cdn.pixabay.com/photo/2019/04/03/08/28/nature-4099774_960_720.jpg",
+    "Northeast Explorer": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=600&q=80",
+    "Arunachal Highlights": "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=600&q=80",
+    "Nagaland Cultural Tour": "https://th.bing.com/th/id/R.9c56e5eb91265b45e351a69b98cd2a34?rik=9kUVcbYmyswWyw&pid=ImgRaw&r=0",
+    "Darjeeling - Gangtok Tour": "https://tse3.mm.bing.net/th/id/OIP.OlcPxinXL5NTjILA67eMkwHaEK?rs=1&pid=ImgDetMain&o=7&rm=3",
+    "North Sikkim Alpine Adventure": "https://media.istockphoto.com/id/2152827474/photo/arid-alpine-mountain-barren-landscape-of-north-sikkim-high-altitude-himalayan-valley-zero.jpg?s=170667a&w=0&k=20&c=cAiYrJVDQnkAXmGnoi_QWj1z3i7wHbiDfW6-vGEIZEs=",
+    "Bhutan Kingdom Tour": "https://th.bing.com/th/id/R.9403b3ae310edc04f29391e86401327a?rik=KtZHVgWj74N2IA&pid=ImgRaw&r=0",
+    "Manas Wildlands Safari": "https://www.junglesafariindia.in/front/assets/img/Types-of-Safari/Manas.jpg",
+    "Assam Riverine Heritage": "https://th.bing.com/th/id/OIP.lgyo9QXaXbtD1XI00VTTdgAAAA?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
+    "Wetlands & Canyons": "https://tse3.mm.bing.net/th/id/OIP.KXhMiXnZBBlhzurH-QoXDAHaE8?rs=1&pid=ImgDetMain&o=7&rm=3",
+    "Gateway to Assam": "https://kj1bcdn.b-cdn.net/media/67920/nm-copy.jpg",
+    "Tripura Royal Heritage": "https://www.touristplaces.net.in/images/pp/6/p128442h6r.jpg",
+    "Nagaland Tribal & Wilderness Expedition": "https://tse2.mm.bing.net/th/id/OIP.OeV1gpquBYwZpD8yLK9-6AHaE8?rs=1&pid=ImgDetMain&o=7&rm=3",
+    "Double Park & Hills": "https://tse1.mm.bing.net/th/id/OIP.1Qh6S6nq1r_w-54o5d9CKAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3"
+  };
+
+  // Dynamic Packages Rendering Logic
+  let activeRegionFilter = 'All';
+  let searchQuery = '';
+
+  function renderPackages() {
+    const container = document.getElementById('packages-container');
+    if (!container) return;
+
+    // Filter packagesData
+    const filtered = packagesData.filter(pkg => {
+      const matchesRegion = activeRegionFilter === 'All' || pkg.region.toLowerCase().includes(activeRegionFilter.toLowerCase());
+      
+      const query = searchQuery.toLowerCase();
+      const matchesSearch = !query || 
+        pkg.title.toLowerCase().includes(query) || 
+        pkg.duration.toLowerCase().includes(query) || 
+        pkg.includes.some(inc => inc.toLowerCase().includes(query)) ||
+        pkg.region.toLowerCase().includes(query) ||
+        pkg.days.some(d => d.title.toLowerCase().includes(query) || d.desc.toLowerCase().includes(query));
+        
+      return matchesRegion && matchesSearch;
+    });
+
+    container.innerHTML = '';
+    
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="width: 100%; text-align: center; padding: 4rem 2rem; color: var(--text-muted);">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+          <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--text-dark); margin-bottom: 0.5rem;">No Packages Found</h3>
+          <p style="font-size: 0.9rem;">Try searching for other destinations or check back later.</p>
+        </div>
+      `;
+      resetSliderPosition();
+      return;
+    }
+
+    filtered.forEach(pkg => {
+      const card = document.createElement('div');
+      card.className = `pkg-card ${pkg.badge ? 'featured' : ''}`;
+      
+      // Determine badge color style
+      let badgeStyle = 'background: var(--orange);';
+      if (pkg.badge === 'Best Seller') badgeStyle = 'background: #C4511A;';
+      else if (pkg.badge === 'Scenic') badgeStyle = 'background: var(--green-mid);';
+      else if (pkg.badge === 'International') badgeStyle = 'background: #5c3b99;';
+      else if (pkg.badge === 'Wilderness') badgeStyle = 'background: #2b5c8f;';
+      else if (pkg.badge === 'Explorer') badgeStyle = 'background: #c27d38;';
+      
+      const includesHtml = pkg.includes.map(inc => `<div class="pkg-inc-item">${inc}</div>`).join('');
+      const imgUrl = packageImages[pkg.key] || './sivadol.jpg';
+
+      card.innerHTML = `
+        <div class="pkg-visual" style="background-image: url('${imgUrl}');"></div>
+        <div class="pkg-card-overlay"></div>
+        ${pkg.badge ? `<div class="pkg-badge" style="${badgeStyle}">${pkg.badge}</div>` : ''}
+        <div class="pkg-card-content">
+          <div class="pkg-location">
+            <h3>${pkg.title.split(' (')[0]}</h3>
+            <p>Starts & Ends in Sivasagar</p>
+          </div>
+          <div class="pkg-hover-details">
+            <div class="pkg-meta">
+              <div class="pkg-meta-item">⏳ ${pkg.duration}</div>
+              <div class="pkg-meta-item">🚙 ${pkg.vehicle.split(' / ')[0]}</div>
+            </div>
+            <div class="pkg-includes-mini">
+              ${includesHtml}
+            </div>
+            <div class="pkg-footer">
+              <div class="pkg-price">
+                <div class="from">Starting From</div>
+                <div class="amount">${pkg.price}</div>
+                <div class="per">/ per person</div>
+              </div>
+              <a href="./itinerary.html?package=${encodeURIComponent(pkg.key)}" class="btn-pkg">View Itinerary</a>
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    resetSliderPosition();
+  }
+
+  // Slider Carousel logic
+  let currentSlideOffset = 0;
+
+  function slidePackages(direction) {
+    const container = document.getElementById('packages-container');
+    const sliderContainer = document.querySelector('.packages-slider-container');
+    if (!container || !sliderContainer) return;
+
+    const firstCard = container.querySelector('.pkg-card');
+    if (!firstCard) return;
+
+    const visibleWidth = sliderContainer.offsetWidth;
+    const trackWidth = container.scrollWidth;
+    const maxOffset = Math.max(0, trackWidth - visibleWidth);
+
+    // Read the gap dynamically from CSS computed styles
+    const computedStyle = window.getComputedStyle(container);
+    const gap = parseFloat(computedStyle.gap || computedStyle.columnGap) || 0;
+    
+    // One card step: actual card width + gap
+    const step = firstCard.offsetWidth + gap;
+
+    if (direction === 'right') {
+      currentSlideOffset = Math.min(currentSlideOffset + step, maxOffset);
+    } else {
+      currentSlideOffset = Math.max(currentSlideOffset - step, 0);
+    }
+
+    container.style.transform = `translateX(-${currentSlideOffset}px)`;
+    updateSliderArrows(currentSlideOffset, maxOffset);
+  }
+
+  function updateSliderArrows(offset, maxOffset) {
+    const prevBtn = document.querySelector('.prev-arrow');
+    const nextBtn = document.querySelector('.next-arrow');
+    
+    if (prevBtn) {
+      if (offset <= 0) {
+        prevBtn.style.opacity = '0.3';
+        prevBtn.style.pointerEvents = 'none';
+      } else {
+        prevBtn.style.opacity = '1';
+        prevBtn.style.pointerEvents = 'auto';
+      }
+    }
+    
+    if (nextBtn) {
+      if (offset >= maxOffset) {
+        nextBtn.style.opacity = '0.3';
+        nextBtn.style.pointerEvents = 'none';
+      } else {
+        nextBtn.style.opacity = '1';
+        nextBtn.style.pointerEvents = 'auto';
+      }
+    }
+  }
+
+  function resetSliderPosition() {
+    currentSlideOffset = 0;
+    const container = document.getElementById('packages-container');
+    if (container) {
+      container.style.transform = 'translateX(0px)';
+    }
+    
+    setTimeout(() => {
+      const sliderContainer = document.querySelector('.packages-slider-container');
+      if (container && sliderContainer) {
+        const visibleWidth = sliderContainer.offsetWidth;
+        const trackWidth = container.scrollWidth;
+        const maxOffset = Math.max(0, trackWidth - visibleWidth);
+        updateSliderArrows(0, maxOffset);
+      }
+    }, 150);
+  }
+
+  window.addEventListener('resize', () => {
+    const container = document.getElementById('packages-container');
+    const sliderContainer = document.querySelector('.packages-slider-container');
+    if (container && sliderContainer) {
+      const visibleWidth = sliderContainer.offsetWidth;
+      const trackWidth = container.scrollWidth;
+      const maxOffset = Math.max(0, trackWidth - visibleWidth);
+      currentSlideOffset = Math.min(currentSlideOffset, maxOffset);
+      container.style.transform = `translateX(-${currentSlideOffset}px)`;
+      updateSliderArrows(currentSlideOffset, maxOffset);
+    }
+  });
+
+  function setRegionFilter(region, btn) {
+    activeRegionFilter = region;
+    
+    // Toggle active classes on filter buttons
+    document.querySelectorAll('.pkg-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    renderPackages();
+  }
+
+  function filterPackages() {
+    searchQuery = document.getElementById('pkg-search-input').value;
+    renderPackages();
+  }
+
+  // Populate booking form select element
+  function populatePackageSelect() {
+    const selector = document.getElementById('package_select');
+    if (!selector) return;
+    
+    selector.innerHTML = '';
+    packagesData.forEach(pkg => {
+      const option = document.createElement('option');
+      option.value = pkg.key;
+      option.textContent = `${pkg.title.split(' (')[0]} (${pkg.duration})`;
+      selector.appendChild(option);
+    });
+  }
+
+
+
+  function selectPackage(packageName) {
+    // Select the Tour Package service button
+    const tourTabBtn = document.querySelector('.stype-btn[onclick*="tour_package"]');
+    if (tourTabBtn) selectService(tourTabBtn);
+    
+    // Select the option in the package_select dropdown
+    const selector = document.getElementById('package_select');
+    if (selector) {
+      for (let i = 0; i < selector.options.length; i++) {
+        if (selector.options[i].value === packageName || selector.options[i].text.includes(packageName)) {
+          selector.selectedIndex = i;
+          break;
+        }
+      }
+    }
+    
+    // Scroll smoothly to booking
+    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Navbar scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  });
+  document.getElementById('navbar').classList.add('scrolled');
+
+  // Update portal link based on authentication status
+  const navToken = localStorage.getItem('token');
+  const navUser = JSON.parse(localStorage.getItem('user') || 'null');
+  const portalLink = document.getElementById('nav-portal-link');
+  if (portalLink && navToken && navUser) {
+    portalLink.innerText = 'Dashboard';
+    portalLink.href = navUser.role === 'admin' ? 'admin-dashboard.html' : 'user-dashboard.html';
+  }
+
+  // Auto-fill logged in user info in booking form
+  if (navUser) {
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    if (nameInput) nameInput.value = navUser.name;
+    if (phoneInput) phoneInput.value = navUser.phone;
+  }
+
+  // Initialize fields for default choice (Car Rental)
+  updateFormFields('car_rental');
+
+  // Initialize packages display and select dropdown
+  populatePackageSelect();
+  renderPackages();
+
+  // Auto-select package if redirected from details page
+  const urlParams = new URLSearchParams(window.location.search);
+  const bookPkg = urlParams.get('bookPackage');
+  if (bookPkg) {
+    setTimeout(() => {
+      selectPackage(decodeURIComponent(bookPkg));
+    }, 100);
+  }
+ 
+  // Tab switching
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Category selection to populate form
+  function selectCarCategory(categoryName) {
+    const selector = document.getElementById('vehicle_select');
+    if (selector) {
+      for (let i = 0; i < selector.options.length; i++) {
+        const optText = selector.options[i].text.toLowerCase();
+        const optVal = selector.options[i].value.toLowerCase();
+        const cat = categoryName.toLowerCase();
+        if (optText.includes(cat) || optVal.includes(cat)) {
+          selector.selectedIndex = i;
+          break;
+        }
+      }
+    }
+    // Also select Car Rental tab
+    const carRentalTabBtn = document.querySelector('.stype-btn[onclick*="car_rental"]');
+    if (carRentalTabBtn) selectService(carRentalTabBtn);
+    // Scroll smoothly to booking
+    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+  }
+ 
+  // Service type selection
+  function selectService(el) {
+    document.querySelectorAll('.stype-btn').forEach(b => b.classList.remove('checked'));
+    el.classList.add('checked');
+    const radio = el.querySelector('input[type="radio"]');
+    if (radio) {
+      radio.checked = true;
+      updateFormFields(radio.value);
+    }
+  }
+
+  // Dynamic field display logic
+  function updateFormFields(serviceType) {
+    const rentalFields = document.getElementById('rental_fields');
+    const vehicleGroup = document.getElementById('vehicle_select_group');
+    const packageGroup = document.getElementById('package_select_group');
+    const customFields = document.getElementById('custom_tour_fields');
+    
+    const pickupLoc = document.getElementById('pickup_location');
+    const dropLoc = document.getElementById('drop_location');
+    const returnDate = document.getElementById('return_date');
+    const pickupTime = document.getElementById('pickup_time');
+    const travelerCount = document.getElementById('traveler_count');
+
+    if (serviceType === 'car_rental') {
+      if (rentalFields) rentalFields.style.display = 'grid';
+      if (vehicleGroup) vehicleGroup.style.display = 'block';
+      if (packageGroup) packageGroup.style.display = 'none';
+      if (customFields) customFields.style.display = 'none';
+      if (pickupLoc) pickupLoc.required = true;
+      if (dropLoc) dropLoc.required = true;
+      if (returnDate) returnDate.required = false;
+      if (pickupTime) pickupTime.required = false;
+      if (travelerCount) travelerCount.required = false;
+    } else if (serviceType === 'tour_package') {
+      if (rentalFields) rentalFields.style.display = 'none';
+      if (vehicleGroup) vehicleGroup.style.display = 'none';
+      if (packageGroup) packageGroup.style.display = 'block';
+      if (customFields) customFields.style.display = 'none';
+      if (pickupLoc) pickupLoc.required = false;
+      if (dropLoc) dropLoc.required = false;
+      if (returnDate) returnDate.required = false;
+      if (pickupTime) pickupTime.required = false;
+      if (travelerCount) travelerCount.required = false;
+    } else { // Custom Tour
+      if (rentalFields) rentalFields.style.display = 'grid';
+      if (vehicleGroup) vehicleGroup.style.display = 'block';
+      if (packageGroup) packageGroup.style.display = 'none';
+      if (customFields) customFields.style.display = 'grid';
+      if (pickupLoc) pickupLoc.required = false;
+      if (dropLoc) dropLoc.required = false;
+      if (returnDate) returnDate.required = true;
+      if (pickupTime) pickupTime.required = true;
+      if (travelerCount) travelerCount.required = true;
+    }
+  }
+ 
+  // Payment method
+  function selectPay(el) {
+    document.querySelectorAll('.pay-opt').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+ 
+  // Booking submit to API
+  async function submitBooking() {
+    const checkedServiceInput = document.querySelector('input[name="service_type"]:checked');
+    const serviceType = checkedServiceInput ? checkedServiceInput.value : 'car_rental';
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const pickupDate = document.getElementById('pickup_date').value;
+    const details = document.getElementById('details').value;
+    
+    let vehicle = '';
+    if (serviceType === 'tour_package') {
+      vehicle = document.getElementById('package_select').value;
+    } else {
+      vehicle = document.getElementById('vehicle_select').value;
+    }
+
+    const pickupLocation = document.getElementById('pickup_location').value;
+    const dropLocation = document.getElementById('drop_location').value;
+    let finalDetails = details;
+    if (serviceType === 'car_rental' || serviceType === 'both') {
+      if (serviceType === 'both') {
+        const returnDate = document.getElementById('return_date').value;
+        const pickupTime = document.getElementById('pickup_time').value;
+        const travelerCount = document.getElementById('traveler_count').value;
+        const routeInfo = (pickupLocation || dropLocation) ? `Route: From [${pickupLocation}] To [${dropLocation}]` : 'Route: Custom';
+        
+        finalDetails = `Custom Tour: ${pickupDate} to ${returnDate} | Start Time: ${pickupTime} | Travelers: ${travelerCount} | ${routeInfo}. Notes: ${details}`;
+      } else {
+        if (pickupLocation || dropLocation) {
+          finalDetails = `Route: From [${pickupLocation}] To [${dropLocation}]. ${details}`;
+        }
+      }
+    }
+    
+    const paymentMethod = 'flexible';
+
+    const bookingPayload = {
+      serviceType, name, phone, pickupDate, vehicle, details: finalDetails, paymentMethod
+    };
+
+    const token = localStorage.getItem('token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/bookings`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(bookingPayload)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to submit booking request.');
+      }
+
+      // Show success toast
+      const toast = document.getElementById('toast');
+      toast.innerText = '✅ ' + (data.message || 'Booking request sent!');
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 4500);
+      
+      // Clear form except name/phone if logged in
+      if (!localStorage.getItem('token')) {
+        document.getElementById('name').value = '';
+        document.getElementById('phone').value = '';
+      }
+      document.getElementById('pickup_date').value = '';
+      document.getElementById('details').value = '';
+      const pLoc = document.getElementById('pickup_location');
+      const dLoc = document.getElementById('drop_location');
+      if (pLoc) pLoc.value = '';
+      if (dLoc) dLoc.value = '';
+      
+      const rDate = document.getElementById('return_date');
+      const pTime = document.getElementById('pickup_time');
+      const tCount = document.getElementById('traveler_count');
+      if (rDate) rDate.value = '';
+      if (pTime) pTime.value = '';
+      if (tCount) tCount.value = '1';
+
+    } catch (error) {
+      alert('Error sending booking request: ' + error.message);
+    }
+  }
+ 
+  // Smooth appear animation on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+    });
+  }, { threshold: 0.1 });
+ 
+  document.querySelectorAll('.pkg-card, .fleet-card, .testi-card, .about-side-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

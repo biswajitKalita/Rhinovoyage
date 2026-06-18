@@ -1,0 +1,172 @@
+/* =========================
+   FLEET / RENTALS SECTION
+========================= */
+
+.rentals {
+    background: white;
+}
+
+.rental-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    border-bottom: 2px solid var(--cream-dark);
+    padding-bottom: 0;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    font-family: 'Nunito', sans-serif;
+}
+
+.tab-btn.active {
+    color: var(--orange);
+    border-bottom-color: var(--orange);
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* Grid Layout */
+.fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+/* Category Card Styling */
+.category-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    aspect-ratio: 16 / 10;
+    background: #f4f4f4;
+    transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s ease;
+    display: flex;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.category-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Bottom overlay strip */
+.category-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 65%, transparent 100%);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    z-index: 2;
+}
+
+.btn-book-now {
+    background: #0056b3; /* Rich blue button */
+    color: var(--white);
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s;
+    border: none;
+}
+
+.category-card:hover .btn-book-now {
+    background: #004085;
+}
+
+.category-name {
+    color: var(--white);
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* Bottom CTA Banner */
+.rental-cta-bar {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-top: 3.5rem;
+    background: linear-gradient(135deg, #1B4332, #2D6A4F);
+    border-radius: 16px;
+    padding: 2.5rem;
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+.rental-cta-bar h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.rental-cta-bar p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.rental-cta-bar .btn-primary {
+    align-self: center;
+    justify-self: end;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 960px) {
+    .rental-cta-bar {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1.5rem;
+    }
+
+    .rental-cta-bar .btn-primary {
+        justify-self: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .fleet-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}

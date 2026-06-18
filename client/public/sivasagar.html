@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RhinoVoyage — Explore The World</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../src/css/global.css?v=2.2">
+<link rel="stylesheet" href="../src/css/navbar.css?v=2.2">
+<link rel="stylesheet" href="../src/css/hero.css?v=2.2">
+<link rel="stylesheet" href="../src/css/about.css?v=3.4">
+<link rel="stylesheet" href="../src/css/packages.css?v=3.6">
+<link rel="stylesheet" href="../src/css/rentals.css?v=3.0">
+<link rel="stylesheet" href="../src/css/spotlight.css?v=2.2">
+<link rel="stylesheet" href="../src/css/booking.css?v=2.2">
+<link rel="stylesheet" href="../src/css/testimonials.css?v=2.2">
+<link rel="stylesheet" href="../src/css/footer.css?v=2.2">
+<style>
+  /* ── SIVASAGAR DETAIL SPECIFIC RESPONSIVE OVERRIDES ── */
+  @media (max-width: 960px) {
+    .pkg-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 768px) {
+    .siva-highlights { gap: 1rem; }
+    .pkg-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 575px) {
+    .pkg-hero { height: auto; min-height: 350px; padding-bottom: 2.5rem; padding-top: 6.5rem; }
+    .pkg-hero-content h1 { font-size: 1.85rem; line-height: 1.3; }
+    .quick-facts { padding: 1.25rem 1rem; gap: 1rem; margin-top: 1.5rem; }
+    .q-fact { gap: 8px; font-size: 0.8rem; }
+    .q-fact .q-icon { font-size: 1.25rem; }
+    
+    .pkg-details { padding: 3rem 1rem; }
+    .timeline { padding-left: 1.5rem; margin-top: 2rem; }
+    .timeline-day { margin-bottom: 2.5rem; }
+    .timeline-day h3 { font-size: 1.35rem; margin-bottom: 1.5rem; }
+    .timeline-day h3::before { left: -1.85rem; width: 12px; height: 12px; }
+    .timeline-item { margin-bottom: 1.5rem; }
+    .timeline-item::before { left: -1.75rem; width: 10px; height: 10px; }
+    .time-badge { font-size: 0.7rem; padding: 3px 8px; }
+    
+    .addon-card { padding: 1.5rem 1.25rem; margin-top: 2.5rem; }
+    .addon-card h3 { font-size: 1.4rem; }
+    .addon-card p { font-size: 0.88rem; line-height: 1.6; }
+    
+    .sidebar-box, .sidebar-cta { padding: 1.5rem 1.25rem; }
+    .price-box .amount { font-size: 2rem; }
+  }
+
+  /* ── PACKAGE DETAILS PAGE ── */
+
+  /* ── PACKAGE DETAILS PAGE ── */
+  .pkg-hero { position: relative; height: 60vh; min-height: 500px; display: flex; align-items: flex-end; padding-bottom: 4rem; overflow: hidden; }
+  .pkg-hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .pkg-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,43,30,0.95) 0%, rgba(13,43,30,0.4) 50%, rgba(13,43,30,0.2) 100%); }
+  .pkg-hero-content { position: relative; z-index: 2; width: 100%; }
+  .quick-facts { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 1.5rem 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
+  .q-fact { display: flex; align-items: center; gap: 12px; color: white; font-size: 0.85rem; line-height: 1.4; }
+  .q-fact .q-icon { font-size: 1.5rem; }
+  .q-fact strong { color: var(--orange-light); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+  
+  .pkg-details { padding: 5rem 2rem; }
+  .pkg-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; align-items: start; }
+  
+  /* Timeline */
+  .timeline { margin-top: 3rem; position: relative; padding-left: 2rem; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--cream-dark); }
+  .timeline-day { margin-bottom: 4rem; }
+  .timeline-day h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--green); margin-bottom: 2rem; position: relative; }
+  .timeline-day h3::before { content: ''; position: absolute; left: -2.35rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border-radius: 50%; background: var(--orange); border: 4px solid var(--cream); }
+  .timeline-item { position: relative; margin-bottom: 2rem; }
+  .timeline-item::before { content: ''; position: absolute; left: -2.25rem; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: white; border: 2px solid var(--green-light); }
+  .time-badge { display: inline-block; background: var(--orange-pale); color: var(--orange-dark); font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin-bottom: 8px; }
+  .timeline-content h4 { font-size: 1.1rem; color: var(--text-dark); margin-bottom: 6px; }
+  .timeline-content p { font-size: 0.95rem; color: var(--text-mid); line-height: 1.6; }
+  
+  /* Add-on Card */
+  .addon-card { background: linear-gradient(135deg, #2D6A4F, #1B4332); border-radius: 16px; padding: 2.5rem; color: white; margin-top: 4rem; position: relative; overflow: hidden; box-shadow: var(--shadow); }
+  .addon-badge { position: absolute; top: 1rem; right: 1rem; background: var(--orange); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 4px; }
+  .addon-card h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1rem; }
+  .addon-card p { font-size: 0.95rem; color: rgba(255,255,255,0.85); line-height: 1.7; }
+  
+  /* Sidebar */
+  .sidebar-box { background: white; border-radius: 16px; padding: 2rem; box-shadow: var(--shadow-sm); margin-bottom: 2rem; }
+  .sidebar-box h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--text-dark); margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--cream-dark); }
+  .hotel-tier { margin-bottom: 1.5rem; }
+  .hotel-tier:last-child { margin-bottom: 0; }
+  .tier-name { font-weight: 700; color: var(--green); margin-bottom: 4px; font-size: 1rem; }
+  .tier-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+  
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: var(--text-mid); margin-bottom: 1rem; line-height: 1.5; }
+  .checklist.inc li strong { color: var(--text-dark); }
+  
+  .sidebar-cta { background: white; border-radius: 16px; padding: 2rem; box-shadow: var(--shadow); position: sticky; top: 100px; }
+  .price-box { margin-bottom: 1.5rem; text-align: center; }
+  .price-box .from { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+  .price-box .amount { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--orange); line-height: 1.1; }
+  .price-box .per { font-size: 0.85rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+ 
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon" style="background: transparent; width: 160px; height: 60px;">
+        <img src="./logo.png" alt="RhinoVoyage Logo" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="logo-text" style="display: none;">RhinoVoyage<span>Explore The World</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="login.html" id="nav-portal-link">Login / Join</a></li>
+      <li><a href="index.html#packages">Packages</a></li>
+      <li><a href="index.html#sivasagar">Sivasagar</a></li>
+      <li><a href="index.html#reviews">Reviews</a></li>
+      <li><a href="index.html#about">About Us</a></li>
+    </ul>
+    <a href="#booking" class="nav-cta">Book Now</a>
+    <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+ 
+<!-- PACKAGE HERO -->
+<section class="pkg-hero">
+  <img class="pkg-hero-bg" src="./sivadol.jpg" alt="Sivadol Sivasagar" />
+  <div class="pkg-hero-overlay"></div>
+  <div class="container pkg-hero-content">
+    <div class="section-label" style="color:var(--orange-light);">Sivasagar Heritage Trail</div>
+    <h1 class="section-title" style="color:white; margin-bottom: 1.5rem; max-width: 800px;">The Ahom Legacy: A 2-Day Journey <em>Through Time</em>.</h1>
+    
+    <div class="quick-facts">
+      <div class="q-fact"><span class="q-icon">⏳</span><div><strong>Duration</strong><br/>2 Days / 1 Night</div></div>
+      <div class="q-fact"><span class="q-icon">🚙</span><div><strong>Travel Style</strong><br/>Private Sedan/Innova with Driver</div></div>
+      <div class="q-fact"><span class="q-icon">📍</span><div><strong>Starting Point</strong><br/>Sivasagar Town / Station / Airport</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ITINERARY & DETAILS -->
+<section class="pkg-details">
+  <div class="container pkg-grid">
+    <!-- LEFT COLUMN: Itinerary -->
+    <div class="pkg-main">
+      <h2 class="section-title" style="margin-bottom: 2rem;">The Detailed <em>Itinerary</em></h2>
+      
+      <div class="timeline">
+        <div class="timeline-day">
+          <h3>Day 1: The Seats of Power</h3>
+          
+          <div class="timeline-item">
+            <div class="time-badge">09:00 AM</div>
+            <div class="timeline-content">
+              <h4>Rang Ghar</h4>
+              <p>Start at Asia's oldest amphitheater. Brief history: Used by Ahom Kings to watch buffalo fights and sports.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="time-badge">11:30 AM</div>
+            <div class="timeline-content">
+              <h4>Talatal Ghar</h4>
+              <p>Explore the multi-storied palace with its famous underground tunnels.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="time-badge">01:30 PM</div>
+            <div class="timeline-content">
+              <h4>Traditional Assamese Lunch</h4>
+              <p>A stop at a handpicked local eatery for a Paramparagat (traditional) Thali.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="time-badge">03:30 PM</div>
+            <div class="timeline-content">
+              <h4>Joysagar Pukhuri & Joy Dol</h4>
+              <p>Visit the largest man-made tank in India, dedicated to Sati Joymoti.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="time-badge">Evening</div>
+            <div class="timeline-content">
+              <h4>Check-in</h4>
+              <p>Check-in to your selected hotel and relax.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-day">
+          <h3>Day 2: Spirituality & Architecture</h3>
+          
+          <div class="timeline-item">
+            <div class="time-badge">08:00 AM</div>
+            <div class="timeline-content">
+              <h4>Shiva Dol, Vishnu Dol & Devi Dol</h4>
+              <p>Witness the morning prayers at the tallest Shiva temple in India.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="time-badge">11:00 AM</div>
+            <div class="timeline-content">
+              <h4>Gargaon Palace (Kareng Ghar)</h4>
+              <p>A short drive to the seven-storied architectural marvel.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="time-badge">02:00 PM</div>
+            <div class="timeline-content">
+              <h4>Charaideo Maidam</h4>
+              <p>Visit the majestic royal burial grounds of the Ahom Kings, often called the Pyramids of Assam.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- CINEMATIC ADD ON -->
+      <div class="addon-card">
+        <div class="addon-badge">Startup Exclusive</div>
+        <h3>The "Travel Reel" Add-on 🎥</h3>
+        <p>Offer an optional add-on where your driver (trained in basic mobile videography) captures cinematic clips of the travelers at each site and sends them a professionally edited 30-second Instagram Reel the next day.</p>
+      </div>
+
+    </div>
+    
+    <!-- RIGHT COLUMN: Sidebar (Hotels, Inclusions, CTA) -->
+    <div class="pkg-sidebar">
+      
+      <!-- Where you'll stay -->
+      <div class="sidebar-box">
+        <h3>Where You'll Stay</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 1.5rem;">Choose your comfort level:</p>
+        
+        <div class="hotel-tier">
+          <div class="tier-name">Standard</div>
+          <div class="tier-desc">Clean, verified local guest houses (e.g., Hotel Piccolo or similar).</div>
+        </div>
+        <div class="hotel-tier">
+          <div class="tier-name">Deluxe</div>
+          <div class="tier-desc">Mid-range comfort with modern amenities.</div>
+        </div>
+        <div class="hotel-tier">
+          <div class="tier-name">Premium</div>
+          <div class="tier-desc">Boutique stays or the best available hotels in the city.</div>
+        </div>
+      </div>
+      
+      <!-- Inclusions -->
+      <div class="sidebar-box">
+        <h3>What's Included</h3>
+        <ul class="checklist inc">
+          <li><span>✅</span> <div><strong>Private Vehicle:</strong> Sanitized Sedan or Innova.</div></li>
+          <li><span>✅</span> <div><strong>Expert Driver:</strong> Local guide who knows the shortcuts and stories.</div></li>
+          <li><span>✅</span> <div><strong>Parking & Tolls:</strong> No hidden charges.</div></li>
+          <li><span>✅</span> <div><strong>Fuel:</strong> Fully covered for the 2-day circuit.</div></li>
+        </ul>
+        
+        <h3 style="margin-top: 2rem;">Not Included</h3>
+        <ul class="checklist exc">
+          <li><span>❌</span> <div>Entry tickets to monuments</div></li>
+          <li><span>❌</span> <div>Personal meals</div></li>
+          <li><span>❌</span> <div>Tips</div></li>
+        </ul>
+      </div>
+      
+      <!-- CTA -->
+      <div class="sidebar-cta">
+        <div class="price-box">
+          <div class="from">Starting From</div>
+          <div class="amount">₹3,200</div>
+          <div class="per">/ 2 days</div>
+        </div>
+        <a href="index.html#booking" class="btn-book" style="text-decoration: none; display: flex;">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Book Now
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</section>
+ 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo" style="align-items: center;">
+        <div class="footer-logo-icon" style="background: transparent; width: 160px; height: 60px; display: flex; align-items: center; justify-content: flex-start; border-radius: 0;">
+          <img src="./logo.png" alt="RhinoVoyage Logo" style="width: 100%; height: 100%; object-fit: contain; object-position: left center;">
+        </div>
+        <div class="footer-logo-text" style="display: none;">RhinoVoyage</div>
+      </div>
+      <p>Assam's premier travel partner. Explore the world with us.</p>
+      <div class="footer-contact-item"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>+91 9864820229, +91 9954253585</div>
+      <div class="footer-contact-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>rhinovoyage@gmail.com</div>
+      <div class="footer-contact-item"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>LKB Road, Amulapatty, Sivasagar, Assam — 785640</div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#packages">Travel Packages</a></li>
+        <li><a href="#rentals">School Vehicles</a></li>
+        <li><a href="#rentals">Corporate Rentals</a></li>
+        <li><a href="#sivasagar">Sivasagar Tour</a></li>
+        <li><a href="#booking">Book Now</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Destinations</h4>
+      <ul>
+        <li><a href="#booking">Sivasagar</a></li>
+        <li><a href="#booking">Kaziranga</a></li>
+        <li><a href="#booking">Majuli Island</a></li>
+        <li><a href="#booking">Guwahati</a></li>
+        <li><a href="#booking">Dibrugarh</a></li>
+        <li><a href="#booking">Haflong Hills</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Policies</h4>
+      <ul>
+        <li><a href="cancellation.html">Cancellation Policy</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="refund.html">Refund Policy</a></li>
+        <li><a href="billing.html">GST / Billing</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 RhinoVoyage. All rights reserved. | <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="cancellation.html">Cancellation</a> · <a href="refund.html">Refunds</a> · <a href="billing.html">GST & Billing</a></p>
+    <div class="social-links">
+      <a href="#" class="social-link">f</a>
+      <a href="#" class="social-link">in</a>
+      <a href="#" class="social-link">yt</a>
+      <a href="#" class="social-link">wa</a>
+    </div>
+  </div>
+</footer>
+ 
+<div class="toast" id="toast">✅ Booking request sent! We'll confirm via WhatsApp within 30 minutes.</div>
+ 
+<script src="../src/js/main.js"></script>
+<script>
+  // Navbar scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  });
+  document.getElementById('navbar').classList.add('scrolled');
+
+  // Update portal link based on authentication status
+  const navToken = localStorage.getItem('token');
+  const navUser = JSON.parse(localStorage.getItem('user') || 'null');
+  const portalLink = document.getElementById('nav-portal-link');
+  if (portalLink && navToken && navUser) {
+    portalLink.innerText = 'Dashboard';
+    portalLink.href = navUser.role === 'admin' ? 'admin-dashboard.html' : 'user-dashboard.html';
+  }
+ 
+  // Tab switching
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+ 
+  // Service type selection
+  function selectService(el) {
+    document.querySelectorAll('.stype-btn').forEach(b => b.classList.remove('checked'));
+    el.classList.add('checked');
+  }
+ 
+  // Payment method
+  function selectPay(el) {
+    document.querySelectorAll('.pay-opt').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+ 
+  // Booking submit
+  function submitBooking() {
+    const toast = document.getElementById('toast');
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 4500);
+  }
+ 
+
+  // Smooth appear animation on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
+    });
+  }, { threshold: 0.1 });
+ 
+  document.querySelectorAll('.pkg-card, .fleet-card, .testi-card, .about-side-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
