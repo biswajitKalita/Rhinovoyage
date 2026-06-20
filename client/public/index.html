@@ -772,6 +772,31 @@
         }
       }
     }
+
+    // Look up the package details to pre-select matching vehicle
+    const pkg = packagesData.find(p => p.key === packageName || p.title.includes(packageName));
+    if (pkg && pkg.vehicle) {
+      const vehicleSelector = document.getElementById('vehicle_select');
+      if (vehicleSelector) {
+        const vText = pkg.vehicle.toLowerCase();
+        for (let i = 0; i < vehicleSelector.options.length; i++) {
+          const optText = vehicleSelector.options[i].text.toLowerCase();
+          if (vText.includes('sedan') && optText.includes('sedan') && !optText.includes('luxury')) {
+            vehicleSelector.selectedIndex = i;
+            break;
+          } else if (vText.includes('luxury') && optText.includes('luxury')) {
+            vehicleSelector.selectedIndex = i;
+            break;
+          } else if ((vText.includes('suv') || vText.includes('muv') || vText.includes('innova')) && optText.includes('suv')) {
+            vehicleSelector.selectedIndex = i;
+            break;
+          } else if ((vText.includes('bus') || vText.includes('tempo') || vText.includes('traveller')) && optText.includes('bus')) {
+            vehicleSelector.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    }
     
     // Scroll smoothly to booking
     document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
@@ -884,7 +909,7 @@
       if (travelerCount) travelerCount.required = false;
     } else if (serviceType === 'tour_package') {
       if (rentalFields) rentalFields.style.display = 'none';
-      if (vehicleGroup) vehicleGroup.style.display = 'none';
+      if (vehicleGroup) vehicleGroup.style.display = 'block';
       if (packageGroup) packageGroup.style.display = 'block';
       if (customFields) customFields.style.display = 'none';
       if (pickupLoc) pickupLoc.required = false;
@@ -920,17 +945,16 @@
     const pickupDate = document.getElementById('pickup_date').value;
     const details = document.getElementById('details').value;
     
-    let vehicle = '';
-    if (serviceType === 'tour_package') {
-      vehicle = document.getElementById('package_select').value;
-    } else {
-      vehicle = document.getElementById('vehicle_select').value;
-    }
+    const vehicle = document.getElementById('vehicle_select').value;
 
     const pickupLocation = document.getElementById('pickup_location').value;
     const dropLocation = document.getElementById('drop_location').value;
     let finalDetails = details;
-    if (serviceType === 'car_rental' || serviceType === 'both') {
+    if (serviceType === 'tour_package') {
+      const packageSelect = document.getElementById('package_select');
+      const selectedPkgText = packageSelect ? packageSelect.options[packageSelect.selectedIndex].text : '';
+      finalDetails = `Tour Package: ${selectedPkgText}. ${details}`;
+    } else if (serviceType === 'car_rental' || serviceType === 'both') {
       if (serviceType === 'both') {
         const returnDate = document.getElementById('return_date').value;
         const pickupTime = document.getElementById('pickup_time').value;
