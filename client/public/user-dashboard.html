@@ -98,181 +98,226 @@
   /* Left Column: Profile Card */
   .profile-card {
     background: var(--white);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: var(--shadow);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 10px 30px rgba(13, 31, 22, 0.05);
     height: fit-content;
     border: 1px solid var(--cream-dark);
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  .profile-card:hover {
+    box-shadow: 0 20px 40px rgba(13, 31, 22, 0.09);
+    transform: translateY(-2px);
   }
   .profile-avatar {
-    width: 70px;
-    height: 70px;
-    background: var(--orange-pale);
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--orange-pale) 0%, var(--orange-light) 100%);
     color: var(--orange-dark);
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 700;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 1.5rem;
-    border: 2px solid var(--orange);
+    border: 3px solid var(--white);
+    box-shadow: 0 8px 16px rgba(232, 101, 26, 0.15);
   }
   .profile-name {
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    text-align: center;
+    color: var(--green-dark);
     margin-bottom: 0.5rem;
   }
   .profile-role {
     display: inline-block;
-    background: var(--green);
+    background: var(--orange);
     color: var(--white);
-    font-size: 0.72rem;
-    font-weight: 700;
+    font-size: 0.68rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 3px 10px;
+    letter-spacing: 1.5px;
+    padding: 4px 14px;
     border-radius: 50px;
     margin: 0 auto 1.5rem;
-    display: table;
+    box-shadow: 0 4px 10px rgba(232, 101, 26, 0.2);
   }
   .profile-detail {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--text-mid);
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding-top: 1rem;
+    gap: 6px;
+    padding-top: 1.25rem;
     border-top: 1px solid var(--cream-dark);
+    text-align: left;
   }
   .profile-detail strong {
-    color: var(--text-dark);
-    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+  }
+  .profile-detail span {
+    color: var(--text-dark);
+    font-weight: 600;
+    word-break: break-all;
   }
 
   /* Right Column: Bookings Panel */
   .bookings-panel {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 2.5rem;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--cream-dark);
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    border: none;
   }
   .panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--cream-dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--cream-dark);
   }
   .panel-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.7rem;
+    font-size: 1.8rem;
     font-weight: 700;
+    color: var(--green-dark);
   }
   .btn-new-booking {
     background: var(--orange);
     color: var(--white);
     text-decoration: none;
-    padding: 0.6rem 1.25rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.88rem;
     font-weight: 700;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(232, 101, 26, 0.2);
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 16px rgba(232, 101, 26, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
   }
   .btn-new-booking:hover {
-    background: var(--orange-light);
-    transform: translateY(-1px);
+    background: var(--orange-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(232, 101, 26, 0.35);
   }
 
   /* Bookings Table / Grid */
   .bookings-list {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
   .empty-state {
+    background: var(--white);
+    border-radius: 16px;
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 5rem 2rem;
     color: var(--text-muted);
+    border: 1px solid var(--cream-dark);
+    box-shadow: 0 10px 30px rgba(13, 31, 22, 0.04);
   }
   .empty-state-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
   }
   .empty-state h3 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: var(--text-dark);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .booking-card {
+    background: var(--white);
     border: 1px solid var(--cream-dark);
-    border-radius: 12px;
-    padding: 1.5rem;
+    border-radius: 16px;
+    padding: 1.75rem;
     display: grid;
-    grid-template-columns: 2fr 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr;
     align-items: center;
     gap: 1.5rem;
-    transition: box-shadow 0.2s, border-color 0.2s;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    box-shadow: 0 6px 18px rgba(13, 31, 22, 0.03);
   }
   .booking-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    border-color: rgba(232, 101, 26, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(13, 31, 22, 0.08);
+    border-color: var(--orange-light);
+  }
+  .booking-card-approved {
+    border-left: 6px solid #2D6A4F;
+  }
+  .booking-card-pending {
+    border-left: 6px solid #E8651A;
+  }
+  .booking-card-cancelled {
+    border-left: 6px solid #D32F2F;
   }
 
   .booking-main h4 {
-    font-size: 1.05rem;
-    color: var(--text-dark);
-    margin-bottom: 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--green-dark);
+    margin-bottom: 6px;
     text-transform: capitalize;
+    font-weight: 700;
   }
   .booking-main p {
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
+    line-height: 1.4;
   }
   .booking-date {
-    font-size: 0.88rem;
-    color: var(--text-mid);
+    font-size: 0.92rem;
+    color: var(--text-dark);
+    font-weight: 600;
   }
   .booking-date strong {
     display: block;
     font-size: 0.72rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+    font-weight: 700;
   }
   .booking-price {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
-    color: var(--green);
+    color: var(--green-mid);
   }
   .booking-price span {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
-    font-weight: 500;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
   }
 
   /* Status Badges */
   .badge {
-    padding: 5px 12px;
+    padding: 6px 14px;
     border-radius: 50px;
     font-size: 0.72rem;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-align: center;
     width: fit-content;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
   }
   .badge-pending {
     background: #FFF8E1;
@@ -288,7 +333,7 @@
     background: #FFEBEE;
     color: #C62828;
     border: 1px solid #FFCDD2;
-  }
+  } }
 
   /* Footer */
   footer {
@@ -335,6 +380,11 @@
       font-size: 1.45rem;
     }
   }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 <script src="./config.js"></script>
 </head>
@@ -378,6 +428,38 @@
 
   <!-- RIGHT: Bookings Manager -->
   <div class="bookings-panel">
+    <!-- Welcome Header Banner -->
+    <div class="welcome-banner" style="background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%); color: var(--white); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(13, 31, 22, 0.15);">
+      <div style="position: absolute; right: -20px; bottom: -30px; font-size: 8rem; opacity: 0.08; transform: rotate(-15deg); pointer-events: none; user-select: none;">🦏</div>
+      <h1 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 6px;" id="welcome-banner-title">Welcome back, Traveler!</h1>
+      <p style="font-size: 0.9rem; opacity: 0.85; max-width: 600px; line-height: 1.5;">Track your heritage trips, manage car assignments, and plan your next northeast tour with RhinoVoyage.</p>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="user-stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem;">
+      <div class="stat-card" style="background: var(--white); border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid var(--cream-dark); box-shadow: 0 6px 18px rgba(13, 31, 22, 0.02); display: flex; align-items: center; gap: 16px; transition: all 0.3s ease;">
+        <div style="background: #E8F5E9; color: #2E7D32; font-size: 1.6rem; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.1);">🗺️</div>
+        <div>
+          <div id="stat-total" style="font-size: 1.5rem; font-weight: 800; color: var(--green-dark); line-height: 1.2;">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 2px;">Total Trips</div>
+        </div>
+      </div>
+      <div class="stat-card" style="background: var(--white); border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid var(--cream-dark); box-shadow: 0 6px 18px rgba(13, 31, 22, 0.02); display: flex; align-items: center; gap: 16px; transition: all 0.3s ease;">
+        <div style="background: #E3F2FD; color: #1565C0; font-size: 1.6rem; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(21, 101, 192, 0.1);">🚙</div>
+        <div>
+          <div id="stat-approved" style="font-size: 1.5rem; font-weight: 800; color: var(--green-dark); line-height: 1.2;">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 2px;">Approved</div>
+        </div>
+      </div>
+      <div class="stat-card" style="background: var(--white); border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid var(--cream-dark); box-shadow: 0 6px 18px rgba(13, 31, 22, 0.02); display: flex; align-items: center; gap: 16px; transition: all 0.3s ease;">
+        <div style="background: #FFF8E1; color: #F57F17; font-size: 1.6rem; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(245, 127, 23, 0.1);">⏳</div>
+        <div>
+          <div id="stat-pending" style="font-size: 1.5rem; font-weight: 800; color: var(--green-dark); line-height: 1.2;">0</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 2px;">Pending</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Alerts / Notifications -->
     <div id="notificationsSection" style="margin-bottom: 2rem; display: none;">
       <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem; color: var(--orange-dark); display: flex; align-items: center; gap: 8px;">
@@ -390,12 +472,17 @@
 
     <div class="panel-header">
       <h2 class="panel-title">My Bookings</h2>
-      <a href="index.html#booking" class="btn-new-booking">+ Request New Booking</a>
+      <a href="index.html#booking" class="btn-new-booking">
+        <span style="font-size: 1.1rem;">+</span> Request New Booking
+      </a>
     </div>
 
     <div class="bookings-list" id="bookingsList">
       <!-- Loader State -->
-      <div style="text-align: center; padding: 3rem;">Loading your bookings...</div>
+      <div style="text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-weight: 600;">
+        <div style="font-size: 2rem; margin-bottom: 1rem; animation: spin 2s linear infinite;">⏳</div>
+        Retrieving your heritage tours & rentals...
+      </div>
     </div>
   </div>
 
@@ -419,6 +506,7 @@
 
   // Populate profile info
   document.getElementById('nav-user-greeting').innerText = `Welcome, ${user.name.split(' ')[0]}`;
+  document.getElementById('welcome-banner-title').innerText = `Welcome back, ${user.name.split(' ')[0]}!`;
   document.getElementById('prof-initial').innerText = user.name[0].toUpperCase();
   document.getElementById('prof-name').innerText = user.name;
   document.getElementById('prof-email').innerText = user.email;
@@ -447,6 +535,15 @@
 
       listContainer.innerHTML = '';
 
+      // Update statistics
+      const total = data.bookings.length;
+      const approved = data.bookings.filter(b => b.status === 'Approved').length;
+      const pending = data.bookings.filter(b => b.status === 'Pending').length;
+
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-approved').innerText = approved;
+      document.getElementById('stat-pending').innerText = pending;
+
       if (data.bookings.length === 0) {
         listContainer.innerHTML = `
           <div class="empty-state">
@@ -464,7 +561,8 @@
 
       data.bookings.forEach(b => {
         const card = document.createElement('div');
-        card.className = 'booking-card';
+        const statusClass = b.status.toLowerCase();
+        card.className = `booking-card booking-card-${statusClass}`;
 
         // Calculate a dummy price or display payment method
         const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
@@ -472,8 +570,37 @@
           weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
         });
 
-        const statusClass = b.status.toLowerCase();
-        
+        let assignmentDetails = '';
+        if (b.status === 'Approved' && (b.driverName || b.carModel || b.carNumber)) {
+          assignmentDetails = `
+            <div class="assignment-details" style="grid-column: 1 / -1; margin-top: 15px; padding: 15px; background: rgba(27, 67, 50, 0.02); border-radius: 12px; border: 1px dashed rgba(27, 67, 50, 0.2); display: flex; flex-direction: column; gap: 10px;">
+              <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 800; color: var(--green-mid); letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+                <span>📋</span> Driver & Vehicle Allocation
+              </div>
+              <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                ${b.driverName ? `
+                  <div style="display: flex; align-items: center; gap: 12px; background: var(--white); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--cream-dark); min-width: 180px; box-shadow: 0 4px 10px rgba(0,0,0,0.01);">
+                    <div style="font-size: 1.5rem; background: var(--cream); width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">👨‍✈️</div>
+                    <div>
+                      <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Driver Partner</div>
+                      <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-dark);">${b.driverName}</div>
+                    </div>
+                  </div>
+                ` : ''}
+                ${b.carModel ? `
+                  <div style="display: flex; align-items: center; gap: 12px; background: var(--white); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--cream-dark); min-width: 220px; box-shadow: 0 4px 10px rgba(0,0,0,0.01);">
+                    <div style="font-size: 1.5rem; background: var(--cream); width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">🚘</div>
+                    <div>
+                      <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Vehicle Allocation</div>
+                      <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-dark);">${b.carModel} <span style="background: var(--orange-pale); color: var(--orange-dark); font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; margin-left: 4px; border: 1px solid var(--orange-light);">${b.carNumber}</span></div>
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }
+
         card.innerHTML = `
           <div class="booking-main">
             <h4>${b.vehicle}</h4>
@@ -490,6 +617,7 @@
           <div>
             <div class="badge badge-${statusClass}">${b.status}</div>
           </div>
+          ${assignmentDetails}
         `;
         listContainer.appendChild(card);
       });
