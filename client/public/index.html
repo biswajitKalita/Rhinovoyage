@@ -175,7 +175,8 @@
         <button class="pkg-filter-btn" onclick="setRegionFilter('Arunachal', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Arunachal</button>
         <button class="pkg-filter-btn" onclick="setRegionFilter('Nagaland', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Nagaland</button>
         <button class="pkg-filter-btn" onclick="setRegionFilter('Sikkim', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Sikkim & Bengal</button>
-        <button class="pkg-filter-btn" onclick="setRegionFilter('Bhutan', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Bhutan</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Mizoram', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Mizoram</button>
+        <button class="pkg-filter-btn" onclick="setRegionFilter('Manipur', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Manipur</button>
         <button class="pkg-filter-btn" onclick="setRegionFilter('Tripura', this)" style="background: none; border: none; padding: 6px 14px; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.2s;">Tripura</button>
       </div>
     </div>
@@ -520,7 +521,18 @@
 <script>
   // High-fidelity images mapping for packages
   const packageImages = {
+    // Active packages
     "Sivasagar Heritage Trail": "./rang-ghar.jpg",
+    "Explore Assam": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80",
+    "Explore Meghalaya": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=600&q=80",
+    "Explore Arunachal": "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=600&q=80",
+    "Explore Nagaland": "https://images.unsplash.com/photo-1588097281266-310cc2a52ee2?auto=format&fit=crop&w=600&q=80",
+    "Explore Sikkim": "https://images.unsplash.com/photo-1570114601111-4461e5519bb5?auto=format&fit=crop&w=600&q=80",
+    "Explore Mizoram": "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=600&q=80",
+    "Explore Tripura": "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=600&q=80",
+    "Explore Manipur": "https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=600&q=80",
+    
+    // Hidden packages (kept for reference)
     "Meghalaya & Dawki Highlights": "https://cdn.pixabay.com/photo/2019/04/03/08/28/nature-4099774_960_720.jpg",
     "Northeast Explorer": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=600&q=80",
     "Arunachal Highlights": "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=600&q=80",
