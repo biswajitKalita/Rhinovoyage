@@ -4,7 +4,7 @@ const packagesData = [
     key: "Sivasagar Heritage Trail",
     title: "Sivasagar Heritage Trail",
     duration: "2 Days / 1 Night",
-    price: "₹1,599*",
+    price: "₹1,999*",
     vehicle: "Private Vehicle",
     region: "Assam",
     badge: "Best Seller",
