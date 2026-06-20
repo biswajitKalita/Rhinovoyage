@@ -469,7 +469,13 @@
         } else if (data.user.role === 'driver') {
           window.location.href = 'driver-dashboard.html';
         } else {
-          window.location.href = 'user-dashboard.html';
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectUrl = urlParams.get('redirect');
+          if (redirectUrl) {
+            window.location.href = decodeURIComponent(redirectUrl);
+          } else {
+            window.location.href = 'user-dashboard.html';
+          }
         }
       }, 1000);
 
@@ -534,7 +540,13 @@
         if (data.user.role === 'driver') {
           window.location.href = 'driver-dashboard.html';
         } else {
-          window.location.href = 'user-dashboard.html';
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectUrl = urlParams.get('redirect');
+          if (redirectUrl) {
+            window.location.href = decodeURIComponent(redirectUrl);
+          } else {
+            window.location.href = 'user-dashboard.html';
+          }
         }
       }, 1200);
 

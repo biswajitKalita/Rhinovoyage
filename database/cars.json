@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "mqlzw0oi2312d",
+    "createdAt": "2026-06-20T06:47:00.978Z",
+    "owner": "Biswajit Kalita",
+    "modelName": "Innova",
+    "plateNumber": "AS-01-AG-4701",
+    "category": "SUV",
+    "rcPhoto": "/public/uploads/rc_1781938020976_zyjwg.png",
+    "carImage": "/public/uploads/car_1781938020977_ietl4.png",
+    "entryDate": "2026-06-25"
+  },
+  {
+    "id": "mqm0771jbbmrf",
+    "createdAt": "2026-06-20T06:55:42.439Z",
+    "owner": "Ashim",
+    "modelName": "Swift dzire",
+    "plateNumber": "AS-01-AG-2301",
+    "category": "Sedan",
+    "rcPhoto": "/public/uploads/rc_1781938542434_quva5.jpeg",
+    "carImage": "/public/uploads/car_1781938542438_7i434.png",
+    "entryDate": "2026-06-20"
+  }
+]

@@ -88,5 +88,55 @@
     "userId": "mqjc2uk0dpu1p",
     "message": "New trip assigned to you for SUV / MUV Rental on Jul 8, 2026. 🚗",
     "read": false
+  },
+  {
+    "id": "mqlzwef6oolxj",
+    "createdAt": "2026-06-20T06:47:18.786Z",
+    "userId": "mqjc97fcxajfg",
+    "message": "New trip assigned to you for SUV / MUV Rental on Jul 8, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqlzy1n0igag8",
+    "createdAt": "2026-06-20T06:48:35.533Z",
+    "userId": "mqjc2uk0dpu1p",
+    "message": "New trip assigned to you for SUV / MUV Rental on Jul 1, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqm019jc3ygg2",
+    "createdAt": "2026-06-20T06:51:05.736Z",
+    "userId": "mqjc2uk0dpu1p",
+    "message": "New trip assigned to you for SUV / MUV Rental on Jul 8, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqm06fge1yf6n",
+    "createdAt": "2026-06-20T06:55:06.686Z",
+    "userId": "mqjc2uk0dpu1p",
+    "message": "New trip assigned to you for Sedan Rental on Jun 21, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqm07me8q2sru",
+    "createdAt": "2026-06-20T06:56:02.336Z",
+    "userId": "mpy2yjhhmny0d",
+    "message": "Your trip request for Sedan Rental on Jun 21, 2026 has been confirmed! 🎉",
+    "read": false
+  },
+  {
+    "id": "mqm0a3ommau6j",
+    "createdAt": "2026-06-20T06:57:58.054Z",
+    "userId": "mqjc97fcxajfg",
+    "message": "New trip assigned to you for Sedan Rental on Jun 21, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "mqm0a7cmn75xl",
+    "createdAt": "2026-06-20T06:58:02.806Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your trip request for Sedan Rental on Jun 21, 2026 has been confirmed! 🎉",
+    "read": true,
+    "updatedAt": "2026-06-20T07:02:39.333Z"
   }
 ]

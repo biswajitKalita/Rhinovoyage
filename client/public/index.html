@@ -25,6 +25,113 @@
     0% { transform: scale(0.9); opacity: 0.6; }
     100% { transform: scale(1.1); opacity: 1; }
   }
+
+  /* Auth Modal Styles */
+  .auth-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 31, 22, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .auth-modal-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .auth-modal-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+  .auth-modal-backdrop.active .auth-modal-card {
+    transform: translateY(0);
+  }
+  .auth-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.2s;
+    line-height: 1;
+  }
+  .auth-modal-close:hover {
+    color: var(--orange);
+  }
+  .auth-modal-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+  .auth-modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--green);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+  }
+  .auth-modal-text {
+    font-size: 0.92rem;
+    color: var(--text-mid);
+    line-height: 1.5;
+    margin-bottom: 1.75rem;
+  }
+  .auth-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .auth-modal-btn-primary {
+    background: var(--orange);
+    color: var(--white) !important;
+    padding: 0.8rem;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+  }
+  .auth-modal-btn-primary:hover {
+    background: var(--orange-dark);
+    transform: translateY(-1px);
+  }
+  .auth-modal-btn-secondary {
+    background: transparent;
+    border: 1.5px solid var(--orange);
+    color: var(--orange) !important;
+    padding: 0.8rem;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+  }
+  .auth-modal-btn-secondary:hover {
+    background: var(--orange-pale);
+    color: var(--orange-dark) !important;
+  }
 </style>
 </head>
 <body>
@@ -335,6 +442,16 @@
     <form class="booking-form" onsubmit="event.preventDefault(); submitBooking();">
       <h3>Booking Request Form</h3>
       <p class="subtitle">Quick details for your trip quote</p>
+      
+      <!-- Authentication Required Warning Banner -->
+      <div id="booking-login-banner" style="background: var(--orange-pale); border: 1.5px dashed var(--orange); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center; display: none;">
+        <h4 style="color: var(--orange-dark); font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 6px;">Login Required to Book</h4>
+        <p style="font-size: 0.85rem; color: var(--text-mid); margin-bottom: 12px;">You must be logged in to submit a heritage trip or rental booking request.</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <a href="login.html" class="btn-primary" style="padding: 6px 16px; font-size: 0.8rem; background: var(--orange); border-color: var(--orange); text-decoration: none; border-radius: 6px; color: white; font-weight: 700; display: inline-block;">Log In</a>
+          <a href="login.html?tab=register" class="btn-secondary" style="padding: 6px 16px; font-size: 0.8rem; border-color: var(--orange-light); color: var(--orange-dark); text-decoration: none; border-radius: 6px; font-weight: 700; background: transparent; border: 1px solid var(--orange-light); display: inline-block;">Register</a>
+        </div>
+      </div>
       
       <div class="form-group">
         <label>Select Service Type</label>
@@ -850,6 +967,60 @@
     const phoneInput = document.getElementById('phone');
     if (nameInput) nameInput.value = navUser.name;
     if (phoneInput) phoneInput.value = navUser.phone;
+  } else {
+    // Show login banner but keep submit button enabled so guests can trigger authentication modal
+    const banner = document.getElementById('booking-login-banner');
+    if (banner) {
+      banner.style.display = 'block';
+      const currentRedirect = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+      const loginBtn = banner.querySelector('a[href="login.html"]');
+      const regBtn = banner.querySelector('a[href="login.html?tab=register"]');
+      if (loginBtn) loginBtn.href = `login.html?redirect=${currentRedirect}`;
+      if (regBtn) regBtn.href = `login.html?tab=register&redirect=${currentRedirect}`;
+    }
+  }
+
+  // Restore pending booking if any
+  const pendingBookingStr = sessionStorage.getItem('pending_booking');
+  if (pendingBookingStr && navToken) {
+    try {
+      const pendingBooking = JSON.parse(pendingBookingStr);
+      sessionStorage.removeItem('pending_booking'); // clear immediately
+      
+      // Auto-fill service type
+      if (pendingBooking.serviceType) {
+        const radio = document.querySelector(`.stype-btn input[value="${pendingBooking.serviceType}"]`);
+        if (radio) {
+          const serviceBtn = radio.closest('.stype-btn');
+          if (serviceBtn) selectService(serviceBtn);
+        }
+      }
+      
+      if (pendingBooking.name && document.getElementById('name')) document.getElementById('name').value = pendingBooking.name;
+      if (pendingBooking.phone && document.getElementById('phone')) document.getElementById('phone').value = pendingBooking.phone;
+      if (pendingBooking.pickupDate && document.getElementById('pickup_date')) document.getElementById('pickup_date').value = pendingBooking.pickupDate;
+      if (pendingBooking.vehicle && document.getElementById('vehicle_select')) document.getElementById('vehicle_select').value = pendingBooking.vehicle;
+      if (pendingBooking.pickupLocation && document.getElementById('pickup_location')) document.getElementById('pickup_location').value = pendingBooking.pickupLocation;
+      if (pendingBooking.dropLocation && document.getElementById('drop_location')) document.getElementById('drop_location').value = pendingBooking.dropLocation;
+      if (pendingBooking.returnDate && document.getElementById('return_date')) document.getElementById('return_date').value = pendingBooking.returnDate;
+      if (pendingBooking.pickupTime && document.getElementById('pickup_time')) document.getElementById('pickup_time').value = pendingBooking.pickupTime;
+      if (pendingBooking.travelerCount && document.getElementById('traveler_count')) document.getElementById('traveler_count').value = pendingBooking.travelerCount;
+      if (pendingBooking.rawDetails && document.getElementById('details')) document.getElementById('details').value = pendingBooking.rawDetails;
+      if (pendingBooking.packageSelectVal && document.getElementById('package_select')) document.getElementById('package_select').value = pendingBooking.packageSelectVal;
+
+      // Scroll smoothly to booking section
+      setTimeout(() => {
+        const bookingSection = document.getElementById('booking');
+        if (bookingSection) bookingSection.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+
+      // Auto-submit after restore
+      setTimeout(() => {
+        submitBooking();
+      }, 1200);
+    } catch (e) {
+      console.error('Error restoring pending booking:', e);
+    }
   }
 
   // Initialize fields for default choice (Car Rental)
@@ -965,14 +1136,43 @@
  
   // Booking submit to API
   async function submitBooking() {
+    const token = localStorage.getItem('token');
     const checkedServiceInput = document.querySelector('input[name="service_type"]:checked');
     const serviceType = checkedServiceInput ? checkedServiceInput.value : 'car_rental';
     const name = document.getElementById('name').value;
     const phone = document.getElementById('phone').value;
     const pickupDate = document.getElementById('pickup_date').value;
     const details = document.getElementById('details').value;
-    
     const vehicle = document.getElementById('vehicle_select').value;
+
+    if (!token) {
+      // Save all raw form details in sessionStorage
+      const pickupLocation = document.getElementById('pickup_location') ? document.getElementById('pickup_location').value : '';
+      const dropLocation = document.getElementById('drop_location') ? document.getElementById('drop_location').value : '';
+      const returnDate = document.getElementById('return_date') ? document.getElementById('return_date').value : '';
+      const pickupTime = document.getElementById('pickup_time') ? document.getElementById('pickup_time').value : '';
+      const travelerCount = document.getElementById('traveler_count') ? document.getElementById('traveler_count').value : '';
+      const packageSelectVal = document.getElementById('package_select') ? document.getElementById('package_select').value : '';
+
+      const pendingBooking = {
+        serviceType,
+        name,
+        phone,
+        pickupDate,
+        vehicle,
+        rawDetails: details,
+        pickupLocation,
+        dropLocation,
+        returnDate,
+        pickupTime,
+        travelerCount,
+        packageSelectVal
+      };
+
+      sessionStorage.setItem('pending_booking', JSON.stringify(pendingBooking));
+      showAuthRequiredModal();
+      return;
+    }
 
     const pickupLocation = document.getElementById('pickup_location').value;
     const dropLocation = document.getElementById('drop_location').value;
@@ -1102,6 +1302,44 @@
       }, 800);
     }, 1800);
   });
+
+  // Auth Required Modal helper functions
+  function showAuthRequiredModal() {
+    const modal = document.getElementById('auth-required-modal');
+    if (modal) {
+      const currentRedirect = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
+      const loginBtn = document.getElementById('modal-login-btn');
+      const regBtn = document.getElementById('modal-register-btn');
+      if (loginBtn) loginBtn.href = `login.html?redirect=${currentRedirect}`;
+      if (regBtn) regBtn.href = `login.html?tab=register&redirect=${currentRedirect}`;
+      
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeAuthRequiredModal() {
+    const modal = document.getElementById('auth-required-modal');
+    if (modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
 </script>
+
+<!-- Auth Required Modal Backdrop and Card -->
+<div id="auth-required-modal" class="auth-modal-backdrop">
+  <div class="auth-modal-card">
+    <button class="auth-modal-close" onclick="closeAuthRequiredModal()">&times;</button>
+    <span class="auth-modal-icon">🔒</span>
+    <h3 class="auth-modal-title">Authentication Required</h3>
+    <p class="auth-modal-text">You need to log in or register to submit a booking. We've saved your details! Once you log in, your booking request will be automatically completed.</p>
+    <div class="auth-modal-actions">
+      <a id="modal-login-btn" href="login.html" class="auth-modal-btn-primary">Log In to Your Account</a>
+      <a id="modal-register-btn" href="login.html?tab=register" class="auth-modal-btn-secondary">Create a New Account</a>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -12,7 +12,7 @@ const { protect, authorize, optionalProtect } = require('../middleware/authMiddl
 
 const router = express.Router();
 
-router.post('/', optionalProtect, createBooking);
+router.post('/', protect, createBooking);
 router.get('/my-bookings', protect, getUserBookings);
 router.get('/', protect, authorize('admin'), getAllBookings);
 router.put('/:id/status', protect, authorize('admin'), updateBookingStatus);
