@@ -756,8 +756,11 @@
 
   function selectPackage(packageName) {
     // Select the Tour Package service button
-    const tourTabBtn = document.querySelector('.stype-btn[onclick*="tour_package"]');
-    if (tourTabBtn) selectService(tourTabBtn);
+    const radio = document.querySelector('.stype-btn input[value="tour_package"]');
+    if (radio) {
+      const tourTabBtn = radio.closest('.stype-btn');
+      if (tourTabBtn) selectService(tourTabBtn);
+    }
     
     // Select the option in the package_select dropdown
     const selector = document.getElementById('package_select');
@@ -836,8 +839,11 @@
       }
     }
     // Also select Car Rental tab
-    const carRentalTabBtn = document.querySelector('.stype-btn[onclick*="car_rental"]');
-    if (carRentalTabBtn) selectService(carRentalTabBtn);
+    const radio = document.querySelector('.stype-btn input[value="car_rental"]');
+    if (radio) {
+      const carRentalTabBtn = radio.closest('.stype-btn');
+      if (carRentalTabBtn) selectService(carRentalTabBtn);
+    }
     // Scroll smoothly to booking
     document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
   }
