@@ -333,7 +333,50 @@
     background: #FFEBEE;
     color: #C62828;
     border: 1px solid #FFCDD2;
-  } }
+  }
+
+  /* Stats Grid */
+  .user-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--cream-dark);
+    box-shadow: 0 6px 18px rgba(13, 31, 22, 0.02);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+  }
+  .stat-icon {
+    font-size: 1.6rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--green-dark);
+    line-height: 1.2;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    margin-top: 2px;
+  }
 
   /* Footer */
   footer {
@@ -359,8 +402,20 @@
     .badge {
       margin: 0 auto;
     }
+    .user-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
   @media (max-width: 575px) {
+    .user-stats-grid {
+      grid-template-columns: 1fr;
+    }
+    nav {
+      padding: 1rem;
+    }
+    #nav-user-greeting {
+      display: none;
+    }
     .dashboard-container {
       padding: 0 1rem;
       margin: 1.5rem auto;
@@ -436,26 +491,26 @@
     </div>
 
     <!-- Quick Stats Grid -->
-    <div class="user-stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem;">
-      <div class="stat-card" style="background: var(--white); border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid var(--cream-dark); box-shadow: 0 6px 18px rgba(13, 31, 22, 0.02); display: flex; align-items: center; gap: 16px; transition: all 0.3s ease;">
-        <div style="background: #E8F5E9; color: #2E7D32; font-size: 1.6rem; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.1);">🗺️</div>
+    <div class="user-stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #E8F5E9; color: #2E7D32; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.1);">🗺️</div>
         <div>
-          <div id="stat-total" style="font-size: 1.5rem; font-weight: 800; color: var(--green-dark); line-height: 1.2;">0</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 2px;">Total Trips</div>
+          <div id="stat-total" class="stat-value">0</div>
+          <div class="stat-label">Total Trips</div>
         </div>
       </div>
-      <div class="stat-card" style="background: var(--white); border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid var(--cream-dark); box-shadow: 0 6px 18px rgba(13, 31, 22, 0.02); display: flex; align-items: center; gap: 16px; transition: all 0.3s ease;">
-        <div style="background: #E3F2FD; color: #1565C0; font-size: 1.6rem; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(21, 101, 192, 0.1);">🚙</div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #E3F2FD; color: #1565C0; box-shadow: 0 4px 10px rgba(21, 101, 192, 0.1);">🚙</div>
         <div>
-          <div id="stat-approved" style="font-size: 1.5rem; font-weight: 800; color: var(--green-dark); line-height: 1.2;">0</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 2px;">Approved</div>
+          <div id="stat-approved" class="stat-value">0</div>
+          <div class="stat-label">Approved</div>
         </div>
       </div>
-      <div class="stat-card" style="background: var(--white); border-radius: 16px; padding: 1.25rem 1.5rem; border: 1px solid var(--cream-dark); box-shadow: 0 6px 18px rgba(13, 31, 22, 0.02); display: flex; align-items: center; gap: 16px; transition: all 0.3s ease;">
-        <div style="background: #FFF8E1; color: #F57F17; font-size: 1.6rem; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(245, 127, 23, 0.1);">⏳</div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #FFF8E1; color: #F57F17; box-shadow: 0 4px 10px rgba(245, 127, 23, 0.1);">⏳</div>
         <div>
-          <div id="stat-pending" style="font-size: 1.5rem; font-weight: 800; color: var(--green-dark); line-height: 1.2;">0</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-top: 2px;">Pending</div>
+          <div id="stat-pending" class="stat-value">0</div>
+          <div class="stat-label">Pending</div>
         </div>
       </div>
     </div>
