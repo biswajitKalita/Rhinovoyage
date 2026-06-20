@@ -5,7 +5,8 @@ const {
   getAllBookings, 
   updateBookingStatus, 
   deleteBooking,
-  assignDriver
+  assignDriver,
+  assignCar
 } = require('../controllers/bookingController');
 const { protect, authorize, optionalProtect } = require('../middleware/authMiddleware');
 
@@ -16,6 +17,7 @@ router.get('/my-bookings', protect, getUserBookings);
 router.get('/', protect, authorize('admin'), getAllBookings);
 router.put('/:id/status', protect, authorize('admin'), updateBookingStatus);
 router.put('/:id/assign-driver', protect, authorize('admin'), assignDriver);
+router.put('/:id/assign-car', protect, authorize('admin'), assignCar);
 router.delete('/:id', protect, authorize('admin'), deleteBooking);
 
 module.exports = router;

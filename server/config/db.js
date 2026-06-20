@@ -13,7 +13,8 @@ class JsonDatabase {
     this.collections = {
       users: path.join(DB_DIR, 'users.json'),
       bookings: path.join(DB_DIR, 'bookings.json'),
-      notifications: path.join(DB_DIR, 'notifications.json')
+      notifications: path.join(DB_DIR, 'notifications.json'),
+      cars: path.join(DB_DIR, 'cars.json')
     };
 
     // Initialize files if they don't exist

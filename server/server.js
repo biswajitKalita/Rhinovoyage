@@ -71,6 +71,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/cars', require('./routes/cars'));
 
 // Default base route
 app.get('/', (req, res) => {

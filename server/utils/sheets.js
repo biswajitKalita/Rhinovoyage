@@ -109,7 +109,10 @@ exports.syncBooking = async (booking, eventType) => {
     status: booking.status,
     userId: booking.userId,
     driverId: booking.driverId || '',
-    driverName: booking.driverName || ''
+    driverName: booking.driverName || '',
+    carId: booking.carId || '',
+    carModel: booking.carModel || '',
+    carNumber: booking.carNumber || ''
   };
   return postToSheet(payload);
 };

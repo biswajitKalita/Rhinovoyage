@@ -212,3 +212,46 @@ exports.assignDriver = (req, res) => {
     res.status(500).json({ success: false, message: 'Server error assigning driver.' });
   }
 };
+
+// @desc    Assign Car to Booking
+// @route   PUT /api/bookings/:id/assign-car
+// @access  Private/Admin
+exports.assignCar = (req, res) => {
+  try {
+    const { id } = req.params;
+    const { carId } = req.body;
+
+    const booking = db.findOne('bookings', { id });
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found.' });
+    }
+
+    let carModel = '';
+    let carNumber = '';
+    if (carId) {
+      const car = db.findOne('cars', { id: carId });
+      if (!car) {
+        return res.status(404).json({ success: false, message: 'Car not found.' });
+      }
+      carModel = car.modelName;
+      carNumber = car.plateNumber;
+    }
+
+    // Update booking in DB
+    db.update('bookings', { id }, { carId: carId || '', carModel, carNumber });
+
+    const updatedBooking = { ...booking, carId: carId || '', carModel, carNumber };
+
+    // Sync booking status/assignment update to Google Sheet
+    syncBooking(updatedBooking, 'assign_car').catch(err => console.error('Booking car update sheet sync error:', err));
+
+    res.status(200).json({
+      success: true,
+      message: carId ? `Car ${carModel} (${carNumber}) successfully assigned.` : 'Car unassigned successfully.',
+      booking: updatedBooking
+    });
+  } catch (error) {
+    console.error('Assign car error:', error);
+    res.status(500).json({ success: false, message: 'Server error assigning car.' });
+  }
+};

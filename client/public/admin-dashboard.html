@@ -432,6 +432,9 @@
     <button id="tab-drivers-btn" onclick="switchTab('drivers')" style="background: none; border: none; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-muted); padding: 5px 10px; cursor: pointer; transition: all 0.2s; outline: none;">
       🚗 Driver Partners
     </button>
+    <button id="tab-cars-btn" onclick="switchTab('cars')" style="background: none; border: none; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-muted); padding: 5px 10px; cursor: pointer; transition: all 0.2s; outline: none;">
+      🚘 Fleet Management
+    </button>
   </div>
 
   <!-- BOOKINGS SECTION -->
@@ -509,6 +512,45 @@
     </div>
   </div>
 
+  <!-- CARS SECTION -->
+  <div class="table-section" id="cars-section" style="display: none;">
+    <div class="table-controls">
+      <h3 class="table-title">Fleet Management</h3>
+      
+      <div class="search-wrapper" style="max-width: 650px; display: flex; gap: 10px; flex: 1; justify-content: flex-end; align-items: center;">
+        <input type="text" class="search-input" id="carSearchInput" placeholder="Search by model, owner, or plate..." oninput="filterCars()">
+        <select class="filter-select" id="filterCarCategory" onchange="filterCars()">
+          <option value="All">All Categories</option>
+          <option value="Sedan">Sedan</option>
+          <option value="Luxury">Luxury (Premium)</option>
+          <option value="SUV">SUV</option>
+          <option value="Bus">Bus</option>
+        </select>
+        <button class="btn-new-booking" onclick="openAddCarModal()" style="padding: 0.6rem 1rem; white-space: nowrap; height: 100%; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; color: var(--white); background: var(--green); transition: all 0.2s;">+ Add Car</button>
+      </div>
+    </div>
+
+    <!-- CARS TABLE -->
+    <div class="booking-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Car Info</th>
+            <th>Owner & Plate</th>
+            <th>Category</th>
+            <th>Docs & Photos</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="carsTableBody">
+          <tr>
+            <td colspan="5" class="empty-row">Loading registered cars...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <!-- FOOTER -->
@@ -529,12 +571,15 @@
   document.getElementById('admin-name').innerText = user.name;
 
   let allBookings = [];
+  let allDrivers = [];
+  let allCars = [];
 
   // Fetch all bookings
   async function fetchAllBookings() {
     try {
-      // First pre-fetch drivers list so it is ready for rendering dropdowns
+      // First pre-fetch drivers and cars lists so they are ready for rendering dropdowns
       await fetchDriversListOnly();
+      await fetchCarsListOnly();
 
       const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
       const response = await fetch(`${apiBase}/bookings`, {
@@ -623,9 +668,27 @@
       const selectDisabled = b.status === 'Cancelled' ? 'disabled' : '';
       const driverSelector = `
         <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
-          <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Assign:</span>
+          <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Driver:</span>
           <select class="filter-select" style="padding: 2px 6px; font-size: 0.78rem; border-radius: 4px; background: var(--cream);" ${selectDisabled} onchange="assignDriverToBooking('${b.id}', this.value)">
             ${approvedDriversOptions}
+          </select>
+        </div>
+      `;
+
+      // Get booking's matching car category and filter cars
+      const targetCategory = getCarCategoryForVehicle(b.vehicle);
+      const matchingCars = allCars.filter(c => c.category === targetCategory);
+      let carOptions = `<option value="">-- No Car Assigned --</option>`;
+      matchingCars.forEach(c => {
+        const isSelected = b.carId === c.id ? 'selected' : '';
+        carOptions += `<option value="${c.id}" ${isSelected}>${c.modelName} (${c.plateNumber})</option>`;
+      });
+
+      const carSelector = `
+        <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Car (${targetCategory}):</span>
+          <select class="filter-select" style="padding: 2px 6px; font-size: 0.78rem; border-radius: 4px; background: var(--cream);" ${selectDisabled} onchange="assignCarToBooking('${b.id}', this.value)">
+            ${carOptions}
           </select>
         </div>
       `;
@@ -657,6 +720,7 @@
         <td>
           ${statusBadge}
           ${driverSelector}
+          ${carSelector}
         </td>
         <td><div class="action-buttons">${actionButtons}</div></td>
       `;
@@ -753,24 +817,36 @@
   function switchTab(tab) {
     const bookingsSection = document.getElementById('bookings-section');
     const driversSection = document.getElementById('drivers-section');
+    const carsSection = document.getElementById('cars-section');
     const bookingsBtn = document.getElementById('tab-bookings-btn');
     const driversBtn = document.getElementById('tab-drivers-btn');
+    const carsBtn = document.getElementById('tab-cars-btn');
+
+    bookingsSection.style.display = 'none';
+    driversSection.style.display = 'none';
+    carsSection.style.display = 'none';
+
+    bookingsBtn.style.color = 'var(--text-muted)';
+    bookingsBtn.style.borderBottom = 'none';
+    driversBtn.style.color = 'var(--text-muted)';
+    driversBtn.style.borderBottom = 'none';
+    carsBtn.style.color = 'var(--text-muted)';
+    carsBtn.style.borderBottom = 'none';
 
     if (tab === 'bookings') {
       bookingsSection.style.display = 'block';
-      driversSection.style.display = 'none';
       bookingsBtn.style.color = 'var(--green)';
       bookingsBtn.style.borderBottom = '3px solid var(--green)';
-      driversBtn.style.color = 'var(--text-muted)';
-      driversBtn.style.borderBottom = 'none';
-    } else {
-      bookingsSection.style.display = 'none';
+    } else if (tab === 'drivers') {
       driversSection.style.display = 'block';
       driversBtn.style.color = 'var(--green)';
       driversBtn.style.borderBottom = '3px solid var(--green)';
-      bookingsBtn.style.color = 'var(--text-muted)';
-      bookingsBtn.style.borderBottom = 'none';
       fetchDrivers();
+    } else if (tab === 'cars') {
+      carsSection.style.display = 'block';
+      carsBtn.style.color = 'var(--green)';
+      carsBtn.style.borderBottom = '3px solid var(--green)';
+      fetchCars();
     }
   }
 
@@ -1046,6 +1122,270 @@
     }
   }
 
+  // Helper to map booking vehicle string to car category
+  function getCarCategoryForVehicle(vehicle) {
+    if (!vehicle) return 'Sedan';
+    const v = vehicle.toLowerCase();
+    if (v.includes('luxury') || v.includes('premium')) return 'Luxury';
+    if (v.includes('sedan')) return 'Sedan';
+    if (v.includes('suv') || v.includes('muv') || v.includes('innova') || v.includes('scorpio')) return 'SUV';
+    if (v.includes('bus') || v.includes('tempo') || v.includes('traveller') || v.includes('traveler') || v.includes('coach')) return 'Bus';
+    
+    // Check exact matches or start with
+    if (vehicle.includes('SUV')) return 'SUV';
+    if (vehicle.includes('Bus')) return 'Bus';
+    if (vehicle.includes('Luxury')) return 'Luxury';
+    
+    return 'Sedan';
+  }
+
+  // Pre-fetch cars list only (for booking assignments dropdown)
+  async function fetchCarsListOnly() {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/cars`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        allCars = data.cars;
+      }
+    } catch (err) {
+      console.error('Error pre-fetching cars for dropdown:', err);
+    }
+  }
+
+  // Fetch all cars for Fleet Management tab
+  async function fetchCars() {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/cars`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch fleet vehicles.');
+      }
+      allCars = data.cars;
+      renderCars(allCars);
+    } catch (err) {
+      document.getElementById('carsTableBody').innerHTML = `
+        <tr>
+          <td colspan="5" class="empty-row" style="color: var(--orange-dark); font-weight:700;">
+            Error loading fleet: ${err.message}
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // Render Fleet Cars
+  function renderCars(carsList) {
+    const tbody = document.getElementById('carsTableBody');
+    tbody.innerHTML = '';
+
+    if (carsList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="empty-row">No registered cars found matching the filters.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    carsList.forEach(c => {
+      const tr = document.createElement('tr');
+
+      const carInfo = `
+        <div class="td-bold">${c.modelName}</div>
+        <div class="td-sub">Added: ${c.entryDate || (c.createdAt ? c.createdAt.split('T')[0] : '')}</div>
+      `;
+
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const serverBase = apiBase.replace('/api', '');
+
+      const rcLink = c.rcPhoto 
+        ? `<a href="${serverBase}${c.rcPhoto}" target="_blank" style="color: var(--orange-dark); font-weight: 700; text-decoration: underline; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px;">📄 View RC Photo</a>` 
+        : '<span style="color: var(--text-muted); font-size: 0.78rem;">No Photo</span>';
+      
+      const carLink = c.carImage 
+        ? `<a href="${serverBase}${c.carImage}" target="_blank" style="color: var(--orange-dark); font-weight: 700; text-decoration: underline; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px; margin-top: 2px;">📷 View Car Photo</a>` 
+        : '<span style="color: var(--text-muted); font-size: 0.78rem;">No Photo</span>';
+
+      const credentials = `
+        <div><strong>Owner:</strong> ${c.owner}</div>
+        <div style="margin-top: 6px;"><strong>Plate:</strong> ${c.plateNumber}</div>
+      `;
+
+      const categoryVal = c.category || 'Sedan';
+      const categoryBadge = `<div class="badge badge-approved" style="background: var(--orange-pale); color: var(--orange-dark); border-color: var(--orange-light);">${categoryVal}</div>`;
+
+      const photos = `
+        <div>${rcLink}</div>
+        <div style="margin-top: 6px;">${carLink}</div>
+      `;
+
+      const actionButtons = `
+        <button class="btn-action btn-cancel" onclick="deleteCar('${c.id}')">Delete</button>
+      `;
+
+      tr.innerHTML = `
+        <td>${carInfo}</td>
+        <td>${credentials}</td>
+        <td>${categoryBadge}</td>
+        <td>${photos}</td>
+        <td><div class="action-buttons">${actionButtons}</div></td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Filter fleet cars
+  function filterCars() {
+    const searchVal = document.getElementById('carSearchInput').value.toLowerCase();
+    const categoryVal = document.getElementById('filterCarCategory').value;
+
+    const filtered = allCars.filter(c => {
+      const matchesSearch = 
+        c.modelName.toLowerCase().includes(searchVal) ||
+        c.owner.toLowerCase().includes(searchVal) ||
+        c.plateNumber.toLowerCase().includes(searchVal);
+
+      const matchesCategory = categoryVal === 'All' || c.category === categoryVal;
+
+      return matchesSearch && matchesCategory;
+    });
+
+    renderCars(filtered);
+  }
+
+  // Delete fleet car
+  async function deleteCar(id) {
+    if (!confirm('Are you sure you want to permanently delete this car from the fleet?')) return;
+
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/cars/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to delete vehicle.');
+      }
+
+      alert(data.message);
+      fetchCars(); // Refresh fleet tab list
+    } catch (err) {
+      alert(`Error deleting car: ${err.message}`);
+    }
+  }
+
+  // Assign car to booking
+  async function assignCarToBooking(bookingId, carId) {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/bookings/${bookingId}/assign-car`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ carId: carId || null })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to assign vehicle.');
+      }
+
+      // Update local state
+      const bookingIndex = allBookings.findIndex(b => b.id === bookingId);
+      if (bookingIndex !== -1) {
+        allBookings[bookingIndex].carId = carId || '';
+        allBookings[bookingIndex].carModel = data.booking.carModel || '';
+        allBookings[bookingIndex].carNumber = data.booking.carNumber || '';
+      }
+
+      alert(data.message);
+    } catch (err) {
+      alert(`Error assigning car: ${err.message}`);
+      // Re-render to restore previous selection
+      renderBookings(allBookings);
+    }
+  }
+
+  // Modal actions
+  function openAddCarModal() {
+    document.getElementById('addCarModal').style.display = 'flex';
+    // Set default entry date to today
+    document.getElementById('add-car-entry').value = new Date().toISOString().split('T')[0];
+  }
+
+  function closeAddCarModal() {
+    document.getElementById('addCarModal').style.display = 'none';
+    document.getElementById('add-car-owner').value = '';
+    document.getElementById('add-car-model').value = '';
+    document.getElementById('add-car-plate').value = '';
+    document.getElementById('add-car-category').value = '';
+    document.getElementById('add-car-entry').value = '';
+    document.getElementById('add-car-rc-photo').value = '';
+    document.getElementById('add-car-image').value = '';
+  }
+
+  // Submit form
+  async function submitAddCarForm() {
+    const owner = document.getElementById('add-car-owner').value;
+    const modelName = document.getElementById('add-car-model').value;
+    const plateNumber = document.getElementById('add-car-plate').value;
+    const category = document.getElementById('add-car-category').value;
+    const entryDate = document.getElementById('add-car-entry').value;
+
+    const rcFile = document.getElementById('add-car-rc-photo').files[0];
+    const carFile = document.getElementById('add-car-image').files[0];
+
+    if (!rcFile || !carFile) {
+      alert('Please upload both the Car RC photo and Car photo.');
+      return;
+    }
+
+    try {
+      const rcPhoto = await readFileAsBase64(rcFile);
+      const carImage = await readFileAsBase64(carFile);
+
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/cars`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          owner,
+          modelName,
+          plateNumber,
+          category,
+          entryDate,
+          rcPhoto,
+          carImage
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to register fleet vehicle.');
+      }
+
+      alert(data.message);
+      closeAddCarModal();
+      fetchCars(); // Refresh list
+    } catch (err) {
+      alert(`Error registering car: ${err.message}`);
+    }
+  }
+
   // Init fetch
   fetchAllBookings();
 </script>
@@ -1092,6 +1432,55 @@
       <div style="display: flex; gap: 10px; justify-content: flex-end;">
         <button type="button" class="btn-action btn-delete" onclick="closeAddDriverModal()" style="padding: 0.6rem 1.2rem;">Cancel</button>
         <button type="submit" class="btn-action btn-approve" style="padding: 0.6rem 1.5rem; background: var(--green); color: var(--white); border-color: var(--green);">Register & Approve</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ADD CAR MODAL -->
+<div id="addCarModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 31, 22, 0.6); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+  <div style="background: var(--white); border-radius: 16px; width: 100%; max-width: 500px; padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--cream-dark); position: relative; max-height: 90vh; overflow-y: auto;">
+    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--green-dark);">Add New Fleet Vehicle</h3>
+    
+    <form onsubmit="event.preventDefault(); submitAddCarForm();">
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Car Owner Name</label>
+        <input type="text" id="add-car-owner" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="Owner's Full Name">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Car Model Name</label>
+        <input type="text" id="add-car-model" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="e.g. Swift Dzire, Toyota Innova">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Number Plate Number</label>
+        <input type="text" id="add-car-plate" required class="search-input" style="width: 100%; background: var(--cream);" placeholder="e.g. AS-01-XX-1234">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Car Category</label>
+        <select id="add-car-category" required class="filter-select" style="width: 100%; background: var(--cream); height: 42px;">
+          <option value="" disabled selected>-- Select Category --</option>
+          <option value="Sedan">Sedan</option>
+          <option value="Luxury">Luxury (Premium)</option>
+          <option value="SUV">SUV</option>
+          <option value="Bus">Bus</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Date of Entry of Car</label>
+        <input type="date" id="add-car-entry" required class="search-input" style="width: 100%; background: var(--cream);">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Upload Car RC Photo</label>
+        <input type="file" id="add-car-rc-photo" required accept="image/*" style="width: 100%;">
+      </div>
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Upload Car Image</label>
+        <input type="file" id="add-car-image" required accept="image/*" style="width: 100%;">
+      </div>
+      
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" class="btn-action btn-delete" onclick="closeAddCarModal()" style="padding: 0.6rem 1.2rem;">Cancel</button>
+        <button type="submit" class="btn-action btn-approve" style="padding: 0.6rem 1.5rem; background: var(--green); color: var(--white); border-color: var(--green);">Register Car</button>
       </div>
     </form>
   </div>
