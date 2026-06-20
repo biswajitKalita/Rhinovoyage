@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RhinoVoyage — Explore Northeast India</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../src/css/global.css?v=4.0">
-<link rel="stylesheet" href="../src/css/navbar.css?v=4.0">
-<link rel="stylesheet" href="../src/css/hero.css?v=4.0">
-<link rel="stylesheet" href="../src/css/about.css?v=4.0">
-<link rel="stylesheet" href="../src/css/packages.css?v=4.0">
-<link rel="stylesheet" href="../src/css/rentals.css?v=4.0">
-<link rel="stylesheet" href="../src/css/spotlight.css?v=4.0">
-<link rel="stylesheet" href="../src/css/booking.css?v=4.0">
-<link rel="stylesheet" href="../src/css/testimonials.css?v=4.0">
-<link rel="stylesheet" href="../src/css/footer.css?v=4.0">
+<link rel="stylesheet" href="./src/css/global.css?v=4.0">
+<link rel="stylesheet" href="./src/css/navbar.css?v=4.0">
+<link rel="stylesheet" href="./src/css/hero.css?v=4.0">
+<link rel="stylesheet" href="./src/css/about.css?v=4.0">
+<link rel="stylesheet" href="./src/css/packages.css?v=4.0">
+<link rel="stylesheet" href="./src/css/rentals.css?v=4.0">
+<link rel="stylesheet" href="./src/css/spotlight.css?v=4.0">
+<link rel="stylesheet" href="./src/css/booking.css?v=4.0">
+<link rel="stylesheet" href="./src/css/testimonials.css?v=4.0">
+<link rel="stylesheet" href="./src/css/footer.css?v=4.0">
 <script src="./config.js"></script>
 <style>
   @keyframes logoIntro {
@@ -660,8 +660,8 @@
 
 <div class="toast" id="toast">✅ Booking request sent! We'll confirm via WhatsApp within 30 minutes.</div>
 
-<script src="../src/js/packages-data.js"></script>
-<script src="../src/js/main.js"></script>
+<script src="./src/js/packages-data.js"></script>
+<script src="./src/js/main.js"></script>
 <script>
   // High-fidelity images mapping for packages
   const packageImages = {
@@ -1202,7 +1202,6 @@
       serviceType, name, phone, pickupDate, vehicle, details: finalDetails, paymentMethod
     };
 
-    const token = localStorage.getItem('token');
     const headers = { 'Content-Type': 'application/json' };
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
