@@ -116,40 +116,40 @@
   /* Metrics Cards Grid */
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
     margin-bottom: 3rem;
   }
   .metric-card {
     background: var(--white);
     border-radius: 16px;
-    padding: 1.5rem;
+    padding: 1.25rem;
     box-shadow: var(--shadow);
     border: 1px solid var(--cream-dark);
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1rem;
   }
   .metric-icon {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
   .metric-info {
     flex: 1;
   }
   .metric-num {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 700;
     color: var(--text-dark);
     line-height: 1.1;
   }
   .metric-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
     font-weight: 600;
     text-transform: uppercase;
@@ -161,6 +161,7 @@
   .metric-all .metric-icon { background: #E8F5E9; color: var(--green); }
   .metric-pending .metric-icon { background: #FFF8E1; color: #F57F17; }
   .metric-approved .metric-icon { background: #E3F2FD; color: #1565C0; }
+  .metric-completed .metric-icon { background: #E8F8F5; color: #1B4332; }
   .metric-cancelled .metric-icon { background: #FFEBEE; color: #C62828; }
 
   /* Booking Management Table Section */
@@ -270,7 +271,8 @@
     display: inline-block;
   }
   .badge-pending { background: #FFF8E1; color: #F57F17; border: 1px solid #FFE082; }
-  .badge-approved { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+  .badge-approved { background: #E3F2FD; color: #1565C0; border: 1px solid #90CAF9; }
+  .badge-completed { background: #E8F5E9; color: #1B4332; border: 1px solid #81C784; }
   .badge-cancelled { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
 
   /* Table Actions */
@@ -409,10 +411,17 @@
       </div>
     </div>
     <div class="metric-card metric-approved">
-      <div class="metric-icon">✅</div>
+      <div class="metric-icon">🚙</div>
       <div class="metric-info">
         <div class="metric-num" id="metric-approved">0</div>
         <div class="metric-label">Approved Trips</div>
+      </div>
+    </div>
+    <div class="metric-card metric-completed">
+      <div class="metric-icon">🏁</div>
+      <div class="metric-info">
+        <div class="metric-num" id="metric-completed">0</div>
+        <div class="metric-label">Completed Trips</div>
       </div>
     </div>
     <div class="metric-card metric-cancelled">
@@ -448,6 +457,7 @@
           <option value="All">All Statuses</option>
           <option value="Pending">Pending</option>
           <option value="Approved">Approved</option>
+          <option value="Completed">Completed</option>
           <option value="Cancelled">Cancelled</option>
         </select>
       </div>
@@ -615,11 +625,13 @@
     const total = allBookings.length;
     const pending = allBookings.filter(b => b.status === 'Pending').length;
     const approved = allBookings.filter(b => b.status === 'Approved').length;
+    const completed = allBookings.filter(b => b.status === 'Completed').length;
     const cancelled = allBookings.filter(b => b.status === 'Cancelled').length;
 
     document.getElementById('metric-total').innerText = total;
     document.getElementById('metric-pending').innerText = pending;
     document.getElementById('metric-approved').innerText = approved;
+    document.getElementById('metric-completed').innerText = completed;
     document.getElementById('metric-cancelled').innerText = cancelled;
   }
 
@@ -645,9 +657,13 @@
       `;
 
       const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
+      const invAmount = b.totalAmount || (b.invoice && b.invoice.totalAmount);
+      const invDisplay = invAmount ? `<span style="display:inline-block; margin-top:2px; font-weight:700; color:var(--green-mid); font-size:0.8rem;">₹${Number(invAmount).toLocaleString('en-IN')}</span>` : '';
+
       const serviceDetails = `
         <div class="td-bold">${b.vehicle}</div>
         <div class="td-sub">${serviceLabel} · ${b.details || 'No spec requirements'}</div>
+        ${invDisplay}
       `;
 
       const pickupDate = new Date(b.pickupDate).toLocaleDateString('en-US', {
@@ -665,7 +681,7 @@
         approvedDriversOptions += `<option value="${d.id}" ${isSelected}>${d.name}</option>`;
       });
 
-      const selectDisabled = b.status === 'Cancelled' ? 'disabled' : '';
+      const selectDisabled = (b.status === 'Cancelled' || b.status === 'Completed') ? 'disabled' : '';
       const driverSelector = `
         <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
           <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Driver:</span>
@@ -702,11 +718,17 @@
         `;
       } else if (b.status === 'Approved') {
         actionButtons = `
+          <button class="btn-action" onclick="openAdminCompleteModal('${b.id}')" style="background: #1B4332; color: white; border: 1px solid #1B4332;">Complete</button>
+          <a href="invoice.html?id=${b.id}" target="_blank" class="btn-action" style="background: #E8F5E9; color: #1B4332; border: 1px solid #A5D6A7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">📄 Invoice</a>
           <button class="btn-action btn-cancel" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>
+        `;
+      } else if (b.status === 'Completed' || b.invoice) {
+        actionButtons = `
+          <a href="invoice.html?id=${b.id}" target="_blank" class="btn-action" style="background: #E8F5E9; color: #1B4332; border: 1px solid #A5D6A7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">📄 Invoice</a>
         `;
       } else if (b.status === 'Cancelled') {
         actionButtons = `
-          <button class="btn-action btn-approve" onclick="updateStatus('${b.id}', 'Approved')">Approve</button>
+          <button class="btn-action btn-approve" onclick="updateStatus('${b.id}', 'Approved')">Re-Approve</button>
         `;
       }
 
@@ -1486,6 +1508,156 @@
     </form>
   </div>
 </div>
+
+<!-- ADMIN COMPLETE TRIP & INVOICE MODAL -->
+<div id="adminCompleteTripModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 31, 22, 0.6); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+  <div style="background: var(--white); border-radius: 16px; width: 100%; max-width: 520px; padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--cream-dark); position: relative; max-height: 90vh; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--green-dark);">🏁 Complete Trip & Generate GST Invoice</h3>
+      <button onclick="closeAdminCompleteModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+    </div>
+
+    <p id="adminModalTripDetails" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; background: var(--cream); padding: 8px 12px; border-radius: 6px;"></p>
+
+    <form onsubmit="event.preventDefault(); handleAdminCompleteSubmit();">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Base Trip Fare (₹)</label>
+          <input type="number" id="adm-base-fare" required min="0" class="search-input" style="width: 100%; background: var(--cream);" oninput="recalcAdminInvoice()">
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Extra KM / KMs Rate (₹)</label>
+          <input type="number" id="adm-extra-charges" min="0" placeholder="0" class="search-input" style="width: 100%; background: var(--cream);" oninput="recalcAdminInvoice()">
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Tolls / State Permits / Parking (₹)</label>
+          <input type="number" id="adm-toll-charges" min="0" placeholder="0" class="search-input" style="width: 100%; background: var(--cream);" oninput="recalcAdminInvoice()">
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Discount (₹)</label>
+          <input type="number" id="adm-discount" min="0" placeholder="0" class="search-input" style="width: 100%; background: var(--cream);" oninput="recalcAdminInvoice()">
+        </div>
+      </div>
+
+      <div style="background: var(--cream); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--cream-dark);">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+          <span>Base + Extras:</span>
+          <span id="adm-calc-subtotal" style="font-weight: 700;">₹0.00</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 1.05rem; font-weight: 800; color: var(--green-dark); border-top: 1px solid var(--cream-dark); padding-top: 6px; margin-top: 4px;">
+          <span>Total Invoiced:</span>
+          <span id="adm-calc-total" style="color: var(--orange-dark);">₹0.00</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Payment Status</label>
+        <select id="adm-pay-status" class="filter-select" style="width: 100%; background: var(--cream); height: 42px;">
+          <option value="Paid">Paid in Full (Verified)</option>
+          <option value="Unpaid">Payment Pending</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 4px;">Invoice Note</label>
+        <textarea id="adm-notes" rows="2" class="search-input" style="width: 100%; background: var(--cream);" placeholder="Assam Heritage Tour completed..."></textarea>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" class="btn-action btn-delete" onclick="closeAdminCompleteModal()" style="padding: 0.6rem 1.2rem;">Cancel</button>
+        <button type="submit" class="btn-action btn-approve" style="padding: 0.6rem 1.5rem; background: var(--green); color: var(--white); border-color: var(--green);">Complete & Issue Invoice</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let activeAdminCompleteId = null;
+
+  function openAdminCompleteModal(id) {
+    const booking = allBookings.find(b => b.id === id);
+    if (!booking) return;
+
+    activeAdminCompleteId = id;
+    document.getElementById('adminModalTripDetails').innerText = `${booking.vehicle} — Client: ${booking.name} (${booking.pickupDate})`;
+
+    let defaultBase = 3500;
+    const v = (booking.vehicle || '').toLowerCase();
+    if (v.includes('sedan')) defaultBase = 2800;
+    else if (v.includes('suv') || v.includes('muv') || v.includes('innova')) defaultBase = 4500;
+    else if (v.includes('luxury') || v.includes('fortuner')) defaultBase = 8500;
+    else if (v.includes('bus') || v.includes('tempo')) defaultBase = 12000;
+    else if (booking.serviceType === 'tour_package') defaultBase = 16500;
+
+    document.getElementById('adm-base-fare').value = booking.baseAmount || defaultBase;
+    document.getElementById('adm-extra-charges').value = 0;
+    document.getElementById('adm-toll-charges').value = 0;
+    document.getElementById('adm-discount').value = 0;
+    document.getElementById('adm-notes').value = booking.details ? `Completed trip: ${booking.details}` : 'Thank you for choosing RhinoVoyage!';
+
+    recalcAdminInvoice();
+    document.getElementById('adminCompleteTripModal').style.display = 'flex';
+  }
+
+  function closeAdminCompleteModal() {
+    activeAdminCompleteId = null;
+    document.getElementById('adminCompleteTripModal').style.display = 'none';
+  }
+
+  function recalcAdminInvoice() {
+    const base = Number(document.getElementById('adm-base-fare').value || 0);
+    const extra = Number(document.getElementById('adm-extra-charges').value || 0);
+    const tolls = Number(document.getElementById('adm-toll-charges').value || 0);
+    const disc = Number(document.getElementById('adm-discount').value || 0);
+
+    const total = Math.max(0, base + extra + tolls - disc);
+
+    document.getElementById('adm-calc-subtotal').innerText = `₹${(base + extra + tolls).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    document.getElementById('adm-calc-total').innerText = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+  }
+
+  async function handleAdminCompleteSubmit() {
+    if (!activeAdminCompleteId) return;
+
+    const baseAmount = Number(document.getElementById('adm-base-fare').value || 0);
+    const extraKmCharges = Number(document.getElementById('adm-extra-charges').value || 0);
+    const tollCharges = Number(document.getElementById('adm-toll-charges').value || 0);
+    const discount = Number(document.getElementById('adm-discount').value || 0);
+    const paymentStatus = document.getElementById('adm-pay-status').value || 'Paid';
+    const notes = document.getElementById('adm-notes').value || '';
+
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/bookings/${activeAdminCompleteId}/complete`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          baseAmount,
+          extraKmCharges,
+          tollCharges,
+          discount,
+          paymentStatus,
+          notes
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Failed to complete trip.');
+
+      alert('Trip marked as Completed and Invoice generated successfully! 🎉');
+      closeAdminCompleteModal();
+      fetchAllBookings();
+    } catch (err) {
+      alert(`Error completing trip: ${err.message}`);
+    }
+  }
+</script>
 
 </body>
 </html>

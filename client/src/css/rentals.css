@@ -41,11 +41,27 @@
     display: block;
 }
 
-/* Grid Layout */
+/* Slider Wrapper and Container */
+.fleet-slider-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 0 3.5rem; /* space for arrows to prevent overlapping cards */
+    box-sizing: border-box;
+}
+
+.fleet-slider-container {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+/* Slider Track Layout (replaces grid) */
 .fleet-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
     gap: 1.5rem;
+    transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    width: max-content;
 }
 
 /* Category Card Styling */
@@ -59,6 +75,17 @@
     background: #f4f4f4;
     transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s ease;
     display: flex;
+    width: 365px;
+    flex-shrink: 0;
+}
+
+/* Slider Arrow placements */
+.fleet-prev-arrow {
+    left: 1rem;
+}
+
+.fleet-next-arrow {
+    right: 1rem;
 }
 
 .category-card:hover {
@@ -164,9 +191,92 @@
     }
 }
 
-@media (max-width: 600px) {
-    .fleet-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+@media (max-width: 768px) {
+    .fleet-slider-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 1.5rem;
+        padding: 0 1rem;
     }
+
+    .fleet-slider-container {
+        grid-column: 1 / span 2;
+        grid-row: 1;
+        width: 100%;
+    }
+
+    .fleet-slider-wrapper .slider-arrow {
+        position: static;
+        transform: none;
+        grid-row: 2;
+        width: 44px;
+        height: 44px;
+        margin-top: 0.5rem;
+    }
+
+    .fleet-prev-arrow {
+        grid-column: 1;
+        justify-self: end;
+        margin-right: 0.75rem;
+    }
+
+    .fleet-next-arrow {
+        grid-column: 2;
+        justify-self: start;
+        margin-left: 0.75rem;
+    }
+    
+    .category-card {
+        width: 320px;
+    }
+}
+
+@media (max-width: 480px) {
+    .fleet-slider-wrapper {
+        gap: 1rem;
+        padding: 0 0.5rem;
+    }
+    
+    .fleet-slider-wrapper .slider-arrow {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .fleet-slider-wrapper .slider-arrow svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .category-card {
+        width: 290px;
+    }
+}
+
+/* Fleet Slider Progress Indicator */
+.fleet-progress-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.fleet-progress-track {
+    width: 200px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.fleet-progress-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 25%;
+    background: var(--orange);
+    border-radius: 4px;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }

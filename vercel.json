@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/src/:path*", "destination": "/client/public/src/:path*" },
+    { "source": "/public/:path*", "destination": "/client/public/:path*" },
+    { "source": "/:path((?!client|server|database).*)", "destination": "/client/public/:path" }
+  ]
+}

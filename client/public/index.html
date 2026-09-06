@@ -8,16 +8,16 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="./src/css/global.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/navbar.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/hero.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/about.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/packages.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/rentals.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/spotlight.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/booking.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/testimonials.css?v=4.0">
-  <link rel="stylesheet" href="./src/css/footer.css?v=4.0">
+  <link rel="stylesheet" href="./src/css/global.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/navbar.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/hero.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/about.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/packages.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/rentals.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/spotlight.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/booking.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/testimonials.css?v=4.1">
+  <link rel="stylesheet" href="./src/css/footer.css?v=4.1">
   <script src="./config.js"></script>
   <style>
     @keyframes logoIntro {
@@ -423,41 +423,71 @@
       <div class="section-label">Our Fleet</div>
       <h2 class="section-title">Rent Our Premium <em>Cars</em></h2>
 
-      <div class="fleet-grid" style="margin-top: 3rem;">
-        <!-- Sedan -->
-        <div class="category-card" onclick="selectCarCategory('Sedan')">
-          <img src="./sedan.png" alt="Sedan Category">
-          <div class="category-overlay">
-            <span class="btn-book-now">BOOK NOW</span>
-            <span class="category-name">SEDAN</span>
+      <!-- Fleet Slider Wrapper -->
+      <div class="fleet-slider-wrapper" style="margin-top: 3rem;">
+        <!-- Left Arrow -->
+        <button class="slider-arrow fleet-prev-arrow" onclick="slideFleet('left')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-dark)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Slider Container -->
+        <div class="fleet-slider-container">
+          <!-- Fleet Grid (flex slider track) -->
+          <div class="fleet-grid" id="fleet-container">
+            <!-- Sedan -->
+            <div class="category-card" onclick="selectCarCategory('Sedan')">
+              <img src="./sedan.png" alt="Sedan Category">
+              <div class="category-overlay">
+                <span class="btn-book-now">BOOK NOW</span>
+                <span class="category-name">SEDAN</span>
+              </div>
+            </div>
+
+            <!-- Luxury -->
+            <div class="category-card" onclick="selectCarCategory('Luxury')">
+              <img src="./luxury.png" alt="Luxury Category">
+              <div class="category-overlay">
+                <span class="btn-book-now">BOOK NOW</span>
+                <span class="category-name">LUXURY</span>
+              </div>
+            </div>
+
+            <!-- SUV -->
+            <div class="category-card" onclick="selectCarCategory('SUV')">
+              <img src="./suv.png" alt="SUV Category">
+              <div class="category-overlay">
+                <span class="btn-book-now">BOOK NOW</span>
+                <span class="category-name">SUV</span>
+              </div>
+            </div>
+
+            <!-- Bus -->
+            <div class="category-card" onclick="selectCarCategory('Bus')">
+              <img src="./bus.png" alt="Bus Category">
+              <div class="category-overlay">
+                <span class="btn-book-now">BOOK NOW</span>
+                <span class="category-name">BUS</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Luxury -->
-        <div class="category-card" onclick="selectCarCategory('Luxury')">
-          <img src="./luxury.png" alt="Luxury Category">
-          <div class="category-overlay">
-            <span class="btn-book-now">BOOK NOW</span>
-            <span class="category-name">LUXURY</span>
-          </div>
-        </div>
+        <!-- Right Arrow -->
+        <button class="slider-arrow fleet-next-arrow" onclick="slideFleet('right')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-dark)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
 
-        <!-- SUV -->
-        <div class="category-card" onclick="selectCarCategory('SUV')">
-          <img src="./suv.png" alt="SUV Category">
-          <div class="category-overlay">
-            <span class="btn-book-now">BOOK NOW</span>
-            <span class="category-name">SUV</span>
-          </div>
-        </div>
-
-        <!-- Bus -->
-        <div class="category-card" onclick="selectCarCategory('Bus')">
-          <img src="./bus.png" alt="Bus Category">
-          <div class="category-overlay">
-            <span class="btn-book-now">BOOK NOW</span>
-            <span class="category-name">BUS</span>
-          </div>
+      <!-- Fleet Slider Progress Indicator -->
+      <div class="fleet-progress-container">
+        <div class="fleet-progress-track">
+          <div class="fleet-progress-bar" id="fleet-progress-bar"></div>
         </div>
       </div>
 
@@ -985,7 +1015,126 @@
         container.style.transform = `translateX(-${currentSlideOffset}px)`;
         updateSliderArrows(currentSlideOffset, maxOffset);
       }
+
+      // Fleet slider resize update
+      const fleetContainer = document.getElementById('fleet-container');
+      const fleetSliderContainer = document.querySelector('.fleet-slider-container');
+      if (fleetContainer && fleetSliderContainer) {
+        const visibleWidth = fleetSliderContainer.offsetWidth;
+        const trackWidth = fleetContainer.scrollWidth;
+        const maxOffset = Math.max(0, trackWidth - visibleWidth);
+        currentFleetOffset = Math.min(currentFleetOffset, maxOffset);
+        fleetContainer.style.transform = `translateX(-${currentFleetOffset}px)`;
+        updateFleetArrows(currentFleetOffset, maxOffset);
+        updateFleetProgress();
+      }
     });
+
+    // Fleet/Car Slider Carousel logic
+    let currentFleetOffset = 0;
+
+    function slideFleet(direction) {
+      const container = document.getElementById('fleet-container');
+      const sliderContainer = document.querySelector('.fleet-slider-container');
+      if (!container || !sliderContainer) return;
+
+      const firstCard = container.querySelector('.category-card');
+      if (!firstCard) return;
+
+      const visibleWidth = sliderContainer.offsetWidth;
+      const trackWidth = container.scrollWidth;
+      const maxOffset = Math.max(0, trackWidth - visibleWidth);
+
+      // Read the gap dynamically from CSS computed styles
+      const computedStyle = window.getComputedStyle(container);
+      const gap = parseFloat(computedStyle.gap || computedStyle.columnGap) || 0;
+
+      // One card step: actual card width + gap
+      const step = firstCard.offsetWidth + gap;
+
+      if (direction === 'right') {
+        currentFleetOffset = Math.min(currentFleetOffset + step, maxOffset);
+      } else {
+        currentFleetOffset = Math.max(currentFleetOffset - step, 0);
+      }
+
+      container.style.transform = `translateX(-${currentFleetOffset}px)`;
+      updateFleetArrows(currentFleetOffset, maxOffset);
+      updateFleetProgress();
+    }
+
+    function updateFleetArrows(offset, maxOffset) {
+      const prevBtn = document.querySelector('.fleet-prev-arrow');
+      const nextBtn = document.querySelector('.fleet-next-arrow');
+
+      if (prevBtn) {
+        if (offset <= 0) {
+          prevBtn.style.opacity = '0.3';
+          prevBtn.style.pointerEvents = 'none';
+        } else {
+          prevBtn.style.opacity = '1';
+          prevBtn.style.pointerEvents = 'auto';
+        }
+      }
+
+      if (nextBtn) {
+        if (offset >= maxOffset) {
+          nextBtn.style.opacity = '0.3';
+          nextBtn.style.pointerEvents = 'none';
+        } else {
+          nextBtn.style.opacity = '1';
+          nextBtn.style.pointerEvents = 'auto';
+        }
+      }
+    }
+
+    function resetFleetSliderPosition() {
+      currentFleetOffset = 0;
+      const container = document.getElementById('fleet-container');
+      if (container) {
+        container.style.transform = 'translateX(0px)';
+      }
+
+      setTimeout(() => {
+        const sliderContainer = document.querySelector('.fleet-slider-container');
+        if (container && sliderContainer) {
+          const visibleWidth = sliderContainer.offsetWidth;
+          const trackWidth = container.scrollWidth;
+          const maxOffset = Math.max(0, trackWidth - visibleWidth);
+          updateFleetArrows(0, maxOffset);
+          updateFleetProgress();
+        }
+      }, 150);
+    }
+
+    function updateFleetProgress() {
+      const container = document.getElementById('fleet-container');
+      const sliderContainer = document.querySelector('.fleet-slider-container');
+      const progressBar = document.getElementById('fleet-progress-bar');
+      const progressTrack = document.querySelector('.fleet-progress-track');
+      if (!container || !sliderContainer || !progressBar || !progressTrack) return;
+
+      const visibleWidth = sliderContainer.offsetWidth;
+      const trackWidth = container.scrollWidth;
+      const maxOffset = Math.max(0, trackWidth - visibleWidth);
+
+      if (maxOffset <= 0) {
+        progressBar.style.width = '100%';
+        progressBar.style.transform = 'translateX(0px)';
+        return;
+      }
+
+      const trackTotalWidth = progressTrack.offsetWidth;
+      const ratio = visibleWidth / trackWidth;
+      const barWidth = Math.max(25, ratio * 100); // minimum 25% for visual appeal
+      progressBar.style.width = `${barWidth}%`;
+
+      const scrollPercent = currentFleetOffset / maxOffset;
+      const maxTranslate = trackTotalWidth - (barWidth / 100) * trackTotalWidth;
+      const translateX = scrollPercent * maxTranslate;
+
+      progressBar.style.transform = `translateX(${translateX}px)`;
+    }
 
     function setRegionFilter(region, btn) {
       activeRegionFilter = region;
@@ -1149,6 +1298,7 @@
     // Initialize packages display and select dropdown
     populatePackageSelect();
     renderPackages();
+    resetFleetSliderPosition();
 
     // Auto-select package if redirected from details page
     const urlParams = new URLSearchParams(window.location.search);

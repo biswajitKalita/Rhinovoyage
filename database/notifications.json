@@ -138,5 +138,50 @@
     "message": "Your trip request for Sedan Rental on Jun 21, 2026 has been confirmed! 🎉",
     "read": true,
     "updatedAt": "2026-06-20T07:02:39.333Z"
+  },
+  {
+    "id": "mtpgecs8g2udi",
+    "createdAt": "2026-09-06T06:51:35.864Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your trip request for Sedan Rental on Sep 18, 2026 has been confirmed! 🎉",
+    "read": false,
+    "bookingId": "mtpg97igfeh1j",
+    "type": "status"
+  },
+  {
+    "id": "mtpgeuliz1dlc",
+    "createdAt": "2026-09-06T06:51:58.950Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your journey with Sedan Rental on Sep 18, 2026 is completed! 🎉 Invoice #RV-INV-2026-283486 for ₹3,150 is ready. 🧾",
+    "read": false,
+    "bookingId": "mtpg97igfeh1j",
+    "type": "invoice"
+  },
+  {
+    "id": "mtpgfohtzmmn6",
+    "createdAt": "2026-09-06T06:52:37.697Z",
+    "userId": "mpy301r94pb4t",
+    "message": "Your journey with Sedan Rental on Jun 21, 2026 is completed! 🎉 Invoice #RV-INV-2026-637171 for ₹2,940 is ready. 🧾",
+    "read": false,
+    "bookingId": "mqm09s4o4qjqn",
+    "type": "invoice"
+  },
+  {
+    "id": "mtpghm4lsvuhg",
+    "createdAt": "2026-09-06T06:54:07.941Z",
+    "userId": "mpy2yjhhmny0d",
+    "message": "Your trip request for Sedan Rental on Sep 19, 2026 has been confirmed! 🎉",
+    "read": false,
+    "bookingId": "mtpghh54c453c",
+    "type": "status"
+  },
+  {
+    "id": "mtpghnhsiw5on",
+    "createdAt": "2026-09-06T06:54:09.712Z",
+    "userId": "mpy2yjhhmny0d",
+    "message": "Your journey with Sedan Rental on Sep 19, 2026 is completed! 🎉 Invoice #RV-INV-2026-504559 for ₹2,940 is ready. 🧾",
+    "read": false,
+    "bookingId": "mtpghh54c453c",
+    "type": "invoice"
   }
 ]

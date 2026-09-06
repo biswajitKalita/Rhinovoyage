@@ -112,7 +112,9 @@ exports.syncBooking = async (booking, eventType) => {
     driverName: booking.driverName || '',
     carId: booking.carId || '',
     carModel: booking.carModel || '',
-    carNumber: booking.carNumber || ''
+    carNumber: booking.carNumber || '',
+    totalAmount: booking.totalAmount || (booking.invoice ? booking.invoice.totalAmount : ''),
+    invoiceNumber: booking.invoiceNumber || (booking.invoice ? booking.invoice.invoiceNumber : '')
   };
   return postToSheet(payload);
 };

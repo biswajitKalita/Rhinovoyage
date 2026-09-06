@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trip Invoice & Receipt — RhinoVoyage</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --orange: #E8651A;
+    --orange-dark: #C4511A;
+    --orange-light: #F5874A;
+    --orange-pale: #FDF0E8;
+    --green: #1B4332;
+    --green-mid: #2D6A4F;
+    --green-dark: #0d1f16;
+    --cream: #F8F5EE;
+    --cream-dark: #EAE2D2;
+    --text-dark: #1A1209;
+    --text-mid: #4A3728;
+    --text-muted: #7A695B;
+    --white: #FFFFFF;
+    --border-color: #E2D7C3;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #EDE8DD;
+    color: var(--text-dark);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1rem 4rem;
+  }
+
+  /* Top Action Bar (hidden in print) */
+  .top-bar {
+    max-width: 850px;
+    margin: 0 auto 1.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+  }
+  .btn-back {
+    background: var(--white);
+    color: var(--green-dark);
+    border: 1px solid var(--border-color);
+  }
+  .btn-back:hover {
+    background: var(--cream-dark);
+  }
+  .btn-print {
+    background: var(--green);
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(27, 67, 50, 0.25);
+  }
+  .btn-print:hover {
+    background: var(--green-mid);
+    transform: translateY(-1px);
+  }
+
+  /* Invoice Paper Container */
+  .invoice-paper {
+    max-width: 850px;
+    width: 100%;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 10px 35px rgba(27, 67, 50, 0.08);
+    padding: 3.5rem 3rem;
+    position: relative;
+    border: 1px solid var(--border-color);
+  }
+
+  /* Watermark Stamp */
+  .paid-stamp {
+    position: absolute;
+    top: 3.2rem;
+    right: 3rem;
+    border: 3px dashed #2D6A4F;
+    color: #2D6A4F;
+    font-size: 1.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 6px 18px;
+    border-radius: 8px;
+    transform: rotate(-6deg);
+    pointer-events: none;
+    opacity: 0.88;
+    background: rgba(45, 106, 79, 0.04);
+  }
+
+  /* Header Section */
+  .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--green);
+    margin-bottom: 2rem;
+    gap: 2rem;
+  }
+  .brand-col img {
+    height: 48px;
+    object-fit: contain;
+    margin-bottom: 0.75rem;
+  }
+  .company-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 2px;
+  }
+  .company-info {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    max-width: 320px;
+  }
+
+  .invoice-meta-col {
+    text-align: right;
+    margin-top: 0.5rem;
+  }
+  .invoice-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .invoice-meta-item {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    margin-bottom: 3px;
+  }
+  .invoice-meta-item strong {
+    color: var(--text-dark);
+  }
+  .invoice-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--orange-dark);
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  /* 2-Column Info Grid: Billed To & Journey */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: var(--cream);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2.2rem;
+    border: 1px solid var(--border-color);
+  }
+  .info-box-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--green-mid);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 4px;
+  }
+  .info-row {
+    font-size: 0.88rem;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .info-row span:first-child {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+  .info-row span:last-child {
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: right;
+  }
+
+  /* Line Items Table */
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+  }
+  .items-table th {
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+  }
+  .items-table th:first-child { border-radius: 6px 0 0 6px; }
+  .items-table th:last-child { border-radius: 0 6px 6px 0; text-align: right; }
+  .items-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.88rem;
+    color: var(--text-dark);
+  }
+  .items-table td:last-child {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+  .item-desc-title {
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 2px;
+  }
+  .item-desc-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* Financial Summary */
+  .calc-wrapper {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+  }
+  .calc-notes {
+    background: #FDF9F3;
+    border-left: 3px solid var(--orange);
+    padding: 1rem 1.25rem;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    line-height: 1.4;
+  }
+  .calc-notes strong {
+    color: var(--orange-dark);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+  }
+
+  .calc-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .calc-table td {
+    padding: 6px 0;
+    font-size: 0.88rem;
+    color: var(--text-mid);
+  }
+  .calc-table td:last-child {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+  .calc-table tr.grand-total td {
+    padding-top: 10px;
+    border-top: 2px solid var(--green);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--green-dark);
+  }
+  .calc-table tr.grand-total td:last-child {
+    color: var(--orange-dark);
+    font-size: 1.3rem;
+  }
+
+  .amount-words {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 0.5rem;
+    text-align: right;
+  }
+
+  /* Footer & Signatures */
+  .invoice-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 2rem;
+    margin-top: 2rem;
+  }
+  .terms-col {
+    max-width: 480px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .terms-col strong {
+    color: var(--text-dark);
+  }
+  .sign-col {
+    text-align: center;
+  }
+  .sign-box {
+    width: 160px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--green-mid);
+    font-style: italic;
+    font-weight: 700;
+    border-bottom: 1.5px solid var(--text-dark);
+    margin-bottom: 6px;
+  }
+  .sign-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  /* Print Stylesheet */
+  @media print {
+    body {
+      background: #FFFFFF !important;
+      padding: 0 !important;
+      color: #000000 !important;
+    }
+    .top-bar {
+      display: none !important;
+    }
+    .invoice-paper {
+      box-shadow: none !important;
+      border: none !important;
+      padding: 1.5rem !important;
+      max-width: 100% !important;
+      border-radius: 0 !important;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .invoice-paper {
+      padding: 2rem 1.25rem;
+    }
+    .invoice-header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .invoice-meta-col {
+      text-align: left;
+    }
+    .info-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    .calc-wrapper {
+      grid-template-columns: 1fr;
+    }
+    .invoice-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+    .sign-col {
+      text-align: left;
+    }
+    .sign-box {
+      justify-content: flex-start;
+    }
+  }
+</style>
+<script src="./config.js"></script>
+</head>
+<body>
+
+<!-- TOP ACTION BAR -->
+<div class="top-bar">
+  <a href="user-dashboard.html" class="btn-action btn-back" id="backBtn">
+    ← Back to Dashboard
+  </a>
+  <div style="display: flex; gap: 10px;">
+    <button class="btn-action btn-print" onclick="window.print()">
+      🖨️ Print / Download PDF
+    </button>
+  </div>
+</div>
+
+<!-- INVOICE PAPER -->
+<div class="invoice-paper" id="invoicePaper">
+  
+  <!-- Stamp -->
+  <div class="paid-stamp" id="stampStatus">PAID & COMPLETED</div>
+
+  <!-- HEADER -->
+  <div class="invoice-header">
+    <div class="brand-col">
+      <img src="./logo.png" alt="RhinoVoyage Logo">
+      <div class="company-name">RhinoVoyage</div>
+      <div class="company-info" id="compAddress">
+        Temple Road, Near Rang Ghar<br>
+        Sivasagar, Assam — 785640, India<br>
+        Phone: +91 94350 12345 | support@rhinovoyage.com
+      </div>
+    </div>
+    
+    <div class="invoice-meta-col">
+      <div class="invoice-title">TRIP INVOICE</div>
+      <div class="invoice-meta-item">Invoice No: <span class="invoice-num" id="invNumber">RV-INV-2026-0000</span></div>
+      <div class="invoice-meta-item">Date of Issue: <strong id="invDate">June 20, 2026</strong></div>
+      <div class="invoice-meta-item">Booking Ref: <strong id="invBookingId" style="font-family:'JetBrains Mono',monospace;">...</strong></div>
+      <div class="invoice-meta-item">Location: <strong>Sivasagar, Assam</strong></div>
+    </div>
+  </div>
+
+  <!-- 2-COLUMN INFO: PASSENGER & JOURNEY -->
+  <div class="info-grid">
+    <div>
+      <div class="info-box-title">👤 Passenger Details</div>
+      <div class="info-row">
+        <span>Traveler Name:</span>
+        <span id="custName">Traveler</span>
+      </div>
+      <div class="info-row">
+        <span>Contact Phone:</span>
+        <span id="custPhone">+91 ...</span>
+      </div>
+      <div class="info-row">
+        <span>Email Address:</span>
+        <span id="custEmail">guest@rhinovoyage.com</span>
+      </div>
+      <div class="info-row">
+        <span>Payment Method:</span>
+        <span id="custPayMethod" style="text-transform: uppercase;">UPI / Cash</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="info-box-title">🛣️ Journey & Vehicle Details</div>
+      <div class="info-row">
+        <span>Pickup Date:</span>
+        <span id="tripPickup">2026-06-21</span>
+      </div>
+      <div class="info-row">
+        <span>Vehicle Class:</span>
+        <span id="tripVehicle">SUV / MUV</span>
+      </div>
+      <div class="info-row">
+        <span>Car Allocated:</span>
+        <span id="tripCar">Innova (AS-01-AG-4701)</span>
+      </div>
+      <div class="info-row">
+        <span>Assigned Driver:</span>
+        <span id="tripDriver">Rohan Borah</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINE ITEMS TABLE -->
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width: 65%;">Service / Journey Description</th>
+        <th style="width: 15%;">Quantity / Duration</th>
+        <th style="width: 20%;">Total (INR)</th>
+      </tr>
+    </thead>
+    <tbody id="lineItemsBody">
+      <tr>
+        <td>
+          <div class="item-desc-title" id="itemTitle">Car Rental Service</div>
+          <div class="item-desc-sub" id="itemSub">Route: Sivasagar Heritage Tour</div>
+        </td>
+        <td style="font-size: 0.85rem;">1 Journey</td>
+        <td id="itemBaseAmt">₹3,500.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- FINANCIAL BREAKDOWN & NOTES -->
+  <div class="calc-wrapper">
+    <div class="calc-notes">
+      <strong>Trip & Pricing Information:</strong>
+      Fare covers vehicle rental, professional chauffeur services, and designated journey route. Additional distance or parking/entry permits are itemized where applicable.
+    </div>
+
+    <div>
+      <table class="calc-table">
+        <tr>
+          <td>Base Fare:</td>
+          <td id="calcBase">₹3,500.00</td>
+        </tr>
+        <tr id="rowExtraKms" style="display: none;">
+          <td>Extra Distance / Toll Charges:</td>
+          <td id="calcExtra">₹0.00</td>
+        </tr>
+        <tr id="rowDiscount" style="display: none;">
+          <td>Discount Applied:</td>
+          <td id="calcDiscount">-₹0.00</td>
+        </tr>
+        <tr class="grand-total">
+          <td>Total Invoiced Amount:</td>
+          <td id="calcGrandTotal">₹3,500.00</td>
+        </tr>
+      </table>
+      <div class="amount-words" id="amountInWords">Total: Three Thousand Five Hundred Rupees Only</div>
+    </div>
+  </div>
+
+  <!-- FOOTER & SIGNATURE -->
+  <div class="invoice-footer">
+    <div class="terms-col">
+      <strong>Terms & Notes:</strong><br>
+      1. Official travel receipt generated by RhinoVoyage.<br>
+      2. For trip support or booking extensions, please contact support@rhinovoyage.com.<br>
+      3. Computer generated invoice; verified digital record.
+    </div>
+
+    <div class="sign-col">
+      <div class="sign-box">RhinoVoyage Auth</div>
+      <div class="sign-label">Authorized Signatory</div>
+      <div style="font-size: 0.68rem; color: var(--green-mid); margin-top: 2px;">RhinoVoyage Sivasagar</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Simple integer-to-words converter for INR
+  function numToWords(num) {
+    const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    
+    num = Math.floor(Number(num));
+    if (num === 0) return 'Zero Rupees Only';
+    
+    function convert(n) {
+      if (n < 20) return a[n];
+      if (n < 100) return b[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + a[n % 10] : ' ');
+      if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 !== 0 ? convert(n % 100) : '');
+      if (n < 100000) return convert(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 !== 0 ? convert(n % 1000) : '');
+      if (n < 10000000) return convert(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 !== 0 ? convert(n % 100000) : '');
+      return convert(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 !== 0 ? convert(n % 10000000) : '');
+    }
+    
+    return convert(num).trim() + ' Rupees Only';
+  }
+
+  // Determine back navigation target depending on role
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  if (user) {
+    if (user.role === 'admin') document.getElementById('backBtn').href = 'admin-dashboard.html';
+    else if (user.role === 'driver') document.getElementById('backBtn').href = 'driver-dashboard.html';
+    else document.getElementById('backBtn').href = 'user-dashboard.html';
+  }
+
+  // Get booking ID from query parameter or fallback to latest
+  const urlParams = new URLSearchParams(window.location.search);
+  const bookingId = urlParams.get('id') || 'latest';
+
+  async function loadInvoice() {
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const response = await fetch(`${apiBase}/bookings/${bookingId}/invoice`, { headers });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Invoice details not available.');
+      }
+
+      const { booking, invoice, customerUser } = data;
+
+      // Populate Meta
+      document.getElementById('invNumber').innerText = invoice.invoiceNumber || `RV-INV-2026-${booking.id}`;
+      const issueDate = new Date(invoice.issueDate || invoice.completedAt || booking.createdAt);
+      document.getElementById('invDate').innerText = issueDate.toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+      document.getElementById('invBookingId').innerText = booking.id;
+
+      // Stamp
+      const isPaid = invoice.paymentStatus !== 'Unpaid';
+      const stamp = document.getElementById('stampStatus');
+      stamp.innerText = isPaid ? 'PAID & COMPLETED' : 'PAYMENT DUE';
+      if (!isPaid) {
+        stamp.style.borderColor = '#C62828';
+        stamp.style.color = '#C62828';
+        stamp.style.background = 'rgba(198, 40, 40, 0.04)';
+      }
+
+      // Customer
+      document.getElementById('custName').innerText = booking.name || (customerUser ? customerUser.name : 'Traveler');
+      document.getElementById('custPhone').innerText = booking.phone || (customerUser ? customerUser.phone : 'N/A');
+      document.getElementById('custEmail').innerText = (customerUser ? customerUser.email : 'Registered Guest');
+      document.getElementById('custPayMethod').innerText = (invoice.paymentMethod || booking.paymentMethod || 'UPI / Cash');
+
+      // Journey
+      const tripDate = new Date(booking.pickupDate).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      document.getElementById('tripPickup').innerText = tripDate;
+      document.getElementById('tripVehicle').innerText = booking.vehicle || 'Standard Vehicle';
+      document.getElementById('tripCar').innerText = booking.carModel ? `${booking.carModel} (${booking.carNumber})` : 'Assigned Fleet Vehicle';
+      document.getElementById('tripDriver').innerText = booking.driverName || 'RhinoVoyage Executive Partner';
+
+      // Table line items
+      const serviceName = booking.serviceType === 'car_rental' ? 'Car Rental Service' : booking.serviceType === 'tour_package' ? 'Tour Package Operator Service' : 'Custom Heritage Tour';
+      document.getElementById('itemTitle').innerText = `${serviceName} — ${booking.vehicle}`;
+      document.getElementById('itemSub').innerText = booking.details ? `Notes/Route: ${booking.details}` : 'Guwahati / Sivasagar Northeast Heritage Route';
+      
+      const baseFare = Number(invoice.baseFare || 3500);
+      document.getElementById('itemBaseAmt').innerText = `₹${baseFare.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('calcBase').innerText = `₹${baseFare.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+
+      // Extra charges / tolls
+      const extras = Number(invoice.extraKmCharges || 0) + Number(invoice.tollCharges || 0) + Number(invoice.parkingCharges || 0);
+      if (extras > 0) {
+        document.getElementById('rowExtraKms').style.display = 'table-row';
+        document.getElementById('calcExtra').innerText = `₹${extras.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      }
+
+      // Discount
+      const discount = Number(invoice.discount || 0);
+      if (discount > 0) {
+        document.getElementById('rowDiscount').style.display = 'table-row';
+        document.getElementById('calcDiscount').innerText = `-₹${discount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      }
+
+      const total = Number(invoice.totalAmount || Math.max(0, baseFare + extras - discount));
+      document.getElementById('calcGrandTotal').innerText = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      document.getElementById('amountInWords').innerText = `Total: ${numToWords(total)}`;
+
+    } catch (err) {
+      document.getElementById('invoicePaper').innerHTML = `
+        <div style="text-align: center; padding: 4rem 2rem; color: var(--orange-dark);">
+          <h2 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem;">Trip Receipt Notice</h2>
+          <p style="font-size: 0.95rem; color: var(--text-mid); margin-bottom: 1.5rem;">${err.message}</p>
+          <a href="user-dashboard.html" class="btn-action btn-back">Return to Dashboard</a>
+        </div>
+      `;
+    }
+  }
+
+  loadInvoice();
+</script>
+
+</body>
+</html>

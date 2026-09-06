@@ -553,6 +553,21 @@
 
         const statusClass = b.status.toLowerCase();
         
+        let actionBtn = '';
+        if (b.status === 'Approved') {
+          actionBtn = `
+            <button onclick="openCompleteTripModal('${b.id}', '${b.vehicle.replace(/'/g, "\\'")}', '${b.name.replace(/'/g, "\\'")}', '${b.pickupDate}')" style="margin-top: 8px; background: var(--green); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-family: 'Nunito', sans-serif;">
+              🏁 Complete Journey
+            </button>
+          `;
+        } else if (b.status === 'Completed' || b.invoice) {
+          actionBtn = `
+            <a href="invoice.html?id=${b.id}" target="_blank" style="margin-top: 8px; background: var(--orange); color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; font-family: 'Nunito', sans-serif;">
+              📄 View Tax Invoice
+            </a>
+          `;
+        }
+
         card.innerHTML = `
           <div class="booking-main">
             <h4>${b.vehicle}</h4>
@@ -569,6 +584,7 @@
           </div>
           <div>
             <div class="badge badge-${statusClass}">${b.status}</div>
+            ${actionBtn}
           </div>
         `;
         listContainer.appendChild(card);
@@ -650,6 +666,56 @@
     }
   }
 
+  // Complete Trip Modal Functions
+  let activeCompleteBookingId = null;
+
+  function openCompleteTripModal(bookingId, vehicle, name, pickupDate) {
+    activeCompleteBookingId = bookingId;
+    document.getElementById('modalTripDetails').innerText = `${vehicle} with passenger ${name} (${pickupDate})`;
+    document.getElementById('completeTripModal').style.display = 'flex';
+  }
+
+  function closeCompleteTripModal() {
+    activeCompleteBookingId = null;
+    document.getElementById('completeTripModal').style.display = 'none';
+  }
+
+  async function handleCompleteTripSubmit(e) {
+    e.preventDefault();
+    if (!activeCompleteBookingId) return;
+
+    const extraKms = document.getElementById('compExtraKm').value || 0;
+    const tollCharges = document.getElementById('compTolls').value || 0;
+    const paymentStatus = document.getElementById('compPayStatus').value || 'Paid';
+    const notes = document.getElementById('compNotes').value || '';
+
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/bookings/${activeCompleteBookingId}/complete`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          extraKms,
+          tollCharges,
+          paymentStatus,
+          notes
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Failed to complete trip.');
+
+      alert('Trip marked as Completed! Invoice generated successfully. 🎉');
+      closeCompleteTripModal();
+      fetchMyBookings();
+    } catch (err) {
+      alert(`Error completing trip: ${err.message}`);
+    }
+  }
+
   function handleLogout() {
     localStorage.clear();
     window.location.href = 'login.html';
@@ -662,6 +728,48 @@
     await fetchNotifications();
   })();
 </script>
+
+<!-- COMPLETE TRIP MODAL -->
+<div id="completeTripModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+  <div style="background: white; border-radius: 16px; width: 100%; max-width: 480px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--green-dark);">🏁 Complete Journey</h3>
+      <button onclick="closeCompleteTripModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+    </div>
+    
+    <p id="modalTripDetails" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; background: var(--cream); padding: 8px 12px; border-radius: 6px;"></p>
+
+    <form onsubmit="handleCompleteTripSubmit(event)">
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Extra Distance Traveled (KM above package)</label>
+        <input type="number" id="compExtraKm" min="0" placeholder="0" style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Nunito', sans-serif;">
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">State Entry Permits / Tolls / Parking (₹)</label>
+        <input type="number" id="compTolls" min="0" placeholder="0" style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Nunito', sans-serif;">
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Payment Collection Status</label>
+        <select id="compPayStatus" style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Nunito', sans-serif;">
+          <option value="Paid">Payment Collected (Paid in Full)</option>
+          <option value="Unpaid">Payment Pending (To RhinoVoyage Online)</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Driver Completion Note (Optional)</label>
+        <textarea id="compNotes" rows="2" placeholder="Journey completed smoothly..." style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Nunito', sans-serif; resize: vertical;"></textarea>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" onclick="closeCompleteTripModal()" style="background: var(--cream); border: 1px solid var(--cream-dark); padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 700; cursor: pointer;">Cancel</button>
+        <button type="submit" style="background: var(--green); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer;">Complete & Generate Invoice</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 </body>
 </html>

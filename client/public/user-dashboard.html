@@ -258,6 +258,10 @@
   .booking-card-approved {
     border-left: 6px solid #2D6A4F;
   }
+  .booking-card-completed {
+    border-left: 6px solid #1B4332;
+    background: linear-gradient(to right, #FAFDFB, #FFFFFF);
+  }
   .booking-card-pending {
     border-left: 6px solid #E8651A;
   }
@@ -325,9 +329,14 @@
     border: 1px solid #FFE082;
   }
   .badge-approved {
+    background: #E3F2FD;
+    color: #1565C0;
+    border: 1px solid #90CAF9;
+  }
+  .badge-completed {
     background: #E8F5E9;
-    color: #2E7D32;
-    border: 1px solid #A5D6A7;
+    color: #1B4332;
+    border: 1px solid #81C784;
   }
   .badge-cancelled {
     background: #FFEBEE;
@@ -335,10 +344,31 @@
     border: 1px solid #FFCDD2;
   }
 
+  .btn-view-invoice {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green);
+    color: var(--white);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 8px rgba(27, 67, 50, 0.2);
+  }
+  .btn-view-invoice:hover {
+    background: var(--orange);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(232, 101, 26, 0.3);
+  }
+
   /* Stats Grid */
   .user-stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
     margin-bottom: 2rem;
   }
@@ -507,6 +537,13 @@
         </div>
       </div>
       <div class="stat-card">
+        <div class="stat-icon" style="background: #E8F8F5; color: #1B4332; box-shadow: 0 4px 10px rgba(27, 67, 50, 0.1);">✅</div>
+        <div>
+          <div id="stat-completed" class="stat-value">0</div>
+          <div class="stat-label">Completed</div>
+        </div>
+      </div>
+      <div class="stat-card">
         <div class="stat-icon" style="background: #FFF8E1; color: #F57F17; box-shadow: 0 4px 10px rgba(245, 127, 23, 0.1);">⏳</div>
         <div>
           <div id="stat-pending" class="stat-value">0</div>
@@ -593,10 +630,12 @@
       // Update statistics
       const total = data.bookings.length;
       const approved = data.bookings.filter(b => b.status === 'Approved').length;
+      const completed = data.bookings.filter(b => b.status === 'Completed').length;
       const pending = data.bookings.filter(b => b.status === 'Pending').length;
 
       document.getElementById('stat-total').innerText = total;
       document.getElementById('stat-approved').innerText = approved;
+      document.getElementById('stat-completed').innerText = completed;
       document.getElementById('stat-pending').innerText = pending;
 
       if (data.bookings.length === 0) {
@@ -619,14 +658,29 @@
         const statusClass = b.status.toLowerCase();
         card.className = `booking-card booking-card-${statusClass}`;
 
-        // Calculate a dummy price or display payment method
         const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
         const formattedDate = new Date(b.pickupDate).toLocaleDateString('en-US', {
           weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
         });
 
+        const invoiceAmount = b.totalAmount || (b.invoice && b.invoice.totalAmount);
+        const priceDisplay = invoiceAmount 
+          ? `₹${Number(invoiceAmount).toLocaleString('en-IN')}`
+          : b.paymentMethod.toUpperCase();
+
+        const priceLabel = invoiceAmount ? 'Invoiced Total' : 'Payment Mode';
+
+        let invoiceButton = '';
+        if (b.status === 'Completed' || b.status === 'Approved' || b.invoice) {
+          invoiceButton = `
+            <a href="invoice.html?id=${b.id}" class="btn-view-invoice" target="_blank">
+              📄 View Invoice / Receipt
+            </a>
+          `;
+        }
+
         let assignmentDetails = '';
-        if (b.status === 'Approved' && (b.driverName || b.carModel || b.carNumber)) {
+        if ((b.status === 'Approved' || b.status === 'Completed') && (b.driverName || b.carModel || b.carNumber)) {
           assignmentDetails = `
             <div class="assignment-details" style="grid-column: 1 / -1; margin-top: 15px; padding: 15px; background: rgba(27, 67, 50, 0.02); border-radius: 12px; border: 1px dashed rgba(27, 67, 50, 0.2); display: flex; flex-direction: column; gap: 10px;">
               <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 800; color: var(--green-mid); letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
@@ -666,11 +720,12 @@
             ${formattedDate}
           </div>
           <div class="booking-price">
-            ${b.paymentMethod.toUpperCase()}
-            <span>Payment Mode</span>
+            ${priceDisplay}
+            <span>${priceLabel}</span>
           </div>
           <div>
             <div class="badge badge-${statusClass}">${b.status}</div>
+            ${invoiceButton}
           </div>
           ${assignmentDetails}
         `;
@@ -722,11 +777,26 @@
         card.style.gap = '1rem';
         card.style.boxShadow = '0 2px 10px rgba(232, 101, 26, 0.04)';
         
+        let invoiceAction = '';
+        if (n.bookingId || n.type === 'invoice') {
+          const bookingTarget = n.bookingId || '';
+          if (bookingTarget) {
+            invoiceAction = `
+              <a href="invoice.html?id=${bookingTarget}" target="_blank" style="background: var(--green); color: white; text-decoration: none; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; white-space: nowrap;">
+                📄 View Invoice
+              </a>
+            `;
+          }
+        }
+
         card.innerHTML = `
           <p style="font-size: 0.88rem; color: var(--text-dark); font-weight: 600; line-height: 1.5;">${n.message}</p>
-          <button onclick="dismissNotification('${n.id}')" style="background: none; border: none; color: var(--orange-dark); font-weight: 700; cursor: pointer; font-size: 0.8rem; font-family: 'Nunito', sans-serif; white-space: nowrap; padding: 4px 8px; border-radius: 4px;">
-            Dismiss
-          </button>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            ${invoiceAction}
+            <button onclick="dismissNotification('${n.id}')" style="background: none; border: none; color: var(--orange-dark); font-weight: 700; cursor: pointer; font-size: 0.8rem; font-family: 'Nunito', sans-serif; white-space: nowrap; padding: 4px 8px; border-radius: 4px;">
+              Dismiss
+            </button>
+          </div>
         `;
         list.appendChild(card);
       });
@@ -757,8 +827,6 @@
   function handleLogout() {
     localStorage.clear();
     window.location.href = 'login.html';
-  }
-
   // Load dashboard items on load
   fetchMyBookings();
   fetchNotifications();
