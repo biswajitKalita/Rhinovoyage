@@ -127,10 +127,22 @@ footer {
     font-size: 0.8rem;
 }
 
+.social-link svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    display: block;
+    transition: transform 0.2s;
+}
+
 .social-link:hover {
     border-color: var(--orange);
     background: rgba(232, 101, 26, 0.15);
     color: var(--orange);
+}
+
+.social-link:hover svg {
+    transform: scale(1.15);
 }
 
 /* Responsive */
