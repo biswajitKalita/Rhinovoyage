@@ -705,50 +705,79 @@
       <div class="section-label">Reviews</div>
       <h2 class="section-title">What Our Travelers <em>Say About Us</em></h2>
 
-      <div class="testi-grid" style="margin-top: 3rem;">
-        <div class="testi-card">
-          <div class="stars">⭐⭐⭐⭐⭐</div>
-          <div class="testi-quote">“</div>
-          <p class="testi-text">Booked an Ertiga from Rhino Voyage for my trip from Sivasagar to Dibrugarh Airport. The
-            car was clean and comfortable, the driver was polite and professional, and the fare was reasonable. Overall,
-            a smooth and pleasant experience. Highly recommended !!!</p>
-          <div class="testi-author">
-            <div class="testi-avatar">A</div>
-            <div>
-              <div class="testi-name">Arup Jyoti Lahkar</div>
-              <div class="testi-detail">Tezpur, Assam</div>
+      <div class="testi-slider-wrapper" style="margin-top: 3rem;">
+        <!-- Left Arrow -->
+        <button class="slider-arrow testi-prev-arrow" onclick="slideTestimonials('left')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-dark)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Slider Container -->
+        <div class="testi-slider-container">
+          <!-- Testimonials Grid / Flex Track -->
+          <div class="testi-grid" id="testi-container">
+            <div class="testi-card">
+              <div class="stars">⭐⭐⭐⭐⭐</div>
+              <div class="testi-quote">“</div>
+              <p class="testi-text">Booked an Ertiga from Rhino Voyage for my trip from Sivasagar to Dibrugarh Airport. The
+                car was clean and comfortable, the driver was polite and professional, and the fare was reasonable. Overall,
+                a smooth and pleasant experience. Highly recommended !!!</p>
+              <div class="testi-author">
+                <div class="testi-avatar">A</div>
+                <div>
+                  <div class="testi-name">Arup Jyoti Lahkar</div>
+                  <div class="testi-detail">Tezpur, Assam</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="testi-card featured-t">
+              <div class="stars">⭐⭐⭐⭐⭐</div>
+              <div class="testi-quote">“</div>
+              <p class="testi-text">Had a great trip from Majuli to Shillong with Rhino Voyage. The journey was comfortable,
+                the car was clean, and the driver was very humble and professional. Everything went smoothly, making the
+                trip enjoyable. Thanks, Rhino Voyage, for the excellent service. Highly recommended!</p>
+              <div class="testi-author">
+                <div class="testi-avatar g">M</div>
+                <div>
+                  <div class="testi-name">Modon Kalita</div>
+                  <div class="testi-detail">Majuli, Assam</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="testi-card">
+              <div class="stars">⭐⭐⭐⭐⭐</div>
+              <div class="testi-quote">“</div>
+              <p class="testi-text">Had a wonderful trip from Sivasagar to Arunachal Pradesh with Rhino Voyage. The car was
+                clean and comfortable, the driver was polite and professional, and the entire journey was smooth and
+                enjoyable. Thanks to Rhino Voyage for the excellent service and making the trip memorable.</p>
+              <div class="testi-author">
+                <div class="testi-avatar b">D</div>
+                <div>
+                  <div class="testi-name">Deepak Tomar</div>
+                  <div class="testi-detail">Delhi, India</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="testi-card featured-t">
-          <div class="stars">⭐⭐⭐⭐⭐</div>
-          <div class="testi-quote">“</div>
-          <p class="testi-text">Had a great trip from Majuli to Shillong with Rhino Voyage. The journey was comfortable,
-            the car was clean, and the driver was very humble and professional. Everything went smoothly, making the
-            trip enjoyable. Thanks, Rhino Voyage, for the excellent service. Highly recommended!</p>
-          <div class="testi-author">
-            <div class="testi-avatar g">M</div>
-            <div>
-              <div class="testi-name">Modon Kalita</div>
-              <div class="testi-detail">Majuli, Assam</div>
-            </div>
-          </div>
-        </div>
+        <!-- Right Arrow -->
+        <button class="slider-arrow testi-next-arrow" onclick="slideTestimonials('right')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-dark)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
 
-        <div class="testi-card">
-          <div class="stars">⭐⭐⭐⭐⭐</div>
-          <div class="testi-quote">“</div>
-          <p class="testi-text">Had a wonderful trip from Sivasagar to Arunachal Pradesh with Rhino Voyage. The car was
-            clean and comfortable, the driver was polite and professional, and the entire journey was smooth and
-            enjoyable. Thanks to Rhino Voyage for the excellent service and making the trip memorable.</p>
-          <div class="testi-author">
-            <div class="testi-avatar b">D</div>
-            <div>
-              <div class="testi-name">Deepak Tomar</div>
-              <div class="testi-detail">Delhi, India</div>
-            </div>
-          </div>
+      <!-- Testimonials Progress Indicator (Mobile only) -->
+      <div class="testi-progress-container">
+        <div class="testi-progress-track">
+          <div class="testi-progress-bar" id="testi-progress-bar"></div>
         </div>
       </div>
     </div>
@@ -1053,6 +1082,23 @@
         updateFleetArrows(currentFleetOffset, maxOffset);
         updateFleetProgress();
       }
+
+      // Testimonials slider resize update
+      const testiContainer = document.getElementById('testi-container');
+      const testiSliderContainer = document.querySelector('.testi-slider-container');
+      if (testiContainer && testiSliderContainer) {
+        if (window.innerWidth > 768) {
+          testiContainer.style.transform = 'none';
+        } else {
+          const visibleWidth = testiSliderContainer.offsetWidth;
+          const trackWidth = testiContainer.scrollWidth;
+          const maxOffset = Math.max(0, trackWidth - visibleWidth);
+          currentTestiOffset = Math.min(currentTestiOffset, maxOffset);
+          testiContainer.style.transform = `translateX(-${currentTestiOffset}px)`;
+          updateTestiArrows(currentTestiOffset, maxOffset);
+          updateTestiProgress();
+        }
+      }
     });
 
     // Fleet/Car Slider Carousel logic
@@ -1155,6 +1201,117 @@
       progressBar.style.width = `${barWidth}%`;
 
       const scrollPercent = currentFleetOffset / maxOffset;
+      const maxTranslate = trackTotalWidth - (barWidth / 100) * trackTotalWidth;
+      const translateX = scrollPercent * maxTranslate;
+
+      progressBar.style.transform = `translateX(${translateX}px)`;
+    }
+
+    // =========================================
+    // TESTIMONIALS / REVIEWS SLIDER (Mobile only)
+    // =========================================
+    let currentTestiOffset = 0;
+
+    function slideTestimonials(direction) {
+      if (window.innerWidth > 768) return; // Grid view on desktop
+
+      const container = document.getElementById('testi-container');
+      const sliderContainer = document.querySelector('.testi-slider-container');
+      if (!container || !sliderContainer) return;
+
+      const firstCard = container.querySelector('.testi-card');
+      if (!firstCard) return;
+
+      const visibleWidth = sliderContainer.offsetWidth;
+      const trackWidth = container.scrollWidth;
+      const maxOffset = Math.max(0, trackWidth - visibleWidth);
+
+      const computedStyle = window.getComputedStyle(container);
+      const gap = parseFloat(computedStyle.gap || computedStyle.columnGap) || 16;
+      const step = firstCard.offsetWidth + gap;
+
+      if (direction === 'right') {
+        currentTestiOffset = Math.min(currentTestiOffset + step, maxOffset);
+      } else {
+        currentTestiOffset = Math.max(currentTestiOffset - step, 0);
+      }
+
+      container.style.transform = `translateX(-${currentTestiOffset}px)`;
+      updateTestiArrows(currentTestiOffset, maxOffset);
+      updateTestiProgress();
+    }
+
+    function updateTestiArrows(offset, maxOffset) {
+      const prevBtn = document.querySelector('.testi-prev-arrow');
+      const nextBtn = document.querySelector('.testi-next-arrow');
+
+      if (prevBtn) {
+        if (offset <= 0) {
+          prevBtn.style.opacity = '0.3';
+          prevBtn.style.pointerEvents = 'none';
+        } else {
+          prevBtn.style.opacity = '1';
+          prevBtn.style.pointerEvents = 'auto';
+        }
+      }
+
+      if (nextBtn) {
+        if (offset >= maxOffset) {
+          nextBtn.style.opacity = '0.3';
+          nextBtn.style.pointerEvents = 'none';
+        } else {
+          nextBtn.style.opacity = '1';
+          nextBtn.style.pointerEvents = 'auto';
+        }
+      }
+    }
+
+    function resetTestiSliderPosition() {
+      currentTestiOffset = 0;
+      const container = document.getElementById('testi-container');
+      if (container) {
+        if (window.innerWidth > 768) {
+          container.style.transform = 'none';
+        } else {
+          container.style.transform = 'translateX(0px)';
+        }
+      }
+
+      setTimeout(() => {
+        const sliderContainer = document.querySelector('.testi-slider-container');
+        if (container && sliderContainer && window.innerWidth <= 768) {
+          const visibleWidth = sliderContainer.offsetWidth;
+          const trackWidth = container.scrollWidth;
+          const maxOffset = Math.max(0, trackWidth - visibleWidth);
+          updateTestiArrows(0, maxOffset);
+          updateTestiProgress();
+        }
+      }, 150);
+    }
+
+    function updateTestiProgress() {
+      const container = document.getElementById('testi-container');
+      const sliderContainer = document.querySelector('.testi-slider-container');
+      const progressBar = document.getElementById('testi-progress-bar');
+      const progressTrack = document.querySelector('.testi-progress-track');
+      if (!container || !sliderContainer || !progressBar || !progressTrack) return;
+
+      const visibleWidth = sliderContainer.offsetWidth;
+      const trackWidth = container.scrollWidth;
+      const maxOffset = Math.max(0, trackWidth - visibleWidth);
+
+      if (maxOffset <= 0) {
+        progressBar.style.width = '100%';
+        progressBar.style.transform = 'translateX(0px)';
+        return;
+      }
+
+      const trackTotalWidth = progressTrack.offsetWidth;
+      const ratio = visibleWidth / trackWidth;
+      const barWidth = Math.max(33, ratio * 100);
+      progressBar.style.width = `${barWidth}%`;
+
+      const scrollPercent = currentTestiOffset / maxOffset;
       const maxTranslate = trackTotalWidth - (barWidth / 100) * trackTotalWidth;
       const translateX = scrollPercent * maxTranslate;
 
@@ -1324,6 +1481,7 @@
     populatePackageSelect();
     renderPackages();
     resetFleetSliderPosition();
+    resetTestiSliderPosition();
 
     // Auto-select package if redirected from details page
     const urlParams = new URLSearchParams(window.location.search);
