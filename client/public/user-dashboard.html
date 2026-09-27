@@ -498,6 +498,10 @@
     <div class="profile-role">Travel Partner</div>
     
     <div class="profile-detail">
+      <strong>User ID</strong>
+      <span id="prof-id" style="font-family: monospace; font-size: 0.95rem; font-weight: 700; color: var(--orange-dark); letter-spacing: 1px;">RV00000001</span>
+    </div>
+    <div class="profile-detail">
       <strong>Email Address</strong>
       <span id="prof-email">email@example.com</span>
     </div>
@@ -608,6 +612,8 @@
     if (bannerEl) bannerEl.innerText = `Welcome back, ${firstName}!`;
     const initialEl = document.getElementById('prof-initial');
     if (initialEl) initialEl.innerText = (user.name ? user.name[0] : 'T').toUpperCase();
+    const idEl = document.getElementById('prof-id');
+    if (idEl) idEl.innerText = user.id || 'N/A';
     const nameEl = document.getElementById('prof-name');
     if (nameEl) nameEl.innerText = user.name || 'Traveler';
     const emailEl = document.getElementById('prof-email');

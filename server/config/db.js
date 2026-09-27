@@ -50,11 +50,36 @@ class JsonDatabase {
     }
   }
 
+  // Generate sequential custom ID for users (e.g. RV00000001)
+  _getNextUserId(data) {
+    let maxNum = 0;
+    data.forEach(item => {
+      if (item && item.id && typeof item.id === 'string' && item.id.startsWith('RV')) {
+        const numPart = parseInt(item.id.replace('RV', ''), 10);
+        if (!isNaN(numPart) && numPart > maxNum) {
+          maxNum = numPart;
+        }
+      }
+    });
+    const nextNum = maxNum + 1;
+    return `RV${String(nextNum).padStart(8, '0')}`;
+  }
+
   // Insert a new document
   insert(collection, doc) {
     const data = this._read(collection);
+    
+    let docId = doc.id;
+    if (!docId) {
+      if (collection === 'users') {
+        docId = this._getNextUserId(data);
+      } else {
+        docId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+      }
+    }
+
     const newDoc = {
-      id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+      id: docId,
       createdAt: new Date().toISOString(),
       ...doc
     };
