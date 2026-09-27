@@ -491,23 +491,83 @@ section {
     text-align: center;
 }
 
-/* Mobile responsive resets */
-@media (max-width: 575px) {
+/* Mobile responsive resets & smartphone optimizations */
+@media (max-width: 768px) {
     section {
-        padding: 4rem 1rem;
+        padding: 4.5rem 1.25rem;
+    }
+    .section-title {
+        font-size: clamp(1.8rem, 6.5vw, 2.4rem);
+    }
+    .destinations-strip {
+        padding: 0.9rem 0;
+    }
+    .marquee-item {
+        padding: 0 1.75rem;
+        font-size: 0.8rem;
+        gap: 8px;
+    }
+    .marquee-dot {
+        width: 5px;
+        height: 5px;
+    }
+}
+
+@media (max-width: 575px) {
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+    section {
+        padding: 3.5rem 1rem;
     }
     .container {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        width: 100%;
+    }
+    .section-label {
+        font-size: 0.68rem;
+        letter-spacing: 2px;
+        margin-bottom: 0.5rem;
+    }
+    .section-title {
+        font-size: 1.75rem;
+        line-height: 1.25;
+    }
+    .toast {
+        bottom: 86px;
+        right: 12px;
+        left: 12px;
+        padding: 0.85rem 1.15rem;
+        font-size: 0.85rem;
+        text-align: center;
+        border-radius: 10px;
     }
     .rv-wa-box {
         right: 12px;
         left: 12px;
         width: auto;
-        bottom: 86px;
+        bottom: 82px;
+        max-height: 80vh;
     }
     .rv-wa-widget {
-        bottom: 18px;
-        right: 18px;
+        bottom: 16px;
+        right: 16px;
+    }
+    .rv-wa-trigger {
+        width: 52px;
+        height: 52px;
+    }
+    .rv-wa-trigger svg {
+        width: 28px;
+        height: 28px;
+    }
+    .rv-wa-teaser {
+        bottom: 62px;
+        right: 0;
+        font-size: 0.76rem;
+        padding: 6px 11px;
     }
 }

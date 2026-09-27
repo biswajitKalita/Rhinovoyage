@@ -66,3 +66,29 @@
     color: white;
     transform: translateY(-2px);
 }
+
+@media (max-width: 575px) {
+    .sivasagar-banner {
+        padding: 4rem 1.25rem;
+    }
+
+    .siva-content h2 {
+        font-size: 1.85rem;
+    }
+
+    .siva-content p {
+        font-size: 0.92rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .siva-highlights {
+        gap: 0.6rem;
+        margin-bottom: 2rem;
+    }
+
+    .siva-h {
+        padding: 0.45rem 1rem;
+        font-size: 0.78rem;
+    }
+}
+

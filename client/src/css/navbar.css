@@ -210,4 +210,46 @@ nav.scrolled {
     .hamburger.active span:nth-child(3) {
         transform: translateY(-7px) rotate(-45deg);
     }
-}
+}
+
+@media (max-width: 480px) {
+    nav {
+        padding: 0 0.85rem;
+    }
+
+    .nav-inner {
+        height: 64px;
+    }
+
+    .logo-icon {
+        width: 115px !important;
+        height: 44px !important;
+    }
+
+    .nav-cta {
+        margin-right: 0.75rem;
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .hamburger {
+        width: 38px;
+        height: 38px;
+        padding: 6px;
+    }
+
+    .nav-links {
+        top: 64px;
+    }
+
+    .nav-links.active {
+        height: calc(100vh - 64px);
+        padding: 2.5rem 1.5rem;
+    }
+
+    .nav-links a {
+        font-size: 1.15rem;
+        padding: 0.6rem 0;
+    }
+}
+

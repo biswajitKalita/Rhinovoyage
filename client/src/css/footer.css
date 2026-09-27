@@ -155,5 +155,23 @@ footer {
 @media (max-width: 768px) {
     .footer-grid {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 }
+
+@media (max-width: 575px) {
+    footer {
+        padding: 3.5rem 1.25rem 2rem;
+    }
+
+    .footer-bottom {
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 1.25rem;
+        text-align: center;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+}
