@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node client/build.js"
+    "build": "node client/build.js",
+    "server": "node server/server.js",
+    "client": "npx serve client/public -l 3000"
   }
 }

@@ -327,17 +327,23 @@
   }
   .sign-box {
     width: 160px;
-    height: 50px;
+    height: 52px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    color: var(--green-mid);
-    font-style: italic;
-    font-weight: 700;
     border-bottom: 1.5px solid var(--text-dark);
     margin-bottom: 6px;
+    padding-bottom: 2px;
+  }
+  .signature-img {
+    max-height: 48px;
+    max-width: 155px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
   }
   .sign-label {
     font-size: 0.72rem;
@@ -544,7 +550,9 @@
     </div>
 
     <div class="sign-col">
-      <div class="sign-box">RhinoVoyage Auth</div>
+      <div class="sign-box">
+        <img src="./signature.png" alt="Biswajit Kalita - Authorized Signatory" class="signature-img">
+      </div>
       <div class="sign-label">Authorized Signatory</div>
       <div style="font-size: 0.68rem; color: var(--green-mid); margin-top: 2px;">RhinoVoyage Sivasagar</div>
     </div>
