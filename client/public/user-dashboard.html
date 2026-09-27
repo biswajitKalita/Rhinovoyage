@@ -590,22 +590,37 @@
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
-  if (!token || !user || user.role !== 'user') {
-    // Clear storage and redirect to login
+  if (!token || !user) {
     localStorage.clear();
     window.location.href = 'login.html';
+  } else if (user.role === 'admin') {
+    window.location.href = 'admin-dashboard.html';
+  } else if (user.role === 'driver') {
+    window.location.href = 'driver-dashboard.html';
   }
 
-  // Populate profile info
-  document.getElementById('nav-user-greeting').innerText = `Welcome, ${user.name.split(' ')[0]}`;
-  document.getElementById('welcome-banner-title').innerText = `Welcome back, ${user.name.split(' ')[0]}!`;
-  document.getElementById('prof-initial').innerText = user.name[0].toUpperCase();
-  document.getElementById('prof-name').innerText = user.name;
-  document.getElementById('prof-email').innerText = user.email;
-  document.getElementById('prof-phone').innerText = user.phone;
-  document.getElementById('prof-joined').innerText = new Date(user.createdAt).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long'
-  });
+  // Populate profile info safely
+  if (user) {
+    const firstName = (user.name || 'Traveler').split(' ')[0];
+    const greetingEl = document.getElementById('nav-user-greeting');
+    if (greetingEl) greetingEl.innerText = `Welcome, ${firstName}`;
+    const bannerEl = document.getElementById('welcome-banner-title');
+    if (bannerEl) bannerEl.innerText = `Welcome back, ${firstName}!`;
+    const initialEl = document.getElementById('prof-initial');
+    if (initialEl) initialEl.innerText = (user.name ? user.name[0] : 'T').toUpperCase();
+    const nameEl = document.getElementById('prof-name');
+    if (nameEl) nameEl.innerText = user.name || 'Traveler';
+    const emailEl = document.getElementById('prof-email');
+    if (emailEl) emailEl.innerText = user.email || 'N/A';
+    const phoneEl = document.getElementById('prof-phone');
+    if (phoneEl) phoneEl.innerText = user.phone || 'N/A';
+    const joinedEl = document.getElementById('prof-joined');
+    if (joinedEl && user.createdAt) {
+      joinedEl.innerText = new Date(user.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long'
+      });
+    }
+  }
 
   // Fetch bookings
   async function fetchMyBookings() {
@@ -655,18 +670,18 @@
 
       data.bookings.forEach(b => {
         const card = document.createElement('div');
-        const statusClass = b.status.toLowerCase();
+        const statusClass = (b.status || 'pending').toLowerCase();
         card.className = `booking-card booking-card-${statusClass}`;
 
         const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
-        const formattedDate = new Date(b.pickupDate).toLocaleDateString('en-US', {
+        const formattedDate = b.pickupDate ? new Date(b.pickupDate).toLocaleDateString('en-US', {
           weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-        });
+        }) : 'Date not set';
 
         const invoiceAmount = b.totalAmount || (b.invoice && b.invoice.totalAmount);
         const priceDisplay = invoiceAmount 
           ? `₹${Number(invoiceAmount).toLocaleString('en-IN')}`
-          : b.paymentMethod.toUpperCase();
+          : (b.paymentMethod ? b.paymentMethod.toUpperCase() : 'N/A');
 
         const priceLabel = invoiceAmount ? 'Invoiced Total' : 'Payment Mode';
 
@@ -701,7 +716,7 @@
                     <div style="font-size: 1.5rem; background: var(--cream); width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">🚘</div>
                     <div>
                       <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Vehicle Allocation</div>
-                      <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-dark);">${b.carModel} <span style="background: var(--orange-pale); color: var(--orange-dark); font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; margin-left: 4px; border: 1px solid var(--orange-light);">${b.carNumber}</span></div>
+                      <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-dark);">${b.carModel} <span style="background: var(--orange-pale); color: var(--orange-dark); font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; margin-left: 4px; border: 1px solid var(--orange-light);">${b.carNumber || ''}</span></div>
                     </div>
                   </div>
                 ` : ''}
@@ -710,10 +725,12 @@
           `;
         }
 
+        const detailsText = b.details ? (b.details.length > 40 ? `${b.details.substring(0, 40)}...` : b.details) : 'No specific requests';
+
         card.innerHTML = `
           <div class="booking-main">
-            <h4>${b.vehicle}</h4>
-            <p>${serviceLabel} · ${b.details.substring(0, 40) || 'No specific requests'}${b.details.length > 40 ? '...' : ''}</p>
+            <h4>${b.vehicle || 'Trip Vehicle'}</h4>
+            <p>${serviceLabel} · ${detailsText}</p>
           </div>
           <div class="booking-date">
             <strong>Pickup Date</strong>
@@ -724,7 +741,7 @@
             <span>${priceLabel}</span>
           </div>
           <div>
-            <div class="badge badge-${statusClass}">${b.status}</div>
+            <div class="badge badge-${statusClass}">${b.status || 'Pending'}</div>
             ${invoiceButton}
           </div>
           ${assignmentDetails}
@@ -827,9 +844,13 @@
   function handleLogout() {
     localStorage.clear();
     window.location.href = 'login.html';
+  }
+
   // Load dashboard items on load
-  fetchMyBookings();
-  fetchNotifications();
+  if (token && user) {
+    fetchMyBookings();
+    fetchNotifications();
+  }
 </script>
 
 </body>
