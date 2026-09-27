@@ -332,9 +332,9 @@ exports.getBookingInvoice = (req, res) => {
     const companyDetails = {
       name: 'RhinoVoyage',
       tagline: 'Premier Assam & Northeast Travel Experience',
-      address: 'Temple Road, Near Rang Ghar, Sivasagar, Assam - 785640, India',
-      phone: '+91 94350 12345',
-      email: 'support@rhinovoyage.com',
+      address: 'LKB Road, Amulapatty, Sivasagar, Assam — 785640, India',
+      phone: '+91 98648 20229, +91 99542 53585',
+      email: 'rhinovoyage@gmail.com',
       website: 'www.rhinovoyage.com'
     };
 
