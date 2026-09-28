@@ -46,6 +46,71 @@
       }
     }
 
+    /* Navbar Profile Dropdown Styles */
+    .nav-profile {
+      position: relative;
+      display: none; /* Shown via JS */
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    .nav-profile:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .nav-profile-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .nav-profile-name {
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .nav-profile-dropdown {
+      position: absolute;
+      top: 120%;
+      right: 0;
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 180px;
+      padding: 0.5rem 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+    .nav-profile:hover .nav-profile-dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .nav-profile-dropdown a {
+      display: block;
+      padding: 0.7rem 1.2rem;
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-profile-dropdown a:hover {
+      background: var(--orange-pale);
+      color: var(--orange);
+    }
+
     /* Auth Modal Styles */
     .auth-modal-backdrop {
       position: fixed;
@@ -260,7 +325,18 @@
         <li><a href="#reviews">Reviews</a></li>
         <li><a href="#about">About Us</a></li>
       </ul>
-      <a href="#booking" class="nav-cta">Book Now</a>
+      
+      <!-- Profile Section (Hidden by default, shown when logged in) -->
+      <div class="nav-profile" id="nav-profile">
+        <div class="nav-profile-avatar" id="nav-profile-initial">?</div>
+        <span class="nav-profile-name" id="nav-profile-name">User</span>
+        <div class="nav-profile-dropdown">
+          <a href="#" id="nav-profile-dashboard">Dashboard</a>
+          <a href="#" onclick="handleLogout()">Log Out</a>
+        </div>
+      </div>
+
+      <a href="#booking" class="nav-cta" id="nav-cta">Book Now</a>
       <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
     </div>
   </nav>
@@ -1431,10 +1507,23 @@
     const navToken = localStorage.getItem('token');
     const navUser = JSON.parse(localStorage.getItem('user') || 'null');
     const portalLink = document.getElementById('nav-portal-link');
-    if (portalLink && navToken && navUser) {
-      portalLink.innerText = 'Dashboard';
-      portalLink.href = navUser.role === 'admin' ? 'admin-dashboard.html' : 'user-dashboard.html';
+    const navProfile = document.getElementById('nav-profile');
+
+    if (navToken && navUser) {
+      if (portalLink) portalLink.parentElement.style.display = 'none'; // Hide "Login / Join"
+      if (navProfile) {
+        navProfile.style.display = 'flex';
+        document.getElementById('nav-profile-name').innerText = navUser.name.split(' ')[0];
+        document.getElementById('nav-profile-initial').innerText = navUser.name.charAt(0).toUpperCase();
+        document.getElementById('nav-profile-dashboard').href = navUser.role === 'admin' ? 'admin-dashboard.html' : (navUser.role === 'driver' ? 'driver-dashboard.html' : 'user-dashboard.html');
+      }
     }
+
+    window.handleLogout = function() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.reload();
+    };
 
     // Auto-fill logged in user info in booking form
     if (navUser) {
