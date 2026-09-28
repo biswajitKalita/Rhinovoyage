@@ -166,6 +166,30 @@
       color: var(--orange-dark) !important;
     }
 
+    .divider-container {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 10px 0 5px;
+    }
+    .divider-container::before,
+    .divider-container::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+    .divider-container:not(:empty)::before {
+      margin-right: .5em;
+    }
+    .divider-container:not(:empty)::after {
+      margin-left: .5em;
+    }
+    .divider-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
     @media (max-width: 480px) {
       .auth-modal-card {
         padding: 1.75rem 1.25rem;
@@ -1791,7 +1815,10 @@
         <a id="modal-login-btn" href="login.html" class="auth-modal-btn-primary">Log In to Your Account</a>
         <a id="modal-register-btn" href="login.html?tab=register" class="auth-modal-btn-secondary">Create a New
           Account</a>
-        <div id="google-btn-wrapper" style="margin-top: 10px; display: flex; justify-content: center; width: 100%;"></div>
+        <div class="divider-container">
+          <span class="divider-text">OR</span>
+        </div>
+        <div id="google-btn-wrapper" style="display: flex; justify-content: center; width: 100%;"></div>
       </div>
     </div>
   </div>

@@ -225,6 +225,31 @@
     border-color: #C8E6C9;
   }
 
+  /* Divider */
+  .divider-container {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .divider-container::before,
+  .divider-container::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+  .divider-container:not(:empty)::before {
+    margin-right: .5em;
+  }
+  .divider-container:not(:empty)::after {
+    margin-left: .5em;
+  }
+  .divider-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
   @media (max-width: 480px) {
     body {
       padding: 1rem;
@@ -298,7 +323,10 @@
       <button type="submit" class="btn-submit">
         Log In
       </button>
-      <div id="google-btn-wrapper" style="margin-top: 15px; display: flex; justify-content: center; width: 100%;"></div>
+      <div class="divider-container">
+        <span class="divider-text">OR</span>
+      </div>
+      <div id="google-btn-wrapper" style="margin-top: 10px; display: flex; justify-content: center; width: 100%;"></div>
     </form>
   </div>
 
