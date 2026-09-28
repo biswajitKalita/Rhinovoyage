@@ -1791,10 +1791,66 @@
         <a id="modal-login-btn" href="login.html" class="auth-modal-btn-primary">Log In to Your Account</a>
         <a id="modal-register-btn" href="login.html?tab=register" class="auth-modal-btn-secondary">Create a New
           Account</a>
+        <div id="google-btn-wrapper" style="margin-top: 10px; display: flex; justify-content: center; width: 100%;"></div>
       </div>
     </div>
   </div>
 
-</body>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    async function initGoogleSignIn() {
+      try {
+        const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${apiBase}/auth/google-client-id`);
+        const data = await response.json();
+        if (data.success && data.clientId) {
+          google.accounts.id.initialize({
+            client_id: data.clientId,
+            callback: handleGoogleCredentialResponse
+          });
+          google.accounts.id.renderButton(
+            document.getElementById('google-btn-wrapper'),
+            { theme: 'outline', size: 'large', text: 'signin_with', shape: 'rectangular', width: 280 }
+          );
+        }
+      } catch (e) {
+        console.error('Failed to load Google Client ID', e);
+      }
+    }
 
+    async function handleGoogleCredentialResponse(response) {
+      try {
+        const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${apiBase}/auth/google`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          
+          closeAuthRequiredModal();
+          // Automatically submit the pending booking since they logged in successfully
+          const pending = sessionStorage.getItem('pending_booking');
+          if (pending) {
+            alert('Google Login successful! Submitting your booking now...');
+            // Refresh to trigger auto-submit logic that's already built into index.html
+            window.location.reload();
+          } else {
+            window.location.reload();
+          }
+        } else {
+          alert('Google Login failed: ' + data.message);
+        }
+      } catch (err) {
+        alert('Error during Google Sign-In.');
+      }
+    }
+
+    window.addEventListener('load', initGoogleSignIn);
+  </script>
+</body>
 </html>
