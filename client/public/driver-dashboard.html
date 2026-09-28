@@ -560,7 +560,7 @@
               🏁 Complete Journey
             </button>
           `;
-        } else if (b.status === 'Completed' || b.invoice) {
+        } else if (b.status === 'Completed' && b.invoice) {
           actionBtn = `
             <a href="invoice.html?id=${b.id}" target="_blank" style="margin-top: 8px; background: var(--orange); color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; font-family: 'Nunito', sans-serif;">
               📄 View Tax Invoice

@@ -719,10 +719,9 @@
       } else if (b.status === 'Approved') {
         actionButtons = `
           <button class="btn-action" onclick="openAdminCompleteModal('${b.id}')" style="background: #1B4332; color: white; border: 1px solid #1B4332;">Complete</button>
-          <a href="invoice.html?id=${b.id}" target="_blank" class="btn-action" style="background: #E8F5E9; color: #1B4332; border: 1px solid #A5D6A7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">📄 Invoice</a>
           <button class="btn-action btn-cancel" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>
         `;
-      } else if (b.status === 'Completed' || b.invoice) {
+      } else if (b.status === 'Completed' && b.invoice) {
         actionButtons = `
           <a href="invoice.html?id=${b.id}" target="_blank" class="btn-action" style="background: #E8F5E9; color: #1B4332; border: 1px solid #A5D6A7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">📄 Invoice</a>
         `;

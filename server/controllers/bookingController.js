@@ -272,17 +272,17 @@ exports.getBookingInvoice = (req, res) => {
 
     if (!id || id === 'latest' || id === 'undefined') {
       if (req.user) {
-        const userBookings = db.find('bookings', { userId: req.user.id });
+        const userBookings = db.find('bookings', { userId: req.user.id, status: 'Completed' });
         if (userBookings.length > 0) {
           userBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           booking = userBookings[0];
         }
       }
       if (!booking) {
-        const allBookings = db.find('bookings');
-        if (allBookings.length > 0) {
-          allBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          booking = allBookings[0];
+        const allCompleted = db.find('bookings', { status: 'Completed' });
+        if (allCompleted.length > 0) {
+          allCompleted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          booking = allCompleted[0];
         }
       }
     } else {
@@ -303,18 +303,21 @@ exports.getBookingInvoice = (req, res) => {
       }
     }
 
-    // If invoice not present, generate auto-invoice on the fly without GST
-    let invoice = booking.invoice;
-    if (!invoice) {
-      invoice = createInvoiceObject(booking, {});
-    } else {
-      // Ensure gst is 0 even if older cached invoice
-      invoice.gstRate = 0;
-      invoice.cgst = 0;
-      invoice.sgst = 0;
-      invoice.gstAmount = 0;
-      invoice.totalAmount = invoice.subtotal || invoice.totalAmount;
+    // Invoices are only available after completion of the journey
+    if (booking.status !== 'Completed' || !booking.invoice) {
+      return res.status(400).json({
+        success: false,
+        message: 'The invoice will be generated and available for download once your journey is completed.'
+      });
     }
+
+    let invoice = booking.invoice;
+    // Ensure gst is 0 even if older cached invoice
+    invoice.gstRate = 0;
+    invoice.cgst = 0;
+    invoice.sgst = 0;
+    invoice.gstAmount = 0;
+    invoice.totalAmount = invoice.subtotal || invoice.totalAmount;
 
     // Fetch user details for richer invoice if available
     let customerUser = null;

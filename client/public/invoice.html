@@ -670,11 +670,17 @@
       document.getElementById('amountInWords').innerText = `Total: ${numToWords(total)}`;
 
     } catch (err) {
+      const printBtn = document.querySelector('.btn-print');
+      if (printBtn) printBtn.style.display = 'none';
+
+      const dashboardUrl = (user && user.role === 'admin') ? 'admin-dashboard.html' : (user && user.role === 'driver') ? 'driver-dashboard.html' : 'user-dashboard.html';
+
       document.getElementById('invoicePaper').innerHTML = `
         <div style="text-align: center; padding: 4rem 2rem; color: var(--orange-dark);">
-          <h2 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem;">Trip Receipt Notice</h2>
-          <p style="font-size: 0.95rem; color: var(--text-mid); margin-bottom: 1.5rem;">${err.message}</p>
-          <a href="user-dashboard.html" class="btn-action btn-back">Return to Dashboard</a>
+          <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+          <h2 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--green-dark);">Invoice Not Available Yet</h2>
+          <p style="font-size: 1rem; color: var(--text-mid); max-width: 480px; margin: 0 auto 1.5rem; line-height: 1.6;">${err.message || 'The invoice and official travel receipt will be accessible and downloadable only after completion of the ride.'}</p>
+          <a href="${dashboardUrl}" class="btn-action btn-back" style="background: var(--green); color: white; display: inline-flex;">Return to Dashboard</a>
         </div>
       `;
     }

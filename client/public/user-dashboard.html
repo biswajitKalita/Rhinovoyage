@@ -692,7 +692,7 @@
         const priceLabel = invoiceAmount ? 'Invoiced Total' : 'Payment Mode';
 
         let invoiceButton = '';
-        if (b.status === 'Completed' || b.status === 'Approved' || b.invoice) {
+        if (b.status === 'Completed' && b.invoice) {
           invoiceButton = `
             <a href="invoice.html?id=${b.id}" class="btn-view-invoice" target="_blank">
               📄 View Invoice / Receipt
@@ -801,15 +801,12 @@
         card.style.boxShadow = '0 2px 10px rgba(232, 101, 26, 0.04)';
         
         let invoiceAction = '';
-        if (n.bookingId || n.type === 'invoice') {
-          const bookingTarget = n.bookingId || '';
-          if (bookingTarget) {
-            invoiceAction = `
-              <a href="invoice.html?id=${bookingTarget}" target="_blank" style="background: var(--green); color: white; text-decoration: none; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; white-space: nowrap;">
-                📄 View Invoice
-              </a>
-            `;
-          }
+        if (n.type === 'invoice' && n.bookingId) {
+          invoiceAction = `
+            <a href="invoice.html?id=${n.bookingId}" target="_blank" style="background: var(--green); color: white; text-decoration: none; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; white-space: nowrap;">
+              📄 View Invoice
+            </a>
+          `;
         }
 
         card.innerHTML = `
