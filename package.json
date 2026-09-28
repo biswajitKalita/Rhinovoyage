@@ -6,5 +6,8 @@
     "build": "node client/build.js",
     "server": "node server/server.js",
     "client": "npx serve client/public -l 3000"
+  },
+  "dependencies": {
+    "google-auth-library": "^11.1.0"
   }
 }

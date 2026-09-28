@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 const { syncUserLog } = require('../utils/sheets');
 const { saveBase64Image } = require('../utils/upload');
+const { OAuth2Client } = require('google-auth-library');
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Helper to generate token and set cookie
 const sendTokenResponse = (user, statusCode, res) => {
@@ -150,4 +153,53 @@ exports.logout = (req, res) => {
 // @access  Private
 exports.getMe = (req, res) => {
   res.status(200).json({ success: true, user: req.user });
+};
+
+// @desc    Get Google Client ID
+// @route   GET /api/auth/google-client-id
+// @access  Public
+exports.getGoogleClientId = (req, res) => {
+  res.status(200).json({ success: true, clientId: process.env.GOOGLE_CLIENT_ID });
+};
+
+// @desc    Google Sign In
+// @route   POST /api/auth/google
+// @access  Public
+exports.googleSignIn = async (req, res) => {
+  const { credential } = req.body;
+
+  if (!credential) {
+    return res.status(400).json({ success: false, message: 'Google credential token is missing.' });
+  }
+
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
+
+    let user = db.findOne('users', { email: email.toLowerCase() });
+
+    if (!user) {
+      // Create a new user automatically
+      const newUser = {
+        name,
+        email: email.toLowerCase(),
+        phone: '', // Google does not provide phone by default in sign in
+        role: 'user',
+        password: '', // No password for OAuth users
+        createdAt: new Date().toISOString()
+      };
+      user = db.insert('users', newUser);
+    }
+
+    sendTokenResponse(user, 200, res);
+
+  } catch (error) {
+    console.error('Google Sign-In Error:', error);
+    res.status(401).json({ success: false, message: 'Invalid or expired Google token.' });
+  }
 };

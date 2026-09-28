@@ -1627,8 +1627,8 @@
         return;
       }
 
-      const pickupLocation = document.getElementById('pickup_location').value;
-      const dropLocation = document.getElementById('drop_location').value;
+      const pickupLocation = document.getElementById('pickup_location') ? document.getElementById('pickup_location').value : '';
+      const dropLocation = document.getElementById('drop_location') ? document.getElementById('drop_location').value : '';
       let finalDetails = details;
       if (serviceType === 'tour_package') {
         const packageSelect = document.getElementById('package_select');
