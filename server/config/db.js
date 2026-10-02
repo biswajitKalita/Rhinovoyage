@@ -1,60 +1,47 @@
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
 
-const DB_DIR = process.env.DATABASE_DIR || path.join(__dirname, '../../database');
-
-// Ensure DB directory exists
-if (!fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
-}
-
-class JsonDatabase {
+class MongoDatabase {
   constructor() {
-    this.collections = {
-      users: path.join(DB_DIR, 'users.json'),
-      bookings: path.join(DB_DIR, 'bookings.json'),
-      notifications: path.join(DB_DIR, 'notifications.json'),
-      cars: path.join(DB_DIR, 'cars.json')
-    };
+    this.isConnected = false;
+    this.connect();
+  }
 
-    // Initialize files if they don't exist
-    Object.keys(this.collections).forEach(name => {
-      const filePath = this.collections[name];
-      if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, JSON.stringify([], null, 2));
+  async connect() {
+    if (this.isConnected) return;
+    try {
+      if (!process.env.MONGO_URI) {
+        console.error('MONGO_URI is missing in .env file. Database will fail to connect.');
+        return;
       }
-    });
-  }
-
-  _read(collection) {
-    try {
-      const filePath = this.collections[collection];
-      if (!filePath) throw new Error(`Collection '${collection}' does not exist.`);
-      const content = fs.readFileSync(filePath, 'utf8');
-      return JSON.parse(content || '[]');
+      await mongoose.connect(process.env.MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      });
+      this.isConnected = true;
+      console.log('MongoDB successfully connected.');
     } catch (error) {
-      console.error(`Error reading collection ${collection}:`, error);
-      return [];
+      console.error('MongoDB connection error:', error);
     }
   }
 
-  _write(collection, data) {
-    try {
-      const filePath = this.collections[collection];
-      if (!filePath) throw new Error(`Collection '${collection}' does not exist.`);
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-      return true;
-    } catch (error) {
-      console.error(`Error writing collection ${collection}:`, error);
-      return false;
+  async _ensureConnection() {
+    if (!this.isConnected) {
+      await this.connect();
     }
   }
 
-  // Generate sequential custom ID for users (e.g. RV00000001)
-  _getNextUserId(data) {
+  getCollection(name) {
+    if (!mongoose.connection.db) throw new Error('Database not initialized');
+    return mongoose.connection.db.collection(name);
+  }
+
+  async _getNextUserId() {
+    await this._ensureConnection();
+    const col = this.getCollection('users');
+    const users = await col.find({ id: { $regex: '^RV' } }).toArray();
     let maxNum = 0;
-    data.forEach(item => {
-      if (item && item.id && typeof item.id === 'string' && item.id.startsWith('RV')) {
+    users.forEach(item => {
+      if (item && item.id) {
         const numPart = parseInt(item.id.replace('RV', ''), 10);
         if (!isNaN(numPart) && numPart > maxNum) {
           maxNum = numPart;
@@ -65,14 +52,14 @@ class JsonDatabase {
     return `RV${String(nextNum).padStart(8, '0')}`;
   }
 
-  // Insert a new document
-  insert(collection, doc) {
-    const data = this._read(collection);
+  async insert(collection, doc) {
+    await this._ensureConnection();
+    const col = this.getCollection(collection);
     
     let docId = doc.id;
     if (!docId) {
       if (collection === 'users') {
-        docId = this._getNextUserId(data);
+        docId = await this._getNextUserId();
       } else {
         docId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
       }
@@ -83,81 +70,42 @@ class JsonDatabase {
       createdAt: new Date().toISOString(),
       ...doc
     };
-    data.push(newDoc);
-    this._write(collection, data);
+    
+    await col.insertOne(newDoc);
     return newDoc;
   }
 
-  // Find all documents matching query
-  find(collection, query = {}) {
-    const data = this._read(collection);
-    return data.filter(item => {
-      for (let key in query) {
-        if (item[key] !== query[key]) return false;
-      }
-      return true;
-    });
+  async find(collection, query = {}) {
+    await this._ensureConnection();
+    const col = this.getCollection(collection);
+    return await col.find(query).toArray();
   }
 
-  // Find single document
-  findOne(collection, query = {}) {
-    const data = this._read(collection);
-    return data.find(item => {
-      for (let key in query) {
-        if (item[key] !== query[key]) return false;
-      }
-      return true;
-    }) || null;
+  async findOne(collection, query = {}) {
+    await this._ensureConnection();
+    const col = this.getCollection(collection);
+    return await col.findOne(query);
   }
 
-  // Update documents matching query
-  update(collection, query, updateData) {
-    const data = this._read(collection);
-    let updatedCount = 0;
-    
-    const updatedData = data.map(item => {
-      let matches = true;
-      for (let key in query) {
-        if (item[key] !== query[key]) {
-          matches = false;
-          break;
-        }
+  async update(collection, query, updateData) {
+    await this._ensureConnection();
+    const col = this.getCollection(collection);
+    const updatePayload = {
+      $set: {
+        ...updateData,
+        updatedAt: new Date().toISOString()
       }
-      if (matches) {
-        updatedCount++;
-        return { ...item, ...updateData, updatedAt: new Date().toISOString() };
-      }
-      return item;
-    });
-
-    if (updatedCount > 0) {
-      this._write(collection, updatedData);
-    }
-    return updatedCount;
+    };
+    const result = await col.updateMany(query, updatePayload);
+    return result.modifiedCount;
   }
 
-  // Delete documents matching query
-  delete(collection, query) {
-    const data = this._read(collection);
-    const initialLength = data.length;
-    
-    const filteredData = data.filter(item => {
-      let matches = true;
-      for (let key in query) {
-        if (item[key] !== query[key]) {
-          matches = false;
-          break;
-        }
-      }
-      return !matches;
-    });
-
-    const deletedCount = initialLength - filteredData.length;
-    if (deletedCount > 0) {
-      this._write(collection, filteredData);
-    }
-    return deletedCount;
+  async delete(collection, query) {
+    await this._ensureConnection();
+    const col = this.getCollection(collection);
+    const result = await col.deleteMany(query);
+    return result.deletedCount;
   }
 }
 
-module.exports = new JsonDatabase();
+module.exports = new MongoDatabase();

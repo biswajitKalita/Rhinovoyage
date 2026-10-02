@@ -5,7 +5,7 @@ const db = require('../config/db');
 // @access  Private
 exports.getNotifications = (req, res) => {
   try {
-    const notifications = db.find('notifications', { userId: req.user.id });
+    const notifications = await ('notifications', { userId: req.user.id });
     res.status(200).json({ success: true, count: notifications.length, notifications });
   } catch (error) {
     console.error('Get notifications controller error:', error);
@@ -19,13 +19,13 @@ exports.getNotifications = (req, res) => {
 exports.markAsRead = (req, res) => {
   try {
     const { id } = req.params;
-    const exists = db.findOne('notifications', { id, userId: req.user.id });
+    const exists = await One('notifications', { id, userId: req.user.id });
     
     if (!exists) {
       return res.status(404).json({ success: false, message: 'Notification not found or access denied.' });
     }
 
-    db.update('notifications', { id }, { read: true });
+    await ('notifications', { id }, { read: true });
 
     res.status(200).json({ success: true, message: 'Notification marked as read.' });
   } catch (error) {
@@ -40,13 +40,13 @@ exports.markAsRead = (req, res) => {
 exports.deleteNotification = (req, res) => {
   try {
     const { id } = req.params;
-    const exists = db.findOne('notifications', { id, userId: req.user.id });
+    const exists = await One('notifications', { id, userId: req.user.id });
     
     if (!exists) {
       return res.status(404).json({ success: false, message: 'Notification not found or access denied.' });
     }
 
-    db.delete('notifications', { id });
+    await ('notifications', { id });
 
     res.status(200).json({ success: true, message: 'Notification deleted successfully.' });
   } catch (error) {

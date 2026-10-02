@@ -1212,17 +1212,13 @@
       const testiContainer = document.getElementById('testi-container');
       const testiSliderContainer = document.querySelector('.testi-slider-container');
       if (testiContainer && testiSliderContainer) {
-        if (window.innerWidth > 768) {
-          testiContainer.style.transform = 'none';
-        } else {
-          const visibleWidth = testiSliderContainer.offsetWidth;
-          const trackWidth = testiContainer.scrollWidth;
-          const maxOffset = Math.max(0, trackWidth - visibleWidth);
-          currentTestiOffset = Math.min(currentTestiOffset, maxOffset);
-          testiContainer.style.transform = `translateX(-${currentTestiOffset}px)`;
-          updateTestiArrows(currentTestiOffset, maxOffset);
-          updateTestiProgress();
-        }
+        const visibleWidth = testiSliderContainer.offsetWidth;
+        const trackWidth = testiContainer.scrollWidth;
+        const maxOffset = Math.max(0, trackWidth - visibleWidth);
+        currentTestiOffset = Math.min(currentTestiOffset, maxOffset);
+        testiContainer.style.transform = `translateX(-${currentTestiOffset}px)`;
+        updateTestiArrows(currentTestiOffset, maxOffset);
+        updateTestiProgress();
       }
     });
 
@@ -1338,7 +1334,6 @@
     let currentTestiOffset = 0;
 
     function slideTestimonials(direction) {
-      if (window.innerWidth > 768) return; // Grid view on desktop
 
       const container = document.getElementById('testi-container');
       const sliderContainer = document.querySelector('.testi-slider-container');
@@ -1395,16 +1390,12 @@
       currentTestiOffset = 0;
       const container = document.getElementById('testi-container');
       if (container) {
-        if (window.innerWidth > 768) {
-          container.style.transform = 'none';
-        } else {
-          container.style.transform = 'translateX(0px)';
-        }
+        container.style.transform = 'translateX(0px)';
       }
 
       setTimeout(() => {
         const sliderContainer = document.querySelector('.testi-slider-container');
-        if (container && sliderContainer && window.innerWidth <= 768) {
+        if (container && sliderContainer) {
           const visibleWidth = sliderContainer.offsetWidth;
           const trackWidth = container.scrollWidth;
           const maxOffset = Math.max(0, trackWidth - visibleWidth);

@@ -24,7 +24,7 @@ exports.createBooking = (req, res) => {
       userId: req.user ? req.user.id : 'guest' // link to user if logged in
     };
 
-    const newBooking = db.insert('bookings', bookingData);
+    const newBooking = await ('bookings', bookingData);
 
     // Sync booking creation to Google Sheet
     syncBooking(newBooking, 'create').catch(err => console.error('Booking create sheet sync error:', err));
@@ -52,11 +52,11 @@ exports.getUserBookings = (req, res) => {
           message: 'Your driver account has not been approved yet. Please wait for administrator verification.'
         });
       }
-      const bookings = db.find('bookings', { driverId: req.user.id });
+      const bookings = await ('bookings', { driverId: req.user.id });
       return res.status(200).json({ success: true, count: bookings.length, bookings });
     }
 
-    const bookings = db.find('bookings', { userId: req.user.id });
+    const bookings = await ('bookings', { userId: req.user.id });
     res.status(200).json({ success: true, count: bookings.length, bookings });
   } catch (error) {
     console.error('Get user bookings error:', error);
@@ -69,7 +69,7 @@ exports.getUserBookings = (req, res) => {
 // @access  Private/Admin
 exports.getAllBookings = (req, res) => {
   try {
-    const bookings = db.find('bookings'); // empty query returns all
+    const bookings = await ('bookings'); // empty query returns all
     res.status(200).json({ success: true, count: bookings.length, bookings });
   } catch (error) {
     console.error('Get all bookings error:', error);
@@ -90,7 +90,7 @@ exports.updateBookingStatus = (req, res) => {
       return res.status(400).json({ success: false, message: 'Please provide a valid status: Pending, Approved, Completed, or Cancelled.' });
     }
 
-    const exists = db.findOne('bookings', { id });
+    const exists = await One('bookings', { id });
     if (!exists) {
       return res.status(404).json({ success: false, message: 'Booking not found.' });
     }
@@ -105,7 +105,7 @@ exports.updateBookingStatus = (req, res) => {
       updateFields.completedAt = new Date().toISOString();
     }
 
-    db.update('bookings', { id }, updateFields);
+    await ('bookings', { id }, updateFields);
     const updatedBooking = { ...exists, ...updateFields };
 
     // Sync booking status update to Google Sheet
@@ -128,7 +128,7 @@ exports.updateBookingStatus = (req, res) => {
       }
 
       if (notifyMessage) {
-        db.insert('notifications', {
+        await ('notifications', {
           userId: exists.userId,
           message: notifyMessage,
           read: false,
@@ -207,7 +207,7 @@ function createInvoiceObject(booking, custom = {}) {
 exports.completeBooking = (req, res) => {
   try {
     const { id } = req.params;
-    const booking = db.findOne('bookings', { id });
+    const booking = await One('bookings', { id });
 
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found.' });
@@ -229,7 +229,7 @@ exports.completeBooking = (req, res) => {
       invoiceNumber: invoiceData.invoiceNumber
     };
 
-    db.update('bookings', { id }, updateData);
+    await ('bookings', { id }, updateData);
     const updatedBooking = { ...booking, ...updateData };
 
     // Sync to Google Sheet
@@ -240,7 +240,7 @@ exports.completeBooking = (req, res) => {
       const dateStr = new Date(booking.pickupDate).toLocaleDateString('en-US', {
         month: 'short', day: 'numeric', year: 'numeric'
       });
-      db.insert('notifications', {
+      await ('notifications', {
         userId: booking.userId,
         message: `Your journey with ${booking.vehicle} on ${dateStr} is completed! 🎉 Invoice #${invoiceData.invoiceNumber} for ₹${invoiceData.totalAmount.toLocaleString('en-IN')} is ready. 🧾`,
         read: false,
@@ -272,21 +272,21 @@ exports.getBookingInvoice = (req, res) => {
 
     if (!id || id === 'latest' || id === 'undefined') {
       if (req.user) {
-        const userBookings = db.find('bookings', { userId: req.user.id, status: 'Completed' });
+        const userBookings = await ('bookings', { userId: req.user.id, status: 'Completed' });
         if (userBookings.length > 0) {
           userBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           booking = userBookings[0];
         }
       }
       if (!booking) {
-        const allCompleted = db.find('bookings', { status: 'Completed' });
+        const allCompleted = await ('bookings', { status: 'Completed' });
         if (allCompleted.length > 0) {
           allCompleted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           booking = allCompleted[0];
         }
       }
     } else {
-      booking = db.findOne('bookings', { id });
+      booking = await One('bookings', { id });
     }
 
     if (!booking) {
@@ -322,7 +322,7 @@ exports.getBookingInvoice = (req, res) => {
     // Fetch user details for richer invoice if available
     let customerUser = null;
     if (booking.userId && booking.userId !== 'guest') {
-      const u = db.findOne('users', { id: booking.userId });
+      const u = await One('users', { id: booking.userId });
       if (u) {
         customerUser = {
           name: u.name,
@@ -361,7 +361,7 @@ exports.deleteBooking = (req, res) => {
   try {
     const { id } = req.params;
 
-    const exists = db.findOne('bookings', { id });
+    const exists = await One('bookings', { id });
     if (!exists) {
       return res.status(404).json({ success: false, message: 'Booking not found.' });
     }
@@ -369,7 +369,7 @@ exports.deleteBooking = (req, res) => {
     // Sync booking deletion to Google Sheet
     syncBooking(exists, 'delete').catch(err => console.error('Booking delete sheet sync error:', err));
 
-    db.delete('bookings', { id });
+    await ('bookings', { id });
 
     res.status(200).json({ success: true, message: 'Booking deleted successfully.' });
   } catch (error) {
@@ -386,14 +386,14 @@ exports.assignDriver = (req, res) => {
     const { id } = req.params;
     const { driverId } = req.body;
 
-    const booking = db.findOne('bookings', { id });
+    const booking = await One('bookings', { id });
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found.' });
     }
 
     let driverName = '';
     if (driverId) {
-      const driver = db.findOne('users', { id: driverId, role: 'driver' });
+      const driver = await One('users', { id: driverId, role: 'driver' });
       if (!driver) {
         return res.status(404).json({ success: false, message: 'Driver not found.' });
       }
@@ -404,7 +404,7 @@ exports.assignDriver = (req, res) => {
     }
 
     // Update booking in DB
-    db.update('bookings', { id }, { driverId: driverId || '', driverName });
+    await ('bookings', { id }, { driverId: driverId || '', driverName });
 
     const updatedBooking = { ...booking, driverId: driverId || '', driverName };
 
@@ -416,7 +416,7 @@ exports.assignDriver = (req, res) => {
       const dateStr = new Date(booking.pickupDate).toLocaleDateString('en-US', {
         month: 'short', day: 'numeric', year: 'numeric'
       });
-      db.insert('notifications', {
+      await ('notifications', {
         userId: driverId,
         message: `New trip assigned to you for ${booking.vehicle} on ${dateStr}. 🚗`,
         read: false
@@ -442,7 +442,7 @@ exports.assignCar = (req, res) => {
     const { id } = req.params;
     const { carId } = req.body;
 
-    const booking = db.findOne('bookings', { id });
+    const booking = await One('bookings', { id });
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found.' });
     }
@@ -450,7 +450,7 @@ exports.assignCar = (req, res) => {
     let carModel = '';
     let carNumber = '';
     if (carId) {
-      const car = db.findOne('cars', { id: carId });
+      const car = await One('cars', { id: carId });
       if (!car) {
         return res.status(404).json({ success: false, message: 'Car not found.' });
       }
@@ -459,7 +459,7 @@ exports.assignCar = (req, res) => {
     }
 
     // Update booking in DB
-    db.update('bookings', { id }, { carId: carId || '', carModel, carNumber });
+    await ('bookings', { id }, { carId: carId || '', carModel, carNumber });
 
     const updatedBooking = { ...booking, carId: carId || '', carModel, carNumber };
 

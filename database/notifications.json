@@ -186,5 +186,55 @@
     "read": false,
     "bookingId": "mtpghh54c453c",
     "type": "invoice"
+  },
+  {
+    "id": "muo0qcw53qvh8",
+    "createdAt": "2026-09-30T11:24:58.181Z",
+    "userId": "RV00000002",
+    "message": "Your trip request for Sivasagar Heritage Trail on Oct 21, 2026 has been confirmed! 🎉",
+    "read": false,
+    "bookingId": "muo0gapbmowpi",
+    "type": "status"
+  },
+  {
+    "id": "muo0wkh914tm0",
+    "createdAt": "2026-09-30T11:29:47.949Z",
+    "userId": "RV00000005",
+    "message": "New trip assigned to you for Sivasagar Heritage Trail on Oct 21, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "muo14d8ug85ep",
+    "createdAt": "2026-09-30T11:35:51.823Z",
+    "userId": "RV00000002",
+    "message": "Your journey with Sivasagar Heritage Trail on Oct 21, 2026 is completed! 🎉 Invoice #RV-INV-2026-304710 for ₹16,500 is ready. 🧾",
+    "read": false,
+    "bookingId": "muo0gapbmowpi",
+    "type": "invoice"
+  },
+  {
+    "id": "muo2aj4k464cp",
+    "createdAt": "2026-09-30T12:08:38.996Z",
+    "userId": "RV00000002",
+    "message": "Your trip request for Sivasagar Heritage Trail on Oct 15, 2026 has been confirmed! 🎉",
+    "read": false,
+    "bookingId": "muo0aagiuz62u",
+    "type": "status"
+  },
+  {
+    "id": "muo2an29y5pnt",
+    "createdAt": "2026-09-30T12:08:44.097Z",
+    "userId": "RV00000006",
+    "message": "New trip assigned to you for Sivasagar Heritage Trail on Oct 15, 2026. 🚗",
+    "read": false
+  },
+  {
+    "id": "muo2aor13qzgb",
+    "createdAt": "2026-09-30T12:08:46.285Z",
+    "userId": "RV00000002",
+    "message": "Your journey with Sivasagar Heritage Trail on Oct 15, 2026 is completed! 🎉 Invoice #RV-INV-2026-916751 for ₹16,500 is ready. 🧾",
+    "read": false,
+    "bookingId": "muo0aagiuz62u",
+    "type": "invoice"
   }
 ]

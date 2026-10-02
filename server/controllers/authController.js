@@ -55,7 +55,7 @@ exports.register = async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = db.findOne('users', { email: email.toLowerCase() });
+    const existingUser = await One('users', { email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'An account with this email address already exists.' });
     }
@@ -86,7 +86,7 @@ exports.register = async (req, res) => {
       }
     }
 
-    const newUser = db.insert('users', insertData);
+    const newUser = await ('users', insertData);
 
     // Sync user registration to Google Sheet
     syncUserLog(newUser, 'register').catch(err => console.error('Register sheet sync error:', err));
@@ -110,7 +110,7 @@ exports.login = async (req, res) => {
     }
 
     // Find user
-    const user = db.findOne('users', { email: email.toLowerCase() });
+    const user = await One('users', { email: email.toLowerCase() });
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials. User not found.' });
     }
@@ -181,7 +181,7 @@ exports.googleSignIn = async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
-    let user = db.findOne('users', { email: email.toLowerCase() });
+    let user = await One('users', { email: email.toLowerCase() });
 
     if (!user) {
       // Create a new user automatically
@@ -193,7 +193,7 @@ exports.googleSignIn = async (req, res) => {
         password: '', // No password for OAuth users
         createdAt: new Date().toISOString()
       };
-      user = db.insert('users', newUser);
+      user = await ('users', newUser);
     }
 
     sendTokenResponse(user, 200, res);

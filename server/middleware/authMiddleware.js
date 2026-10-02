@@ -21,7 +21,7 @@ exports.protect = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'rhinovoyagesecretkey123456789!');
 
     // Get user from database (exclude password)
-    const user = db.findOne('users', { id: decoded.id });
+    const user = await One('users', { id: decoded.id });
     if (!user) {
       return res.status(401).json({ success: false, message: 'User matching this token no longer exists.' });
     }
@@ -65,7 +65,7 @@ exports.optionalProtect = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'rhinovoyagesecretkey123456789!');
-    const user = db.findOne('users', { id: decoded.id });
+    const user = await One('users', { id: decoded.id });
     if (user) {
       const { password, ...userWithoutPassword } = user;
       req.user = userWithoutPassword;
