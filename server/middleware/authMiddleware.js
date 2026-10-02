@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 
 // Protect routes - verify user is logged in
-exports.protect = (req, res, next) => {
+exports.protect = async (req, res, next) => {
   let token;
 
   // Read token from cookies (preferred) or Authorization header
@@ -21,7 +21,7 @@ exports.protect = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'rhinovoyagesecretkey123456789!');
 
     // Get user from database (exclude password)
-    const user = await One('users', { id: decoded.id });
+    const user = await db.findOne('users', { id: decoded.id });
     if (!user) {
       return res.status(401).json({ success: false, message: 'User matching this token no longer exists.' });
     }
@@ -37,7 +37,7 @@ exports.protect = (req, res, next) => {
 };
 
 // Grant access to specific roles
-exports.authorize = (...roles) => {
+exports.authorize = async (...roles) => {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ 
@@ -50,7 +50,7 @@ exports.authorize = (...roles) => {
 };
 
 // Optional protect - if logged in attach user, otherwise proceed as guest
-exports.optionalProtect = (req, res, next) => {
+exports.optionalProtect = async (req, res, next) => {
   let token;
 
   if (req.cookies && req.cookies.token) {
@@ -65,7 +65,7 @@ exports.optionalProtect = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'rhinovoyagesecretkey123456789!');
-    const user = await One('users', { id: decoded.id });
+    const user = await db.findOne('users', { id: decoded.id });
     if (user) {
       const { password, ...userWithoutPassword } = user;
       req.user = userWithoutPassword;

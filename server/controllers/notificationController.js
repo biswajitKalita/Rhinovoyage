@@ -3,9 +3,9 @@ const db = require('../config/db');
 // @desc    Get Current User's Notifications
 // @route   GET /api/notifications
 // @access  Private
-exports.getNotifications = (req, res) => {
+exports.getNotifications = async (req, res) => {
   try {
-    const notifications = await ('notifications', { userId: req.user.id });
+    const notifications = await db.find('notifications', { userId: req.user.id });
     res.status(200).json({ success: true, count: notifications.length, notifications });
   } catch (error) {
     console.error('Get notifications controller error:', error);
@@ -16,16 +16,16 @@ exports.getNotifications = (req, res) => {
 // @desc    Mark Notification as Read
 // @route   PUT /api/notifications/:id/read
 // @access  Private
-exports.markAsRead = (req, res) => {
+exports.markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
-    const exists = await One('notifications', { id, userId: req.user.id });
+    const exists = await db.findOne('notifications', { id, userId: req.user.id });
     
     if (!exists) {
       return res.status(404).json({ success: false, message: 'Notification not found or access denied.' });
     }
 
-    await ('notifications', { id }, { read: true });
+    await db.update('notifications', { id }, { read: true });
 
     res.status(200).json({ success: true, message: 'Notification marked as read.' });
   } catch (error) {
@@ -37,16 +37,16 @@ exports.markAsRead = (req, res) => {
 // @desc    Delete Notification
 // @route   DELETE /api/notifications/:id
 // @access  Private
-exports.deleteNotification = (req, res) => {
+exports.deleteNotification = async (req, res) => {
   try {
     const { id } = req.params;
-    const exists = await One('notifications', { id, userId: req.user.id });
+    const exists = await db.findOne('notifications', { id, userId: req.user.id });
     
     if (!exists) {
       return res.status(404).json({ success: false, message: 'Notification not found or access denied.' });
     }
 
-    await ('notifications', { id });
+    await db.delete('notifications', { id });
 
     res.status(200).json({ success: true, message: 'Notification deleted successfully.' });
   } catch (error) {

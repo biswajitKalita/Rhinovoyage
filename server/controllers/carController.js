@@ -4,9 +4,9 @@ const { saveBase64Image } = require('../utils/upload');
 // @desc    Get All Cars
 // @route   GET /api/cars
 // @access  Private/Admin
-exports.getCars = (req, res) => {
+exports.getCars = async (req, res) => {
   try {
-    const cars = await ('cars');
+    const cars = await db.find('cars');
     res.status(200).json({ success: true, count: cars.length, cars });
   } catch (error) {
     console.error('Get cars error:', error);
@@ -35,7 +35,7 @@ exports.addCar = async (req, res) => {
       return res.status(400).json({ success: false, message: uploadErr.message });
     }
 
-    const newCar = await ('cars', {
+    const newCar = await db.insert('cars', {
       owner,
       modelName,
       plateNumber,
@@ -59,16 +59,16 @@ exports.addCar = async (req, res) => {
 // @desc    Delete a Car
 // @route   DELETE /api/cars/:id
 // @access  Private/Admin
-exports.deleteCar = (req, res) => {
+exports.deleteCar = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const exists = await One('cars', { id });
+    const exists = await db.findOne('cars', { id });
     if (!exists) {
       return res.status(404).json({ success: false, message: 'Car not found.' });
     }
 
-    await ('cars', { id });
+    await db.delete('cars', { id });
 
     res.status(200).json({ success: true, message: 'Car successfully deleted from fleet.' });
   } catch (error) {

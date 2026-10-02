@@ -6,9 +6,9 @@ const bcrypt = require('bcryptjs');
 // @desc    Get All Drivers
 // @route   GET /api/users/drivers
 // @access  Private/Admin
-exports.getDrivers = (req, res) => {
+exports.getDrivers = async (req, res) => {
   try {
-    const drivers = await ('users', { role: 'driver' });
+    const drivers = await db.find('users', { role: 'driver' });
     res.status(200).json({ success: true, count: drivers.length, drivers });
   } catch (error) {
     console.error('Get drivers error:', error);
@@ -19,7 +19,7 @@ exports.getDrivers = (req, res) => {
 // @desc    Verify Driver Status
 // @route   PUT /api/users/drivers/:id/verify
 // @access  Private/Admin
-exports.verifyDriver = (req, res) => {
+exports.verifyDriver = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -29,13 +29,13 @@ exports.verifyDriver = (req, res) => {
       return res.status(400).json({ success: false, message: 'Please provide a valid verification status: Approved or Rejected.' });
     }
 
-    const driver = await One('users', { id, role: 'driver' });
+    const driver = await db.findOne('users', { id, role: 'driver' });
     if (!driver) {
       return res.status(404).json({ success: false, message: 'Driver not found.' });
     }
 
     // Update status
-    await ('users', { id }, { verificationStatus: status });
+    await db.update('users', { id }, { verificationStatus: status });
 
     // Sync status change to Google Sheet
     const updatedDriver = { ...driver, verificationStatus: status };
@@ -64,7 +64,7 @@ exports.adminAddDriver = async (req, res) => {
     }
 
     // Check if email already exists
-    const existingUser = await One('users', { email: email.toLowerCase() });
+    const existingUser = await db.findOne('users', { email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'An account with this email address already exists.' });
     }
@@ -84,7 +84,7 @@ exports.adminAddDriver = async (req, res) => {
     }
 
     // Insert driver
-    const newDriver = await ('users', {
+    const newDriver = await db.insert('users', {
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
@@ -119,34 +119,5 @@ exports.adminAddDriver = async (req, res) => {
   } catch (error) {
     console.error('Admin add driver error:', error);
     res.status(500).json({ success: false, message: 'Server error creating driver partner.' });
-  }
-};
-
-// @desc    Update User Profile
-// @route   PUT /api/users/profile
-// @access  Private
-exports.updateProfile = (req, res) => {
-  try {
-    const { name, phone } = req.body;
-    const userId = req.user.id;
-
-    if (!name || !phone) {
-      return res.status(400).json({ success: false, message: 'Please provide name and phone.' });
-    }
-
-    await ('users', { id: userId }, { name, phone });
-    const updatedUser = await One('users', { id: userId });
-    
-    const userToReturn = { ...updatedUser };
-    delete userToReturn.password;
-
-    res.status(200).json({
-      success: true,
-      message: 'Profile updated successfully.',
-      user: userToReturn
-    });
-  } catch (error) {
-    console.error('Update profile error:', error);
-    res.status(500).json({ success: false, message: 'Server error updating profile.' });
   }
 };

@@ -55,7 +55,7 @@ exports.register = async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await One('users', { email: email.toLowerCase() });
+    const existingUser = await db.findOne('users', { email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'An account with this email address already exists.' });
     }
@@ -86,7 +86,7 @@ exports.register = async (req, res) => {
       }
     }
 
-    const newUser = await ('users', insertData);
+    const newUser = await db.insert('users', insertData);
 
     // Sync user registration to Google Sheet
     syncUserLog(newUser, 'register').catch(err => console.error('Register sheet sync error:', err));
@@ -110,7 +110,7 @@ exports.login = async (req, res) => {
     }
 
     // Find user
-    const user = await One('users', { email: email.toLowerCase() });
+    const user = await db.findOne('users', { email: email.toLowerCase() });
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials. User not found.' });
     }
@@ -139,7 +139,7 @@ exports.login = async (req, res) => {
 // @desc    Logout User / Clear Cookie
 // @route   GET /api/auth/logout
 // @access  Public
-exports.logout = (req, res) => {
+exports.logout = async (req, res) => {
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000), // expire in 10s
     httpOnly: true
@@ -151,14 +151,14 @@ exports.logout = (req, res) => {
 // @desc    Get Current Logged In User
 // @route   GET /api/auth/me
 // @access  Private
-exports.getMe = (req, res) => {
+exports.getMe = async (req, res) => {
   res.status(200).json({ success: true, user: req.user });
 };
 
 // @desc    Get Google Client ID
 // @route   GET /api/auth/google-client-id
 // @access  Public
-exports.getGoogleClientId = (req, res) => {
+exports.getGoogleClientId = async (req, res) => {
   res.status(200).json({ success: true, clientId: process.env.GOOGLE_CLIENT_ID });
 };
 
@@ -181,7 +181,7 @@ exports.googleSignIn = async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
-    let user = await One('users', { email: email.toLowerCase() });
+    let user = await db.findOne('users', { email: email.toLowerCase() });
 
     if (!user) {
       // Create a new user automatically
@@ -193,7 +193,7 @@ exports.googleSignIn = async (req, res) => {
         password: '', // No password for OAuth users
         createdAt: new Date().toISOString()
       };
-      user = await ('users', newUser);
+      user = await db.insert('users', newUser);
     }
 
     sendTokenResponse(user, 200, res);
