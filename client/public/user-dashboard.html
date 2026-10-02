@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>User Dashboard — RhinoVoyage</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Phosphor Icons for premium, professional standard icons -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -21,27 +23,35 @@
     --text-mid: #4A3728;
     --text-muted: #8A7060;
     --white: #FFFFFF;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
   }
 
   body {
     font-family: 'Nunito', sans-serif;
-    background: var(--cream);
+    background: #F8F9FA;
     color: var(--text-dark);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* Navigation Header */
   nav {
-    background: var(--green-dark);
-    color: var(--white);
+    background: var(--white);
     padding: 1rem 2rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
   .nav-inner {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -53,7 +63,7 @@
     text-decoration: none;
   }
   .logo img {
-    height: 40px;
+    height: 35px;
     object-fit: contain;
   }
   .nav-user {
@@ -62,59 +72,63 @@
     gap: 1.5rem;
   }
   .nav-user span {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-mid);
   }
   .btn-logout {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: var(--white);
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
+    border: 1px solid var(--gray-300);
+    color: var(--text-mid);
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
     cursor: pointer;
     font-family: 'Nunito', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
   .btn-logout:hover {
-    border-color: var(--orange);
-    color: var(--orange-light);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-dark);
+    color: var(--text-dark);
+    background: var(--gray-100);
   }
 
   /* Main Layout */
   .dashboard-container {
-    max-width: 1200px;
+    max-width: 1280px;
     width: 100%;
-    margin: 3rem auto;
+    margin: 2rem auto;
     padding: 0 2rem;
     flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    gap: 2.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
   }
 
-  /* Left Column: Profile Card */
+  /* Left Sidebar: Profile Card */
+  .sidebar {
+    flex: 0 0 300px;
+  }
+  
   .profile-card {
     background: var(--white);
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
-    box-shadow: 0 10px 30px rgba(13, 31, 22, 0.05);
-    height: fit-content;
-    border: 1px solid var(--cream-dark);
-    transition: all 0.3s ease;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
     text-align: center;
-  }
-  .profile-card:hover {
-    box-shadow: 0 20px 40px rgba(13, 31, 22, 0.09);
-    transform: translateY(-2px);
+    position: sticky;
+    top: 100px;
   }
   .profile-avatar {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, var(--orange-pale) 0%, var(--orange-light) 100%);
-    color: var(--orange-dark);
+    background: var(--green-dark);
+    color: var(--white);
     font-family: 'Playfair Display', serif;
     font-size: 2.2rem;
     font-weight: 700;
@@ -122,353 +136,432 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.5rem;
-    border: 3px solid var(--white);
-    box-shadow: 0 8px 16px rgba(232, 101, 26, 0.15);
+    margin: 0 auto 1.25rem;
+    box-shadow: var(--shadow-md);
   }
   .profile-name {
     font-family: 'Playfair Display', serif;
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--green-dark);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
   }
   .profile-role {
-    display: inline-block;
-    background: var(--orange);
-    color: var(--white);
-    font-size: 0.68rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    padding: 4px 14px;
-    border-radius: 50px;
-    margin: 0 auto 1.5rem;
-    box-shadow: 0 4px 10px rgba(232, 101, 26, 0.2);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
   }
+  
   .profile-detail {
-    font-size: 0.88rem;
-    color: var(--text-mid);
-    margin-bottom: 1.25rem;
+    text-align: left;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 0.5rem;
+  }
+  .profile-detail i {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .profile-detail-text {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--cream-dark);
-    text-align: left;
   }
-  .profile-detail strong {
+  .profile-detail-text strong {
     color: var(--text-muted);
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.5px;
     font-weight: 700;
   }
-  .profile-detail span {
+  .profile-detail-text span {
     color: var(--text-dark);
     font-weight: 600;
+    font-size: 0.9rem;
     word-break: break-all;
   }
 
-  /* Right Column: Bookings Panel */
-  .bookings-panel {
-    background: transparent;
-    padding: 0;
-    box-shadow: none;
-    border: none;
+  /* Right Column: Main Content */
+  .main-content {
+    flex: 1;
+    min-width: 0;
   }
-  .panel-header {
+  
+  .welcome-header {
+    margin-bottom: 2rem;
+  }
+  .welcome-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--green-dark);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .welcome-header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .stat-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .stat-card-header i {
+    font-size: 1.4rem;
+    color: var(--text-muted);
+  }
+  .stat-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* Alerts / Notifications */
+  .notification-card {
+    background: var(--white);
+    border: 1px solid var(--orange-light);
+    border-left: 4px solid var(--orange);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .notification-content i {
+    color: var(--orange);
+    font-size: 1.25rem;
+  }
+  .notification-message {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+  .btn-dismiss {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .btn-dismiss:hover { color: var(--text-dark); }
+
+  /* Bookings Header */
+  .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--cream-dark);
   }
-  .panel-title {
+  .section-header h2 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 1.5rem;
     color: var(--green-dark);
+    font-weight: 700;
   }
-  .btn-new-booking {
-    background: var(--orange);
+  .btn-primary {
+    background: var(--green-dark);
     color: var(--white);
     text-decoration: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
-    font-size: 0.88rem;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 16px rgba(232, 101, 26, 0.25);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    transition: background 0.2s;
   }
-  .btn-new-booking:hover {
-    background: var(--orange-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(232, 101, 26, 0.35);
+  .btn-primary:hover {
+    background: var(--green);
   }
 
-  /* Bookings Table / Grid */
+  /* Bookings List */
   .bookings-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
   }
-  .empty-state {
-    background: var(--white);
-    border-radius: 16px;
-    text-align: center;
-    padding: 5rem 2rem;
-    color: var(--text-muted);
-    border: 1px solid var(--cream-dark);
-    box-shadow: 0 10px 30px rgba(13, 31, 22, 0.04);
-  }
-  .empty-state-icon {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .empty-state h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    color: var(--text-dark);
-    margin-bottom: 0.75rem;
-  }
-
+  
   .booking-card {
     background: var(--white);
-    border: 1px solid var(--cream-dark);
-    border-radius: 16px;
-    padding: 1.75rem;
-    display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr 1fr;
-    align-items: center;
-    gap: 1.5rem;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    position: relative;
-    box-shadow: 0 6px 18px rgba(13, 31, 22, 0.03);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s;
   }
   .booking-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 30px rgba(13, 31, 22, 0.08);
-    border-color: var(--orange-light);
+    box-shadow: var(--shadow-md);
   }
-  .booking-card-approved {
-    border-left: 6px solid #2D6A4F;
+  
+  .booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-100);
   }
-  .booking-card-completed {
-    border-left: 6px solid #1B4332;
-    background: linear-gradient(to right, #FAFDFB, #FFFFFF);
-  }
-  .booking-card-pending {
-    border-left: 6px solid #E8651A;
-  }
-  .booking-card-cancelled {
-    border-left: 6px solid #D32F2F;
-  }
-
-  .booking-main h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    color: var(--green-dark);
-    margin-bottom: 6px;
-    text-transform: capitalize;
-    font-weight: 700;
-  }
-  .booking-main p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.4;
-  }
-  .booking-date {
-    font-size: 0.92rem;
-    color: var(--text-dark);
-    font-weight: 600;
-  }
-  .booking-date strong {
-    display: block;
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 4px;
-    font-weight: 700;
-  }
-  .booking-price {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--green-mid);
-  }
-  .booking-price span {
-    display: block;
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 2px;
-  }
-
-  /* Status Badges */
-  .badge {
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-align: center;
-    width: fit-content;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-  }
-  .badge-pending {
-    background: #FFF8E1;
-    color: #F57F17;
-    border: 1px solid #FFE082;
-  }
-  .badge-approved {
-    background: #E3F2FD;
-    color: #1565C0;
-    border: 1px solid #90CAF9;
-  }
-  .badge-completed {
-    background: #E8F5E9;
-    color: #1B4332;
-    border: 1px solid #81C784;
-  }
-  .badge-cancelled {
-    background: #FFEBEE;
-    color: #C62828;
-    border: 1px solid #FFCDD2;
-  }
-
-  .btn-view-invoice {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--green);
-    color: var(--white);
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-decoration: none;
-    margin-top: 8px;
-    transition: all 0.2s ease;
-    box-shadow: 0 3px 8px rgba(27, 67, 50, 0.2);
-  }
-  .btn-view-invoice:hover {
-    background: var(--orange);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(232, 101, 26, 0.3);
-  }
-
-  /* Stats Grid */
-  .user-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-    margin-bottom: 2rem;
-  }
-  .stat-card {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 1.25rem 1.5rem;
-    border: 1px solid var(--cream-dark);
-    box-shadow: 0 6px 18px rgba(13, 31, 22, 0.02);
+  
+  .booking-title-area {
     display: flex;
     align-items: center;
-    gap: 16px;
-    transition: all 0.3s ease;
+    gap: 1rem;
   }
-  .stat-icon {
-    font-size: 1.6rem;
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
+  .booking-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: var(--gray-100);
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-  }
-  .stat-value {
     font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--green-dark);
-    line-height: 1.2;
+    color: var(--text-muted);
   }
-  .stat-label {
-    font-size: 0.72rem;
+  .booking-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 2px;
+  }
+  .booking-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  
+  .badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-pending { background: #F3F4F6; color: #4B5563; }
+  .badge-approved { background: #DBEAFE; color: #1E40AF; }
+  .badge-completed { background: #D1FAE5; color: #065F46; }
+  .badge-cancelled { background: #FEE2E2; color: #991B1B; }
+
+  .booking-details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  .booking-info-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .booking-info-label {
+    font-size: 0.75rem;
     color: var(--text-muted);
     text-transform: uppercase;
     font-weight: 700;
-    letter-spacing: 0.8px;
-    margin-top: 2px;
+    margin-bottom: 4px;
+  }
+  .booking-info-value {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+  
+  .booking-actions {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .driver-allocation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .allocation-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    background: var(--gray-100);
+    padding: 6px 12px;
+    border-radius: 6px;
+  }
+  .allocation-item i {
+    color: var(--green-mid);
+    font-size: 1.1rem;
   }
 
-  /* Footer */
-  footer {
-    background: var(--green-dark);
-    color: rgba(255, 255, 255, 0.4);
-    padding: 1.5rem 2rem;
+  .btn-secondary {
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    color: var(--text-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover {
+    background: var(--gray-100);
+  }
+
+  /* Empty State */
+  .empty-state {
     text-align: center;
-    font-size: 0.8rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 4rem 2rem;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px dashed var(--gray-300);
+  }
+  .empty-state i {
+    font-size: 3rem;
+    color: var(--gray-300);
+    margin-bottom: 1rem;
+  }
+  .empty-state h3 {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+  .empty-state p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
   }
 
-  @media (max-width: 960px) {
+  /* Responsive Design */
+  @media (max-width: 1024px) {
     .dashboard-container {
-      grid-template-columns: 1fr;
+      flex-direction: column;
     }
-  }
-  @media (max-width: 768px) {
-    .booking-card {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-      text-align: center;
-    }
-    .badge {
-      margin: 0 auto;
-    }
-    .user-stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  @media (max-width: 575px) {
-    .user-stats-grid {
-      grid-template-columns: 1fr;
-    }
-    nav {
-      padding: 1rem;
-    }
-    #nav-user-greeting {
-      display: none;
-    }
-    .dashboard-container {
-      padding: 0 1rem;
-      margin: 1.5rem auto;
-    }
-    .bookings-panel {
-      padding: 1.5rem 1rem;
+    .sidebar {
+      flex: none;
+      width: 100%;
     }
     .profile-card {
-      padding: 1.5rem 1rem;
+      position: static;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      text-align: left;
+      gap: 2rem;
+      padding: 1.5rem;
     }
-    .panel-header {
+    .profile-avatar {
+      margin: 0;
+      width: 70px;
+      height: 70px;
+      font-size: 1.8rem;
+    }
+    .profile-header-info {
+      margin-bottom: 0;
+    }
+    .profile-role {
+      margin-bottom: 0;
+    }
+    .profile-details-grid {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+      border-top: 1px solid var(--gray-200);
+      padding-top: 1rem;
+    }
+    .profile-detail {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .booking-details-grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    .booking-actions {
       flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
     }
-    .panel-title {
-      font-size: 1.45rem;
+    .driver-allocation {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .btn-secondary {
+      width: 100%;
+      justify-content: center;
+    }
+    .profile-details-grid {
+      grid-template-columns: 1fr;
     }
   }
 
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  @media (max-width: 640px) {
+    nav {
+      padding: 1rem;
+    }
+    .nav-user span {
+      display: none;
+    }
+    .dashboard-container {
+      padding: 0 1rem;
+    }
+    .welcome-header h1 {
+      font-size: 1.5rem;
+    }
   }
 </style>
 <script src="./config.js"></script>
@@ -479,118 +572,125 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="logo">
-      <img src="./logo.png" alt="RhinoVoyage Logo">
+      <img src="./logo.png" alt="RhinoVoyage">
     </a>
     <div class="nav-user">
       <span id="nav-user-greeting">Welcome, Traveler</span>
-      <button class="btn-logout" onclick="handleLogout()">Log Out</button>
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="ph ph-sign-out"></i> Log Out
+      </button>
     </div>
   </div>
 </nav>
 
-<!-- DASHBOARD GRID -->
 <div class="dashboard-container">
   
-  <!-- LEFT: User Profile -->
-  <div class="profile-card">
-    <div class="profile-avatar" id="prof-initial">T</div>
-    <div class="profile-name" id="prof-name">Traveler Name</div>
-    <div class="profile-role">Travel Partner</div>
+  <!-- LEFT: Sidebar Profile -->
+  <aside class="sidebar">
+    <div class="profile-card">
+      <div class="profile-avatar" id="prof-initial">T</div>
+      <div class="profile-header-info">
+        <div class="profile-name" id="prof-name">Traveler Name</div>
+        <div class="profile-role">Client Account</div>
+      </div>
+      
+      <div class="profile-details-grid">
+        <div class="profile-detail">
+          <i class="ph ph-identification-card"></i>
+          <div class="profile-detail-text">
+            <strong>Client ID</strong>
+            <span id="prof-id">RV00000001</span>
+          </div>
+        </div>
+        <div class="profile-detail">
+          <i class="ph ph-envelope-simple"></i>
+          <div class="profile-detail-text">
+            <strong>Email Address</strong>
+            <span id="prof-email">email@example.com</span>
+          </div>
+        </div>
+        <div class="profile-detail">
+          <i class="ph ph-phone"></i>
+          <div class="profile-detail-text">
+            <strong>Contact Number</strong>
+            <span id="prof-phone">+91 XXXXX XXXXX</span>
+          </div>
+        </div>
+        <div class="profile-detail">
+          <i class="ph ph-calendar-blank"></i>
+          <div class="profile-detail-text">
+            <strong>Member Since</strong>
+            <span id="prof-joined">June 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- RIGHT: Main Content -->
+  <main class="main-content">
     
-    <div class="profile-detail">
-      <strong>User ID</strong>
-      <span id="prof-id" style="font-family: monospace; font-size: 0.95rem; font-weight: 700; color: var(--orange-dark); letter-spacing: 1px;">RV00000001</span>
-    </div>
-    <div class="profile-detail">
-      <strong>Email Address</strong>
-      <span id="prof-email">email@example.com</span>
-    </div>
-    <div class="profile-detail">
-      <strong>WhatsApp Number</strong>
-      <span id="prof-phone">+91 XXXXX XXXXX</span>
-    </div>
-    <div class="profile-detail">
-      <strong>Account Created</strong>
-      <span id="prof-joined">June 2026</span>
-    </div>
-  </div>
-
-  <!-- RIGHT: Bookings Manager -->
-  <div class="bookings-panel">
-    <!-- Welcome Header Banner -->
-    <div class="welcome-banner" style="background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%); color: var(--white); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(13, 31, 22, 0.15);">
-      <div style="position: absolute; right: -20px; bottom: -30px; font-size: 8rem; opacity: 0.08; transform: rotate(-15deg); pointer-events: none; user-select: none;">🦏</div>
-      <h1 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 6px;" id="welcome-banner-title">Welcome back, Traveler!</h1>
-      <p style="font-size: 0.9rem; opacity: 0.85; max-width: 600px; line-height: 1.5;">Track your heritage trips, manage car assignments, and plan your next northeast tour with RhinoVoyage.</p>
+    <div class="welcome-header">
+      <h1 id="welcome-banner-title">Welcome back, Traveler</h1>
+      <p>Manage your heritage tours, vehicle rentals, and bookings here.</p>
     </div>
 
-    <!-- Quick Stats Grid -->
-    <div class="user-stats-grid">
+    <!-- Quick Stats -->
+    <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-icon" style="background: #E8F5E9; color: #2E7D32; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.1);">🗺️</div>
-        <div>
-          <div id="stat-total" class="stat-value">0</div>
-          <div class="stat-label">Total Trips</div>
+        <div class="stat-card-header">
+          <span class="stat-label">Total Trips</span>
+          <i class="ph ph-map-trifold"></i>
         </div>
+        <div id="stat-total" class="stat-value">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="background: #E3F2FD; color: #1565C0; box-shadow: 0 4px 10px rgba(21, 101, 192, 0.1);">🚙</div>
-        <div>
-          <div id="stat-approved" class="stat-value">0</div>
-          <div class="stat-label">Approved</div>
+        <div class="stat-card-header">
+          <span class="stat-label">Approved</span>
+          <i class="ph ph-check-circle"></i>
         </div>
+        <div id="stat-approved" class="stat-value">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="background: #E8F8F5; color: #1B4332; box-shadow: 0 4px 10px rgba(27, 67, 50, 0.1);">✅</div>
-        <div>
-          <div id="stat-completed" class="stat-value">0</div>
-          <div class="stat-label">Completed</div>
+        <div class="stat-card-header">
+          <span class="stat-label">Completed</span>
+          <i class="ph ph-flag-checkered"></i>
         </div>
+        <div id="stat-completed" class="stat-value">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon" style="background: #FFF8E1; color: #F57F17; box-shadow: 0 4px 10px rgba(245, 127, 23, 0.1);">⏳</div>
-        <div>
-          <div id="stat-pending" class="stat-value">0</div>
-          <div class="stat-label">Pending</div>
+        <div class="stat-card-header">
+          <span class="stat-label">Pending</span>
+          <i class="ph ph-hourglass-high"></i>
         </div>
+        <div id="stat-pending" class="stat-value">0</div>
       </div>
     </div>
 
-    <!-- Alerts / Notifications -->
-    <div id="notificationsSection" style="margin-bottom: 2rem; display: none;">
-      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem; color: var(--orange-dark); display: flex; align-items: center; gap: 8px;">
-        🔔 Alerts & Confirmations
-      </h3>
-      <div id="notificationsList" style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <!-- Alerts render dynamically -->
-      </div>
+    <!-- Notifications -->
+    <div id="notificationsSection" style="display: none;">
+      <div id="notificationsList"></div>
     </div>
 
-    <div class="panel-header">
-      <h2 class="panel-title">My Bookings</h2>
-      <a href="index.html#booking" class="btn-new-booking">
-        <span style="font-size: 1.1rem;">+</span> Request New Booking
+    <div class="section-header">
+      <h2>My Bookings</h2>
+      <a href="index.html#booking" class="btn-primary">
+        <i class="ph ph-plus"></i> New Booking
       </a>
     </div>
 
     <div class="bookings-list" id="bookingsList">
       <!-- Loader State -->
-      <div style="text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-weight: 600;">
-        <div style="font-size: 2rem; margin-bottom: 1rem; animation: spin 2s linear infinite;">⏳</div>
-        Retrieving your heritage tours & rentals...
+      <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+        <i class="ph ph-spinner ph-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+        <p>Retrieving your bookings...</p>
       </div>
     </div>
-  </div>
-
+    
+  </main>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <p>© 2026 RhinoVoyage. All rights reserved. | Private User Dashboard Session</p>
-</footer>
-
 <script>
-  // Session check
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || 'null');
 
@@ -603,52 +703,35 @@
     window.location.href = 'driver-dashboard.html';
   }
 
-  // Populate profile info safely
+  // Populate profile
   if (user) {
     const firstName = (user.name || 'Traveler').split(' ')[0];
-    const greetingEl = document.getElementById('nav-user-greeting');
-    if (greetingEl) greetingEl.innerText = `Welcome, ${firstName}`;
-    const bannerEl = document.getElementById('welcome-banner-title');
-    if (bannerEl) bannerEl.innerText = `Welcome back, ${firstName}!`;
-    const initialEl = document.getElementById('prof-initial');
-    if (initialEl) initialEl.innerText = (user.name ? user.name[0] : 'T').toUpperCase();
-    const idEl = document.getElementById('prof-id');
-    if (idEl) idEl.innerText = user.id || 'N/A';
-    const nameEl = document.getElementById('prof-name');
-    if (nameEl) nameEl.innerText = user.name || 'Traveler';
-    const emailEl = document.getElementById('prof-email');
-    if (emailEl) emailEl.innerText = user.email || 'N/A';
-    const phoneEl = document.getElementById('prof-phone');
-    if (phoneEl) phoneEl.innerText = user.phone || 'N/A';
-    const joinedEl = document.getElementById('prof-joined');
-    if (joinedEl && user.createdAt) {
-      joinedEl.innerText = new Date(user.createdAt).toLocaleDateString('en-US', {
-        year: 'numeric', month: 'long'
+    document.getElementById('nav-user-greeting').innerText = `Welcome, ${firstName}`;
+    document.getElementById('welcome-banner-title').innerText = `Welcome back, ${firstName}`;
+    document.getElementById('prof-initial').innerText = (user.name ? user.name[0] : 'T').toUpperCase();
+    document.getElementById('prof-id').innerText = user.id || 'N/A';
+    document.getElementById('prof-name').innerText = user.name || 'Traveler';
+    document.getElementById('prof-email').innerText = user.email || 'N/A';
+    document.getElementById('prof-phone').innerText = user.phone || 'N/A';
+    if (user.createdAt) {
+      document.getElementById('prof-joined').innerText = new Date(user.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short'
       });
     }
   }
 
-  // Fetch bookings
   async function fetchMyBookings() {
     const listContainer = document.getElementById('bookingsList');
-    
     try {
       const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
       const response = await fetch(`${apiBase}/bookings/my-bookings`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch bookings.');
-      }
+      if (!response.ok) throw new Error(data.message || 'Failed to fetch bookings.');
 
       listContainer.innerHTML = '';
-
-      // Update statistics
+      
       const total = data.bookings.length;
       const approved = data.bookings.filter(b => b.status === 'Approved').length;
       const completed = data.bookings.filter(b => b.status === 'Completed').length;
@@ -662,186 +745,144 @@
       if (data.bookings.length === 0) {
         listContainer.innerHTML = `
           <div class="empty-state">
-            <div class="empty-state-icon">🗺️</div>
+            <i class="ph ph-calendar-x"></i>
             <h3>No Bookings Found</h3>
-            <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1.5rem;">You haven't requested any custom tours or rentals yet.</p>
-            <a href="index.html#booking" class="btn-new-booking" style="display:inline-block;">Book Your First Trip Now</a>
+            <p>You haven't requested any tours or vehicle rentals yet.</p>
+            <a href="index.html#booking" class="btn-primary">Book Your First Trip</a>
           </div>
         `;
         return;
       }
 
-      // Sort bookings by creation date descending
       data.bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       data.bookings.forEach(b => {
         const card = document.createElement('div');
-        const statusClass = (b.status || 'pending').toLowerCase();
-        card.className = `booking-card booking-card-${statusClass}`;
+        card.className = `booking-card`;
 
-        const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
+        const statusClass = (b.status || 'pending').toLowerCase();
+        const serviceLabel = b.serviceType === 'car_rental' ? 'Vehicle Rental' : 'Tour Package';
         const formattedDate = b.pickupDate ? new Date(b.pickupDate).toLocaleDateString('en-US', {
           weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-        }) : 'Date not set';
+        }) : 'TBD';
 
         const invoiceAmount = b.totalAmount || (b.invoice && b.invoice.totalAmount);
-        const priceDisplay = invoiceAmount 
-          ? `₹${Number(invoiceAmount).toLocaleString('en-IN')}`
-          : (b.paymentMethod ? b.paymentMethod.toUpperCase() : 'N/A');
+        const priceDisplay = invoiceAmount ? `₹${Number(invoiceAmount).toLocaleString('en-IN')}` : (b.paymentMethod ? b.paymentMethod.toUpperCase() : 'N/A');
+        const iconClass = b.serviceType === 'car_rental' ? 'ph-car-profile' : 'ph-map-trifold';
 
-        const priceLabel = invoiceAmount ? 'Invoiced Total' : 'Payment Mode';
+        let actionArea = '';
+        
+        let allocationHtml = '';
+        if ((b.status === 'Approved' || b.status === 'Completed') && (b.driverName || b.carModel)) {
+          allocationHtml = `<div class="driver-allocation">`;
+          if (b.driverName) {
+            allocationHtml += `
+              <div class="allocation-item">
+                <i class="ph ph-steering-wheel"></i>
+                <span>${b.driverName}</span>
+              </div>
+            `;
+          }
+          if (b.carModel) {
+            allocationHtml += `
+              <div class="allocation-item">
+                <i class="ph ph-jeep"></i>
+                <span>${b.carModel} ${b.carNumber ? `(${b.carNumber})` : ''}</span>
+              </div>
+            `;
+          }
+          allocationHtml += `</div>`;
+        }
 
         let invoiceButton = '';
         if (b.status === 'Completed' && b.invoice) {
           invoiceButton = `
-            <a href="invoice.html?id=${b.id}" class="btn-view-invoice" target="_blank">
-              📄 View Invoice / Receipt
+            <a href="invoice.html?id=${b.id}" class="btn-secondary" target="_blank">
+              <i class="ph ph-receipt"></i> View Invoice
             </a>
           `;
         }
 
-        let assignmentDetails = '';
-        if ((b.status === 'Approved' || b.status === 'Completed') && (b.driverName || b.carModel || b.carNumber)) {
-          assignmentDetails = `
-            <div class="assignment-details" style="grid-column: 1 / -1; margin-top: 15px; padding: 15px; background: rgba(27, 67, 50, 0.02); border-radius: 12px; border: 1px dashed rgba(27, 67, 50, 0.2); display: flex; flex-direction: column; gap: 10px;">
-              <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 800; color: var(--green-mid); letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
-                <span>📋</span> Driver & Vehicle Allocation
-              </div>
-              <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                ${b.driverName ? `
-                  <div style="display: flex; align-items: center; gap: 12px; background: var(--white); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--cream-dark); min-width: 180px; box-shadow: 0 4px 10px rgba(0,0,0,0.01);">
-                    <div style="font-size: 1.5rem; background: var(--cream); width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">👨‍✈️</div>
-                    <div>
-                      <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Driver Partner</div>
-                      <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-dark);">${b.driverName}</div>
-                    </div>
-                  </div>
-                ` : ''}
-                ${b.carModel ? `
-                  <div style="display: flex; align-items: center; gap: 12px; background: var(--white); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--cream-dark); min-width: 220px; box-shadow: 0 4px 10px rgba(0,0,0,0.01);">
-                    <div style="font-size: 1.5rem; background: var(--cream); width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">🚘</div>
-                    <div>
-                      <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Vehicle Allocation</div>
-                      <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-dark);">${b.carModel} <span style="background: var(--orange-pale); color: var(--orange-dark); font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; margin-left: 4px; border: 1px solid var(--orange-light);">${b.carNumber || ''}</span></div>
-                    </div>
-                  </div>
-                ` : ''}
-              </div>
+        if (allocationHtml !== '' || invoiceButton !== '') {
+          actionArea = `
+            <div class="booking-actions">
+              ${allocationHtml}
+              ${invoiceButton}
             </div>
           `;
         }
 
-        const detailsText = b.details ? (b.details.length > 40 ? `${b.details.substring(0, 40)}...` : b.details) : 'No specific requests';
-
         card.innerHTML = `
-          <div class="booking-main">
-            <h4>${b.vehicle || 'Trip Vehicle'}</h4>
-            <p>${serviceLabel} · ${detailsText}</p>
+          <div class="booking-header">
+            <div class="booking-title-area">
+              <div class="booking-icon"><i class="ph ${iconClass}"></i></div>
+              <div>
+                <div class="booking-title">${b.vehicle || 'Trip Vehicle'}</div>
+                <div class="booking-subtitle">${serviceLabel} · ${b.details ? b.details.substring(0,40) : 'Standard package'}</div>
+              </div>
+            </div>
+            <span class="badge badge-${statusClass}">${b.status || 'Pending'}</span>
           </div>
-          <div class="booking-date">
-            <strong>Pickup Date</strong>
-            ${formattedDate}
+          
+          <div class="booking-details-grid">
+            <div class="booking-info-item">
+              <span class="booking-info-label">Pickup Date</span>
+              <span class="booking-info-value">${formattedDate}</span>
+            </div>
+            <div class="booking-info-item">
+              <span class="booking-info-label">Booking ID</span>
+              <span class="booking-info-value" style="font-family: monospace;">${b.id.substring(0,8).toUpperCase()}</span>
+            </div>
+            <div class="booking-info-item">
+              <span class="booking-info-label">Amount / Mode</span>
+              <span class="booking-info-value">${priceDisplay}</span>
+            </div>
           </div>
-          <div class="booking-price">
-            ${priceDisplay}
-            <span>${priceLabel}</span>
-          </div>
-          <div>
-            <div class="badge badge-${statusClass}">${b.status || 'Pending'}</div>
-            ${invoiceButton}
-          </div>
-          ${assignmentDetails}
+          
+          ${actionArea}
         `;
         listContainer.appendChild(card);
       });
-
     } catch (err) {
-      listContainer.innerHTML = `
-        <div style="text-align:center; padding: 2rem; color: var(--orange-dark); font-weight: 700;">
-          Error loading bookings: ${err.message}
-        </div>
-      `;
+      listContainer.innerHTML = `<div class="empty-state"><p>Error: ${err.message}</p></div>`;
     }
   }
 
-  // Fetch Notifications
   async function fetchNotifications() {
-    const section = document.getElementById('notificationsSection');
-    const list = document.getElementById('notificationsList');
-    
     try {
       const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
-      const response = await fetch(`${apiBase}/notifications`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await fetch(`${apiBase}/notifications`, { headers: { 'Authorization': `Bearer ${token}` } });
       const data = await response.json();
+      if (!response.ok) return;
       
-      if (!response.ok) throw new Error(data.message || 'Failed to fetch notifications.');
+      const unread = data.notifications.filter(n => !n.read);
+      const section = document.getElementById('notificationsSection');
+      const list = document.getElementById('notificationsList');
       
-      const unreadNotifications = data.notifications.filter(n => !n.read);
-      
-      if (unreadNotifications.length === 0) {
-        section.style.display = 'none';
-        return;
-      }
-      
+      if (unread.length === 0) return;
       section.style.display = 'block';
-      list.innerHTML = '';
       
-      unreadNotifications.forEach(n => {
+      unread.forEach(n => {
         const card = document.createElement('div');
-        card.style.background = 'var(--orange-pale)';
-        card.style.border = '1px solid var(--orange-light)';
-        card.style.borderRadius = '12px';
-        card.style.padding = '0.9rem 1.25rem';
-        card.style.display = 'flex';
-        card.style.justifyContent = 'space-between';
-        card.style.alignItems = 'center';
-        card.style.gap = '1rem';
-        card.style.boxShadow = '0 2px 10px rgba(232, 101, 26, 0.04)';
-        
-        let invoiceAction = '';
-        if (n.type === 'invoice' && n.bookingId) {
-          invoiceAction = `
-            <a href="invoice.html?id=${n.bookingId}" target="_blank" style="background: var(--green); color: white; text-decoration: none; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; white-space: nowrap;">
-              📄 View Invoice
-            </a>
-          `;
-        }
-
+        card.className = 'notification-card';
         card.innerHTML = `
-          <p style="font-size: 0.88rem; color: var(--text-dark); font-weight: 600; line-height: 1.5;">${n.message}</p>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            ${invoiceAction}
-            <button onclick="dismissNotification('${n.id}')" style="background: none; border: none; color: var(--orange-dark); font-weight: 700; cursor: pointer; font-size: 0.8rem; font-family: 'Nunito', sans-serif; white-space: nowrap; padding: 4px 8px; border-radius: 4px;">
-              Dismiss
-            </button>
+          <div class="notification-content">
+            <i class="ph ph-bell-ringing"></i>
+            <span class="notification-message">${n.message}</span>
           </div>
+          <button class="btn-dismiss" onclick="dismissNotification('${n.id}')">Dismiss</button>
         `;
         list.appendChild(card);
       });
-    } catch (err) {
-      console.error('Error fetching notifications:', err);
-    }
+    } catch(e) {}
   }
 
-  // Dismiss Notification API request
   async function dismissNotification(id) {
     try {
       const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
-      const response = await fetch(`${apiBase}/notifications/${id}/read`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        fetchNotifications();
-      }
-    } catch (err) {
-      console.error('Error dismissing notification:', err);
-    }
+      await fetch(`${apiBase}/notifications/${id}/read`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
+      location.reload();
+    } catch(e) {}
   }
 
   function handleLogout() {
@@ -849,12 +890,10 @@
     window.location.href = 'login.html';
   }
 
-  // Load dashboard items on load
   if (token && user) {
     fetchMyBookings();
     fetchNotifications();
   }
 </script>
-
 </body>
 </html>
