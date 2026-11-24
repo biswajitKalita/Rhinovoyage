@@ -305,6 +305,36 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                         decoration: BoxDecoration(color: Colors.green.shade50, borderRadius: BorderRadius.circular(8)),
                         child: Text('VERIFIED', style: GoogleFonts.nunito(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.green)),
                       ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                      tooltip: 'Delete Driver',
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('Delete Driver'),
+                            content: Text('Are you sure you want to permanently delete ${d['name'] ?? 'this driver'}?'),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+                              TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete', style: TextStyle(color: Colors.red))),
+                            ],
+                          ),
+                        );
+                        if (confirm == true) {
+                          final res = await AdminService.deleteDriver(d['id']);
+                          if (res['success'] == true) {
+                            _loadData();
+                          } else {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(res['message'] ?? 'Failed to delete driver'), backgroundColor: Colors.red),
+                              );
+                            }
+                          }
+                        }
+                      },
+                    ),
                   ],
                 ),
               );

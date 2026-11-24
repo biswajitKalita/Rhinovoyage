@@ -2,6 +2,9 @@ const db = require('../config/db');
 const { syncUserLog } = require('../utils/sheets');
 const { saveBase64Image } = require('../utils/upload');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const path = require('path');
+const mongoose = require('mongoose');
 
 // @desc    Get All Drivers
 // @route   GET /api/users/drivers
@@ -119,5 +122,88 @@ exports.adminAddDriver = async (req, res) => {
   } catch (error) {
     console.error('Admin add driver error:', error);
     res.status(500).json({ success: false, message: 'Server error creating driver partner.' });
+  }
+};
+
+// @desc    Delete Driver Partner
+// @route   DELETE /api/users/drivers/:id
+// @access  Private/Admin
+exports.deleteDriver = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let query;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      query = {
+        role: 'driver',
+        $or: [{ id: id }, { _id: new mongoose.Types.ObjectId(id) }]
+      };
+    } else {
+      query = { role: 'driver', id: id };
+    }
+
+    const driver = await db.findOne('users', query);
+    if (!driver) {
+      return res.status(404).json({ success: false, message: 'Driver partner not found.' });
+    }
+
+    const driverId = driver.id || id;
+
+    // Unassign driver from any bookings
+    await db.update('bookings', { driverId: driverId }, { driverId: '', driverName: '' });
+
+    // Delete driver from users database
+    if (driver._id) {
+      await db.delete('users', { _id: driver._id });
+    } else {
+      await db.delete('users', { id: driverId, role: 'driver' });
+    }
+
+    // Clean up uploaded documents if they exist
+    const uploadDir = process.env.UPLOAD_DIR || path.resolve(__dirname, '../../client/public/uploads');
+    [driver.aadharPhoto, driver.licensePhoto].forEach(photoPath => {
+      if (photoPath) {
+        try {
+          const filename = path.basename(photoPath);
+          const fullPath = path.join(uploadDir, filename);
+          if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+          }
+        } catch (e) {
+          // ignore error removing file
+        }
+      }
+    });
+
+    // Sync deletion log to Google Sheets
+    syncUserLog(driver, 'delete_driver').catch(err => console.error('Driver delete sheet sync error:', err));
+
+    res.status(200).json({
+      success: true,
+      message: `Driver partner "${driver.name}" successfully deleted.`
+    });
+  } catch (error) {
+    console.error('Delete driver error:', error);
+    res.status(500).json({ success: false, message: 'Server error deleting driver partner.' });
+  }
+};
+
+// @desc    Update User Profile
+// @route   PUT /api/users/profile
+// @access  Private
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+    const userId = req.user.id;
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (phone) updateData.phone = phone;
+
+    await db.update('users', { id: userId }, updateData);
+    const updated = await db.findOne('users', { id: userId });
+    res.status(200).json({ success: true, message: 'Profile updated successfully.', user: updated });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ success: false, message: 'Server error updating profile.' });
   }
 };

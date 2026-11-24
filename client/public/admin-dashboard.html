@@ -318,6 +318,16 @@
     background: var(--text-dark);
     color: var(--white);
   }
+  .btn-delete-driver {
+    background: #FFEBEE;
+    color: #D32F2F;
+    border: 1px solid #FFCDD2;
+  }
+  .btn-delete-driver:hover {
+    background: #D32F2F;
+    color: var(--white);
+    border-color: #D32F2F;
+  }
 
   /* Empty state */
   .empty-row {
@@ -969,6 +979,10 @@
         `;
       }
 
+      const driverId = d.id || d._id;
+      const safeName = (d.name || 'Driver').replace(/'/g, "\\'");
+      actionButtons += `<button class="btn-action btn-delete-driver" onclick="deleteDriver('${driverId}', '${safeName}')">Delete</button>`;
+
       tr.innerHTML = `
         <td>${driverInfo}</td>
         <td>${credentials}</td>
@@ -1010,6 +1024,50 @@
 
     } catch (err) {
       alert(`Error updating driver status: ${err.message}`);
+    }
+  }
+
+  // Delete Driver API call
+  async function deleteDriver(id, driverName) {
+    const displayName = driverName || 'this driver partner';
+    if (!confirm(`Are you sure you want to permanently delete ${displayName}? This action cannot be undone.`)) return;
+
+    try {
+      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBase}/users/drivers/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to delete driver partner.');
+      }
+
+      alert(data.message || 'Driver partner successfully deleted.');
+
+      // Remove from local list
+      allDrivers = allDrivers.filter(d => (d.id !== id && d._id !== id));
+      filterDrivers();
+
+      // Clear from any local bookings where assigned
+      allBookings.forEach(b => {
+        if (b.driverId === id) {
+          b.driverId = '';
+          b.driverName = '';
+        }
+      });
+      if (typeof filterBookings === 'function') {
+        filterBookings();
+      }
+
+      // Re-fetch to guarantee synchronization with backend
+      fetchDrivers();
+
+    } catch (err) {
+      alert(`Error deleting driver: ${err.message}`);
     }
   }
 

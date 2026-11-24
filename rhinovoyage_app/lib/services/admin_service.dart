@@ -100,6 +100,18 @@ class AdminService {
     }
   }
 
+  static Future<Map<String, dynamic>> deleteDriver(String driverId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/users/drivers/$driverId'),
+        headers: await _getHeaders(),
+      );
+      return jsonDecode(response.body);
+    } catch (e) {
+      return {'success': false, 'message': 'Network error'};
+    }
+  }
+
   // Fleet
   static Future<Map<String, dynamic>> getFleet() async {
     try {
