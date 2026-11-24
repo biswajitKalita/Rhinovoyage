@@ -1041,9 +1041,21 @@
         }
       });
 
-      const data = await response.json();
+      let data;
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        if (response.status === 404) {
+          throw new Error('The live server on Render has not deployed the DELETE route yet. Please open Render (dashboard.render.com) and click "Manual Deploy > Deploy latest commit".');
+        } else {
+          throw new Error(`Server returned HTTP ${response.status}: ${text.substring(0, 100)}`);
+        }
+      }
+
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to delete driver partner.');
+        throw new Error((data && data.message) || 'Failed to delete driver partner.');
       }
 
       alert(data.message || 'Driver partner successfully deleted.');
