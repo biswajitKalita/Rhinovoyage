@@ -56,14 +56,14 @@ app.use('/public/uploads', express.static(uploadDir));
 const seedAdminUser = async () => {
   try {
     const adminEmail = 'admin@rhinovoyage.com';
-    const adminUser = db.findOne('users', { email: adminEmail });
+    const adminUser = await db.findOne('users', { email: adminEmail });
 
     if (!adminUser) {
       console.log('Seeding default admin user...');
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('adminpassword123', salt);
 
-      db.insert('users', {
+      await db.insert('users', {
         name: 'RhinoVoyage Admin',
         email: adminEmail,
         password: hashedPassword,
@@ -75,12 +75,12 @@ const seedAdminUser = async () => {
       console.log('Admin user already exists in database.');
     }
   } catch (error) {
-    console.error('Error seeding admin user:', error);
+    console.error('Non-fatal error seeding admin user:', error.message);
   }
 };
 
-// Seed admin
-seedAdminUser();
+// Seed admin asynchronously
+seedAdminUser().catch(err => console.error('Admin seed caught:', err.message));
 
 // Mount Routes
 app.use('/api/auth', require('./routes/auth'));
