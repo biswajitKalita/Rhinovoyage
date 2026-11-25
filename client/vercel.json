@@ -3,6 +3,8 @@
   "rewrites": [
     { "source": "/src/:path*", "destination": "/src/:path*" },
     { "source": "/public/:path*", "destination": "/public/:path*" },
+    { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/:path((?!public|src).*)", "destination": "/public/:path" }
   ]
 }

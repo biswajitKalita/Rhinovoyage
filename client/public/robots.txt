@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin-dashboard
+Disallow: /admin-dashboard.html
+Disallow: /driver-dashboard
+Disallow: /driver-dashboard.html
+Disallow: /user-dashboard
+Disallow: /user-dashboard.html
+Disallow: /api/
+
+Sitemap: https://www.rhinovoyage.com/sitemap.xml
