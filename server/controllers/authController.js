@@ -5,7 +5,8 @@ const { syncUserLog } = require('../utils/sheets');
 const { saveBase64Image } = require('../utils/upload');
 const { OAuth2Client } = require('google-auth-library');
 
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '594259583569-3pj03um6vqosf6qe9v44r64jj80gtq4b.apps.googleusercontent.com';
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // Helper to generate token and set cookie
 const sendTokenResponse = (user, statusCode, res) => {
@@ -166,7 +167,7 @@ exports.getMe = async (req, res) => {
 // @route   GET /api/auth/google-client-id
 // @access  Public
 exports.getGoogleClientId = async (req, res) => {
-  res.status(200).json({ success: true, clientId: process.env.GOOGLE_CLIENT_ID });
+  res.status(200).json({ success: true, clientId: GOOGLE_CLIENT_ID });
 };
 
 // @desc    Google Sign In
@@ -182,7 +183,7 @@ exports.googleSignIn = async (req, res) => {
   try {
     const ticket = await googleClient.verifyIdToken({
       idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: GOOGLE_CLIENT_ID,
     });
     
     const payload = ticket.getPayload();

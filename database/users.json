@@ -98,5 +98,14 @@
     "licensePhoto": "/public/uploads/license_1781777862607_v1cef.jpeg",
     "verificationStatus": "Rejected",
     "updatedAt": "2026-06-18T10:18:52.224Z"
+  },
+  {
+    "id": "RV00000009",
+    "createdAt": "2026-11-25T17:25:45.832Z",
+    "name": "RhinoVoyage Admin",
+    "email": "info@rhinovoyage.com",
+    "password": "$2a$10$wJ7eY5fKkBZqJ96ynsOzWOfd7qmDoBNI4syxZTwn.dXJiRxPxve1S",
+    "phone": "+91 94350 12345",
+    "role": "admin"
   }
 ]
