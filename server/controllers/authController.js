@@ -5,7 +5,11 @@ const { syncUserLog } = require('../utils/sheets');
 const { saveBase64Image } = require('../utils/upload');
 const { OAuth2Client } = require('google-auth-library');
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '594259583569-3pj03um6vqosf6qe9v44r64jj80gtq4b.apps.googleusercontent.com';
+const OLD_GOOGLE_CLIENT_ID = '948276512640-k0jviqs3neh01trevc0alctid7gg5qpk.apps.googleusercontent.com';
+const REAL_GOOGLE_CLIENT_ID = '594259583569-3pj03um6vqosf6qe9v44r64jj80gtq4b.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_ID !== OLD_GOOGLE_CLIENT_ID)
+  ? process.env.GOOGLE_CLIENT_ID
+  : REAL_GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // Helper to generate token and set cookie

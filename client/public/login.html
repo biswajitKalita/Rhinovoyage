@@ -662,6 +662,7 @@
     }
   }
 
+  const OLD_GOOGLE_CLIENT_ID = '948276512640-k0jviqs3neh01trevc0alctid7gg5qpk.apps.googleusercontent.com';
   const DEFAULT_GOOGLE_CLIENT_ID = '594259583569-3pj03um6vqosf6qe9v44r64jj80gtq4b.apps.googleusercontent.com';
   let googleSignInInitialized = false;
 
@@ -690,7 +691,7 @@
       const response = await fetch(`${getApiUrl()}/auth/google-client-id`);
       if (response.ok) {
         const data = await response.json();
-        if (data && data.success && data.clientId) {
+        if (data && data.success && data.clientId && data.clientId !== OLD_GOOGLE_CLIENT_ID) {
           clientId = data.clientId;
         }
       }
