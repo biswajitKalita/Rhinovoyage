@@ -601,7 +601,7 @@
       await fetchDriversListOnly();
       await fetchCarsListOnly();
 
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -763,7 +763,7 @@
   // Update Status API call
   async function updateStatus(id, newStatus) {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings/${id}/status`, {
         method: 'PUT',
         headers: {
@@ -798,7 +798,7 @@
     if (!confirm('Are you sure you want to permanently delete this booking request?')) return;
 
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
@@ -815,6 +815,7 @@
 
       updateMetrics();
       filterBookings();
+      alert('Booking request permanently deleted.');
 
     } catch (err) {
       alert(`Error: ${err.message}`);
@@ -885,7 +886,7 @@
   // Fetch all drivers
   async function fetchDrivers() {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/users/drivers`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -909,7 +910,7 @@
   // Pre-fetch drivers only (no render)
   async function fetchDriversListOnly() {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/users/drivers`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -943,7 +944,7 @@
         <div class="td-sub">${d.phone} · ${d.email}</div>
       `;
 
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const serverBase = apiBase.replace('/api', '');
 
       const aadharLink = d.aadharPhoto 
@@ -997,7 +998,7 @@
   // Update verification status
   async function verifyDriver(id, newStatus) {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/users/drivers/${id}/verify`, {
         method: 'PUT',
         headers: {
@@ -1033,7 +1034,7 @@
     if (!confirm(`Are you sure you want to permanently delete ${displayName}? This action cannot be undone.`)) return;
 
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/users/drivers/${id}`, {
         method: 'DELETE',
         headers: {
@@ -1106,7 +1107,7 @@
   // Assign driver to booking
   async function assignDriverToBooking(bookingId, driverId) {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings/${bookingId}/assign-driver`, {
         method: 'PUT',
         headers: {
@@ -1182,7 +1183,7 @@
       const aadharPhoto = await readFileAsBase64(aadharFile);
       const licensePhoto = await readFileAsBase64(licenseFile);
 
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/users/drivers`, {
         method: 'POST',
         headers: {
@@ -1234,7 +1235,7 @@
   // Pre-fetch cars list only (for booking assignments dropdown)
   async function fetchCarsListOnly() {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/cars`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -1250,7 +1251,7 @@
   // Fetch all cars for Fleet Management tab
   async function fetchCars() {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/cars`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -1293,7 +1294,7 @@
         <div class="td-sub">Added: ${c.entryDate || (c.createdAt ? c.createdAt.split('T')[0] : '')}</div>
       `;
 
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const serverBase = apiBase.replace('/api', '');
 
       const rcLink = c.rcPhoto 
@@ -1357,7 +1358,7 @@
     if (!confirm('Are you sure you want to permanently delete this car from the fleet?')) return;
 
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/cars/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
@@ -1378,7 +1379,7 @@
   // Assign car to booking
   async function assignCarToBooking(bookingId, carId) {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings/${bookingId}/assign-car`, {
         method: 'PUT',
         headers: {
@@ -1447,7 +1448,7 @@
       const rcPhoto = await readFileAsBase64(rcFile);
       const carImage = await readFileAsBase64(carFile);
 
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/cars`, {
         method: 'POST',
         headers: {
@@ -1699,7 +1700,7 @@
     const notes = document.getElementById('adm-notes').value || '';
 
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings/${activeAdminCompleteId}/complete`, {
         method: 'PUT',
         headers: {
