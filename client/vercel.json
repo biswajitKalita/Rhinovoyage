@@ -5,6 +5,7 @@
     { "source": "/public/:path*", "destination": "/public/:path*" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
+    { "source": "/site.webmanifest", "destination": "/site.webmanifest" },
     { "source": "/:path((?!public|src).*)", "destination": "/public/:path" }
   ]
 }
