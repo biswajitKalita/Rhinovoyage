@@ -33,14 +33,48 @@ class DatabaseManager {
   }
 
   async connect() {
-    const mongoUri = process.env.MONGO_URI || 'mongodb+srv://rhinovoyage_db_user:rhinovoyage_db_user@cluster0.ugudnsi.mongodb.net/rhinovoyage?appName=Cluster0';
+    const mongoUri = process.env.MONGO_URI;
+    if (!mongoUri) {
+      console.warn('MONGO_URI is missing in environment. Running on filesystem JSON database fallback.');
+      this.isConnected = false;
+      return;
+    }
     try {
       await mongoose.connect(mongoUri);
       this.isConnected = true;
       console.log('MongoDB successfully connected.');
+      await this._seedInitialData();
     } catch (error) {
       console.warn('MongoDB connection notice:', error.message, '— Running on filesystem JSON database fallback.');
       this.isConnected = false;
+    }
+  }
+
+  async _seedInitialData() {
+    try {
+      if (!this.isConnected || !mongoose.connection || !mongoose.connection.db) return;
+
+      // Seed users if collection is empty
+      const userCol = this.getCollection('users');
+      if (userCol && (await userCol.countDocuments()) === 0) {
+        const jsonUsers = this._readJson('users');
+        if (jsonUsers.length > 0) {
+          await userCol.insertMany(jsonUsers);
+          console.log(`Synced ${jsonUsers.length} initial users to MongoDB.`);
+        }
+      }
+
+      // Seed fleet cars if collection is empty
+      const carCol = this.getCollection('cars');
+      if (carCol && (await carCol.countDocuments()) === 0) {
+        const jsonCars = this._readJson('cars');
+        if (jsonCars.length > 0) {
+          await carCol.insertMany(jsonCars);
+          console.log(`Synced ${jsonCars.length} initial cars to MongoDB.`);
+        }
+      }
+    } catch (err) {
+      console.warn('Initial MongoDB sync notice:', err.message);
     }
   }
 
