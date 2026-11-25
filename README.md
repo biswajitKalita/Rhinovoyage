@@ -119,7 +119,7 @@ The custom database initializes its files inside `/database` folder automaticall
 ## 🔑 Default Credentials
 
 Upon running the backend API for the first time, a default system administrator account is seeded automatically:
-* **Admin Email:** `admin@rhinovoyage.com`
+* **Admin Email:** `info@rhinovoyage.com`
 * **Admin Password:** `adminpassword123`
 
 Drivers and standard users can register accounts directly through the registration form on the application frontend.

@@ -55,8 +55,10 @@ app.use('/public/uploads', express.static(uploadDir));
 // Seed default Admin user if none exists
 const seedAdminUser = async () => {
   try {
-    const adminEmail = 'admin@rhinovoyage.com';
-    const adminUser = await db.findOne('users', { email: adminEmail });
+    const adminEmail = 'info@rhinovoyage.com';
+    const adminUser = await db.findOne('users', {
+      $or: [{ email: 'info@rhinovoyage.com' }, { email: 'admin@rhinovoyage.com' }]
+    });
 
     if (!adminUser) {
       console.log('Seeding default admin user...');
@@ -70,7 +72,7 @@ const seedAdminUser = async () => {
         phone: '+91 94350 12345',
         role: 'admin'
       });
-      console.log('Default admin seeded: admin@rhinovoyage.com / adminpassword123');
+      console.log('Default admin seeded: info@rhinovoyage.com / adminpassword123');
     } else {
       console.log('Admin user already exists in database.');
     }

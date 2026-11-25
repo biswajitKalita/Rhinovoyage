@@ -337,7 +337,7 @@ exports.getBookingInvoice = async (req, res) => {
       tagline: 'Premier Assam & Northeast Travel Experience',
       address: 'LKB Road, Amulapatty, Sivasagar, Assam — 785640, India',
       phone: '+91 98648 20229, +91 99542 53585',
-      email: 'rhinovoyage@gmail.com',
+      email: 'info@rhinovoyage.com',
       website: 'www.rhinovoyage.com'
     };
 

@@ -90,7 +90,7 @@ class PrivacyScreen extends StatelessWidget {
               _buildBulletPoint('Legal Requirements: Disclosing information when legally required by law enforcement or government authorities under applicable jurisdictions.'),
               
               _buildSectionTitle('5. User Rights & Choices'),
-              _buildSectionText('You have the right to request access to the personal data we hold about you. You can update your contact profile information at any time by logging into your dashboard or by sending a request to our administrator. If you wish to delete your account, please contact us at rhinovoyage@gmail.com.'),
+              _buildSectionText('You have the right to request access to the personal data we hold about you. You can update your contact profile information at any time by logging into your dashboard or by sending a request to our administrator. If you wish to delete your account, please contact us at info@rhinovoyage.com.'),
               
               _buildSectionTitle('6. Governing Jurisdiction'),
               _buildSectionText('RhinoVoyage operates out of Sivasagar, Assam. This Privacy Policy and all data handling activities are governed by the laws of India and are subject to the exclusive jurisdiction of the courts located in Assam.'),

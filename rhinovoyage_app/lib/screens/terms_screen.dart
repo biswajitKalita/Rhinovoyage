@@ -66,7 +66,7 @@ class TermsScreen extends StatelessWidget {
               _buildSectionText('These Terms of Service shall be governed by and construed in accordance with the laws of India. Any legal action, dispute, or claim arising out of your use of our platform must be filed exclusively in the courts located in Sivasagar, Assam.'),
               
               _buildSectionTitle('6. Contact Us'),
-              _buildSectionText('For any questions or clarifications regarding these Terms of Service, please contact our support team at rhinovoyage@gmail.com.'),
+              _buildSectionText('For any questions or clarifications regarding these Terms of Service, please contact our support team at info@rhinovoyage.com.'),
               
               const SizedBox(height: 40),
             ],

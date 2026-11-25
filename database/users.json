@@ -3,7 +3,7 @@
     "id": "RV00000001",
     "createdAt": "2026-06-03T13:06:29.285Z",
     "name": "RhinoVoyage Admin",
-    "email": "admin@rhinovoyage.com",
+    "email": "info@rhinovoyage.com",
     "password": "$2a$10$qb7OvyDCJK4tflWhWVDcP.xIqJ.DLY4Fxwzp8VBzD4WfL24gKfc6e",
     "phone": "+91 94350 12345",
     "role": "admin"
