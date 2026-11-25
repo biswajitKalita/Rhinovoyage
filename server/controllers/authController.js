@@ -109,8 +109,15 @@ exports.login = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please provide an email and password.' });
     }
 
-    // Find user
-    const user = await db.findOne('users', { email: email.toLowerCase() });
+    // Find user (support both info@rhinovoyage.com and legacy admin@rhinovoyage.com)
+    const normalizedEmail = email.toLowerCase().trim();
+    let user = await db.findOne('users', { email: normalizedEmail });
+    if (!user && normalizedEmail === 'admin@rhinovoyage.com') {
+      user = await db.findOne('users', { email: 'info@rhinovoyage.com' });
+    } else if (!user && normalizedEmail === 'info@rhinovoyage.com') {
+      user = await db.findOne('users', { email: 'admin@rhinovoyage.com' });
+    }
+
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials. User not found.' });
     }
