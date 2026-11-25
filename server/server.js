@@ -11,32 +11,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS with credentials for local development and production
+// Enable CORS with credentials for local development, production, and file:// previews
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, or postman)
-    if (!origin) return callback(null, true);
-    
-    const isLocalhost = origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:');
-    const isVercel = origin.endsWith('.vercel.app');
-    
-    if (isLocalhost || isVercel) {
-      return callback(null, true);
-    }
-    
-    // Check environment variable origins
-    if (process.env.CORS_ORIGIN) {
-      const allowed = process.env.CORS_ORIGIN.split(',').map(o => o.trim());
-      if (allowed.includes(origin) || allowed.includes('*')) {
-        return callback(null, true);
-      }
-    }
-    
-    callback(new Error('Not allowed by CORS'));
+    // Allow all origins (null for local file://, localhost, vercel, mobile apps, etc.)
+    return callback(null, true);
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 };
 
 app.use(cors(corsOptions));

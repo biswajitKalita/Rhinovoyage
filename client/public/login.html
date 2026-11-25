@@ -406,7 +406,7 @@
 </div>
 
 <script>
-  const API_URL = window.API_BASE_URL || 'http://localhost:5000/api';
+  const getApiUrl = () => window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
 
   function switchMode(mode, btn) {
     // Switch active tab button
@@ -471,17 +471,51 @@
     hideAlerts();
     const emailInput = document.getElementById(role + '-email');
     const passwordInput = document.getElementById(role + '-password');
+    const panelId = role === 'admin' ? 'panel-admin-login' : 'panel-user-login';
+    const submitBtn = document.querySelector(`#${panelId} .btn-submit`);
+    const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Signing In...';
+      submitBtn.style.opacity = '0.75';
+    }
 
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: emailInput.value,
-          password: passwordInput.value,
-          role: role
-        })
-      });
+      let activeApi = getApiUrl();
+      let response;
+
+      try {
+        response = await fetch(`${activeApi}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: emailInput.value.trim(),
+            password: passwordInput.value,
+            role: role
+          })
+        });
+      } catch (firstErr) {
+        // Automatic fallback between Render and localhost
+        const fallbackApi = activeApi.includes('localhost')
+          ? 'https://rhinovoyage.onrender.com/api'
+          : 'http://localhost:5000/api';
+
+        try {
+          response = await fetch(`${fallbackApi}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: emailInput.value.trim(),
+              password: passwordInput.value,
+              role: role
+            })
+          });
+          window.API_BASE_URL = fallbackApi;
+        } catch (secErr) {
+          throw new Error('Unable to connect to server. If Render backend is spinning up from idle, please allow 15-20 seconds and click Log In again.');
+        }
+      }
 
       const data = await response.json();
 
@@ -514,6 +548,12 @@
 
     } catch (err) {
       showAlert('error', err.message);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnHtml;
+        submitBtn.style.opacity = '1';
+      }
     }
   }
 
@@ -551,12 +591,40 @@
       }
     }
 
+    const submitBtn = document.querySelector('#panel-register .btn-submit');
+    const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Creating Account...';
+      submitBtn.style.opacity = '0.75';
+    }
+
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, password, role, aadhar, license, aadharPhoto, licensePhoto })
-      });
+      let activeApi = getApiUrl();
+      let response;
+
+      try {
+        response = await fetch(`${activeApi}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, password, role, aadhar, license, aadharPhoto, licensePhoto })
+        });
+      } catch (firstErr) {
+        const fallbackApi = activeApi.includes('localhost')
+          ? 'https://rhinovoyage.onrender.com/api'
+          : 'http://localhost:5000/api';
+
+        try {
+          response = await fetch(`${fallbackApi}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, phone, password, role, aadhar, license, aadharPhoto, licensePhoto })
+          });
+          window.API_BASE_URL = fallbackApi;
+        } catch (secErr) {
+          throw new Error('Unable to connect to server. Please try again in a few moments.');
+        }
+      }
 
       const data = await response.json();
 
@@ -585,6 +653,12 @@
 
     } catch (err) {
       showAlert('error', err.message);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origBtnHtml;
+        submitBtn.style.opacity = '1';
+      }
     }
   }
 
@@ -613,7 +687,7 @@
     // 2. Obtain client ID (with instant fallback)
     let clientId = DEFAULT_GOOGLE_CLIENT_ID;
     try {
-      const response = await fetch(`${API_URL}/auth/google-client-id`);
+      const response = await fetch(`${getApiUrl()}/auth/google-client-id`);
       if (response.ok) {
         const data = await response.json();
         if (data && data.success && data.clientId) {
@@ -672,7 +746,7 @@
 
   async function handleGoogleCredentialResponse(response) {
     try {
-      const res = await fetch(`${API_URL}/auth/google`, {
+      const res = await fetch(`${getApiUrl()}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ credential: response.credential })
