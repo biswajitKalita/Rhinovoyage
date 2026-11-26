@@ -19,7 +19,7 @@ exports.getCars = async (req, res) => {
 // @access  Private/Admin
 exports.addCar = async (req, res) => {
   try {
-    const { owner, modelName, plateNumber, category, rcPhoto, carImage, entryDate } = req.body;
+    const { owner, ownerEmail, ownerPhone, modelName, plateNumber, category, rcPhoto, carImage, entryDate } = req.body;
 
     if (!owner || !modelName || !plateNumber || !category || !rcPhoto || !carImage) {
       return res.status(400).json({ success: false, message: 'Please provide all required fields, including RC photo and car photo.' });
@@ -37,6 +37,8 @@ exports.addCar = async (req, res) => {
 
     const newCar = await db.insert('cars', {
       owner,
+      ownerEmail: ownerEmail || '',
+      ownerPhone: ownerPhone || '',
       modelName,
       plateNumber,
       category,

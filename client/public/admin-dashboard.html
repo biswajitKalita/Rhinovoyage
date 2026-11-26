@@ -1146,6 +1146,14 @@
         <i class="ph-bold ph-car"></i> Fleet Inventory
         <span class="tab-count-badge" id="badge-cars-count">0</span>
       </button>
+      <button class="tab-btn" id="tab-driver-payments-btn" onclick="switchTab('driver-payments')">
+        <i class="ph-bold ph-wallet"></i> Driver Payments
+        <span class="tab-count-badge" id="badge-driver-payments-count">0</span>
+      </button>
+      <button class="tab-btn" id="tab-fleet-payments-btn" onclick="switchTab('fleet-payments')">
+        <i class="ph-bold ph-bank"></i> Fleet Payments
+        <span class="tab-count-badge" id="badge-fleet-payments-count">0</span>
+      </button>
     </div>
 
     <!-- PANEL 1: BOOKINGS MANAGEMENT -->
@@ -1300,6 +1308,160 @@
       </div>
     </div>
 
+    <!-- PANEL 4: DRIVER PARTNER PAYMENTS -->
+    <div class="dashboard-panel" id="driver-payments-section" style="display: none;">
+      <div class="panel-toolbar">
+        <div class="toolbar-title-group">
+          <h2><i class="ph-bold ph-wallet"></i> Driver Partner Payments & Settlements</h2>
+          <p>Review driver payouts, additional kilometer compensation, driver trip remarks, and settle balances (Online / Cash).</p>
+        </div>
+
+        <div class="toolbar-filters">
+          <div class="search-input-wrapper">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" class="control-input" id="driverPaySearchInput" placeholder="Search by driver, phone, trip ID, route..." oninput="filterDriverPayments()">
+          </div>
+
+          <select class="control-select" id="driverPayFilterStatus" onchange="filterDriverPayments()">
+            <option value="All">All Payment Statuses</option>
+            <option value="Pending">Pending Payment</option>
+            <option value="Paid">Payment Done / Settled</option>
+          </select>
+
+          <select class="control-select" id="driverPayFilterMode" onchange="filterDriverPayments()">
+            <option value="All">All Settlement Modes</option>
+            <option value="Online">Online (UPI / Bank)</option>
+            <option value="Cash">Offline (Cash)</option>
+          </select>
+
+          <button class="btn-refresh" onclick="fetchAllBookings()" title="Refresh Driver Payments">
+            <i class="ph-bold ph-arrows-clockwise"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 1.25rem;">
+        <div style="background: white; border: 1px solid var(--border-subtle); border-radius: 10px; padding: 14px 16px;">
+          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Total Driver Payouts</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--green);" id="metric-driver-payout-total">₹0</div>
+          <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 2px;">Across all assigned trips</div>
+        </div>
+
+        <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 14px 16px;">
+          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--amber); margin-bottom: 4px;">Pending Driver Payouts</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--amber);" id="metric-driver-payout-pending">₹0</div>
+          <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 2px;"><span id="metric-driver-payout-pending-count">0</span> trips awaiting release</div>
+        </div>
+
+        <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 14px 16px;">
+          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--emerald); margin-bottom: 4px;">Settled / Paid to Drivers</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--emerald);" id="metric-driver-payout-paid">₹0</div>
+          <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 2px;"><span id="metric-driver-payout-paid-count">0</span> trips settled</div>
+        </div>
+      </div>
+
+      <div class="table-responsive-container">
+        <table class="saas-table">
+          <thead>
+            <tr>
+              <th>Trip & Route</th>
+              <th>Driver Partner</th>
+              <th>Extra KMs & Remarks</th>
+              <th>Payout Breakdown</th>
+              <th>Payment Status & Mode</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="driverPaymentsTableBody">
+            <tr>
+              <td colspan="6" class="empty-state-cell">
+                <div class="empty-state-icon"><i class="ph ph-circle-notch ph-spin"></i></div>
+                <div>Loading driver payment ledger...</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL 5: FLEET PARTNER PAYMENTS -->
+    <div class="dashboard-panel" id="fleet-payments-section" style="display: none;">
+      <div class="panel-toolbar">
+        <div class="toolbar-title-group">
+          <h2><i class="ph-bold ph-bank"></i> Fleet Partner Payments & Settlements</h2>
+          <p>Review vehicle vendor trip settlements, car owner information, trip costs, and payment releases (Online / Cash).</p>
+        </div>
+
+        <div class="toolbar-filters">
+          <div class="search-input-wrapper">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" class="control-input" id="fleetPaySearchInput" placeholder="Search by car, plate, owner, email..." oninput="filterFleetPayments()">
+          </div>
+
+          <select class="control-select" id="fleetPayFilterStatus" onchange="filterFleetPayments()">
+            <option value="All">All Payment Statuses</option>
+            <option value="Pending">Pending Payment</option>
+            <option value="Paid">Payment Done / Settled</option>
+          </select>
+
+          <select class="control-select" id="fleetPayFilterMode" onchange="filterFleetPayments()">
+            <option value="All">All Settlement Modes</option>
+            <option value="Online">Online (UPI / Bank)</option>
+            <option value="Cash">Offline (Cash)</option>
+          </select>
+
+          <button class="btn-refresh" onclick="fetchAllBookings()" title="Refresh Fleet Payments">
+            <i class="ph-bold ph-arrows-clockwise"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Strip -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 1.25rem;">
+        <div style="background: white; border: 1px solid var(--border-subtle); border-radius: 10px; padding: 14px 16px;">
+          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Total Fleet Payouts</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--green);" id="metric-fleet-payout-total">₹0</div>
+          <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 2px;">Across all vehicle assignments</div>
+        </div>
+
+        <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 14px 16px;">
+          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--amber); margin-bottom: 4px;">Pending Fleet Payouts</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--amber);" id="metric-fleet-payout-pending">₹0</div>
+          <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 2px;"><span id="metric-fleet-payout-pending-count">0</span> trips awaiting settlement</div>
+        </div>
+
+        <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 14px 16px;">
+          <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--emerald); margin-bottom: 4px;">Settled / Paid to Fleet</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--emerald);" id="metric-fleet-payout-paid">₹0</div>
+          <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 2px;"><span id="metric-fleet-payout-paid-count">0</span> trips settled</div>
+        </div>
+      </div>
+
+      <div class="table-responsive-container">
+        <table class="saas-table">
+          <thead>
+            <tr>
+              <th>Journey Details</th>
+              <th>Vehicle Information</th>
+              <th>Fleet Partner (Car Owner)</th>
+              <th>Total Trip Money</th>
+              <th>Payment Status & Mode</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="fleetPaymentsTableBody">
+            <tr>
+              <td colspan="6" class="empty-state-cell">
+                <div class="empty-state-icon"><i class="ph ph-circle-notch ph-spin"></i></div>
+                <div>Loading fleet partner payment records...</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </main>
 
   <!-- EXECUTIVE FOOTER -->
@@ -1367,24 +1529,70 @@
             <input type="text" id="adm-notes" class="form-control-styled" placeholder="e.g. Guwahati Airport Pickup to Sivasagar Town">
           </div>
 
+          <!-- Driver Payout Section -->
           <div style="background: #FFF7ED; border: 1px solid #FFEDD5; border-radius: 10px; padding: 12px 14px; margin-top: 0.75rem;">
             <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--orange-dark); margin-bottom: 8px;">
               <i class="ph-bold ph-steering-wheel"></i> Driver Partner Payout / Commission
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
               <div class="form-group-field">
-                <label>Driver Payout Amount (₹)</label>
+                <label>Driver Payout (₹)</label>
                 <input type="number" id="adm-driver-payment" class="form-control-styled" min="0" value="0" placeholder="e.g. 2500">
               </div>
               <div class="form-group-field">
-                <label>Driver Payout Status</label>
+                <label>Payout Status</label>
                 <select id="adm-driver-pay-status" class="form-control-styled">
                   <option value="Pending">Pending Payment</option>
                   <option value="Paid">Paid to Driver</option>
                 </select>
               </div>
+              <div class="form-group-field">
+                <label>Settlement Mode</label>
+                <select id="adm-driver-pay-mode" class="form-control-styled">
+                  <option value="Online">Online (UPI/Bank)</option>
+                  <option value="Cash">Offline (Cash)</option>
+                </select>
+              </div>
             </div>
             <p style="font-size: 0.72rem; color: var(--text-sub); margin-top: 4px;">Driver can only view their payout amount, not the customer total.</p>
+          </div>
+
+          <!-- Fleet Partner Payout Section -->
+          <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 10px; padding: 12px 14px; margin-top: 0.75rem;">
+            <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--green); margin-bottom: 8px;">
+              <i class="ph-bold ph-car"></i> Fleet Partner (Vehicle Vendor) Payout
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;">
+              <div class="form-group-field">
+                <label>Car Owner / Partner</label>
+                <input type="text" id="adm-fleet-owner" class="form-control-styled" placeholder="e.g. Biswajit Kalita">
+              </div>
+              <div class="form-group-field">
+                <label>Owner Gmail / Email</label>
+                <input type="email" id="adm-fleet-email" class="form-control-styled" placeholder="partner@gmail.com">
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+              <div class="form-group-field">
+                <label>Total Trip Money (₹)</label>
+                <input type="number" id="adm-fleet-payment" class="form-control-styled" min="0" value="0" placeholder="e.g. 3000">
+              </div>
+              <div class="form-group-field">
+                <label>Payout Status</label>
+                <select id="adm-fleet-pay-status" class="form-control-styled">
+                  <option value="Pending">Pending Payment</option>
+                  <option value="Paid">Paid to Fleet</option>
+                </select>
+              </div>
+              <div class="form-group-field">
+                <label>Settlement Mode</label>
+                <select id="adm-fleet-pay-mode" class="form-control-styled">
+                  <option value="Online">Online (UPI/Bank)</option>
+                  <option value="Cash">Offline (Cash)</option>
+                </select>
+              </div>
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-sub); margin-top: 4px;">Agreed vehicle payout for this journey.</p>
           </div>
 
           <!-- Total Calculation Banner -->
@@ -1524,6 +1732,180 @@
     </div>
   </div>
 
+  <!-- MODAL: DRIVER PAYOUT SETTLEMENT -->
+  <div class="modal-overlay" id="driverPayoutModal" onclick="if(event.target===this) closeDriverPayoutModal();">
+    <div class="modal-box" style="max-width: 540px;">
+      <div class="modal-header">
+        <div>
+          <h3><i class="ph-bold ph-wallet" style="color:var(--green);"></i> Settle Driver Partner Payout</h3>
+          <p style="font-size:0.75rem; color:var(--text-sub); margin-top:2px;" id="drvModalSubtitle">Trip #RV...</p>
+        </div>
+        <button class="btn-close-modal" onclick="closeDriverPayoutModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <form id="driverPayoutForm" onsubmit="event.preventDefault(); submitDriverPayout();">
+        <div class="modal-body-scroll">
+          
+          <!-- Route & Driver Preview -->
+          <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:10px 14px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);" id="drvModalDriverName">Driver Name</div>
+                <div style="font-size:0.75rem; color:var(--text-sub);" id="drvModalDriverPhone">+91 ...</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:0.8rem; font-weight:700; color:var(--green);" id="drvModalRoute">Pickup ➔ Drop</div>
+                <div style="font-size:0.72rem; color:var(--text-muted);" id="drvModalDate">Date</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Driver Remarks & Extra KM Report (from Driver Dashboard) -->
+          <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:10px; padding:12px; margin-bottom:12px;">
+            <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--amber); margin-bottom:4px;">
+              <i class="ph-bold ph-chat-text"></i> Driver Dashboard Report & Remarks
+            </div>
+            <div style="font-size:0.82rem; color:var(--text-main);" id="drvModalDriverNotesDisplay">No remarks reported by driver.</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="form-group-field">
+              <label>Base Driver Pay (₹)</label>
+              <input type="number" id="drvModalBasePay" class="form-control-styled" min="0" value="0" oninput="recalcDriverPayoutModal()">
+            </div>
+            <div class="form-group-field">
+              <label>Additional KMs Driven</label>
+              <input type="number" id="drvModalExtraKms" class="form-control-styled" min="0" value="0" oninput="recalcDriverPayoutModal()">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="form-group-field">
+              <label>Extra KM Rate (₹/km)</label>
+              <input type="number" id="drvModalKmRate" class="form-control-styled" min="0" value="15" oninput="recalcDriverPayoutModal()">
+            </div>
+            <div class="form-group-field">
+              <label>Extra KM Compensation (₹)</label>
+              <input type="number" id="drvModalExtraKmPay" class="form-control-styled" min="0" value="0" readonly style="background:#F1F5F9;">
+            </div>
+          </div>
+
+          <div class="form-group-field" style="margin-top:4px;">
+            <label style="font-weight:800; color:var(--green);">Final Total Driver Payout (₹)</label>
+            <input type="number" id="drvModalTotalPay" class="form-control-styled" style="font-size:1.15rem; font-weight:800; color:var(--green);" min="0" value="0">
+            <span style="font-size:0.72rem; color:var(--text-sub);">Calculated as Base Pay + Extra KM compensation. You can also adjust manually.</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
+            <div class="form-group-field">
+              <label>Payment Settlement Status</label>
+              <select id="drvModalPayStatus" class="form-control-styled">
+                <option value="Pending">Pending Payment</option>
+                <option value="Paid">Payment Done (Paid)</option>
+              </select>
+            </div>
+            <div class="form-group-field">
+              <label>Settlement Mode</label>
+              <select id="drvModalPayMode" class="form-control-styled">
+                <option value="Online">Online (UPI / NEFT / Bank)</option>
+                <option value="Cash">Offline (Cash)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-field" style="margin-top:8px;">
+            <label>Transaction / Settlement Note (Optional)</label>
+            <input type="text" id="drvModalTxnNote" class="form-control-styled" placeholder="e.g. GPay UTR 42910... or Paid cash at dispatch office">
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-row-action" onclick="closeDriverPayoutModal()">Cancel</button>
+          <button type="submit" class="btn-primary-action"><i class="ph-bold ph-check"></i> Save Driver Payout</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: FLEET PARTNER PAYOUT SETTLEMENT -->
+  <div class="modal-overlay" id="fleetPayoutModal" onclick="if(event.target===this) closeFleetPayoutModal();">
+    <div class="modal-box" style="max-width: 540px;">
+      <div class="modal-header">
+        <div>
+          <h3><i class="ph-bold ph-bank" style="color:var(--green);"></i> Settle Fleet Partner Payout</h3>
+          <p style="font-size:0.75rem; color:var(--text-sub); margin-top:2px;" id="fltModalSubtitle">Trip #RV...</p>
+        </div>
+        <button class="btn-close-modal" onclick="closeFleetPayoutModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <form id="fleetPayoutForm" onsubmit="event.preventDefault(); submitFleetPayout();">
+        <div class="modal-body-scroll">
+          
+          <!-- Vehicle & Itinerary Preview -->
+          <div style="background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:10px; padding:10px 14px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-size:0.88rem; font-weight:800; color:var(--text-main);" id="fltModalCarName">Vehicle Model</div>
+                <div style="font-size:0.75rem; color:var(--text-sub); font-family:monospace;" id="fltModalPlateNumber">Plate Number</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:0.8rem; font-weight:700; color:var(--green);" id="fltModalRoute">Pickup ➔ Drop</div>
+                <div style="font-size:0.72rem; color:var(--text-muted);" id="fltModalDate">Date</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group-field">
+            <label>Car Person / Fleet Owner Name</label>
+            <input type="text" id="fltModalOwnerName" class="form-control-styled" placeholder="e.g. Biswajit Kalita">
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="form-group-field">
+              <label>Owner Gmail / Email</label>
+              <input type="email" id="fltModalOwnerEmail" class="form-control-styled" placeholder="e.g. partner@gmail.com">
+            </div>
+            <div class="form-group-field">
+              <label>Owner Contact Phone</label>
+              <input type="tel" id="fltModalOwnerPhone" class="form-control-styled" placeholder="e.g. 9954253585">
+            </div>
+          </div>
+
+          <div class="form-group-field" style="margin-top:6px;">
+            <label style="font-weight:800; color:var(--green);">Total Trip Money for Fleet Partner (₹)</label>
+            <input type="number" id="fltModalPayment" class="form-control-styled" style="font-size:1.15rem; font-weight:800; color:var(--green);" min="0" value="0" placeholder="e.g. 3500">
+            <span style="font-size:0.72rem; color:var(--text-sub);">Fill in the agreed total rental/trip payout for this vehicle vendor.</span>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px;">
+            <div class="form-group-field">
+              <label>Payment Settlement Status</label>
+              <select id="fltModalPayStatus" class="form-control-styled">
+                <option value="Pending">Pending Payment</option>
+                <option value="Paid">Payment Done (Paid)</option>
+              </select>
+            </div>
+            <div class="form-group-field">
+              <label>Settlement Mode</label>
+              <select id="fltModalPayMode" class="form-control-styled">
+                <option value="Online">Online (UPI / NEFT / Bank)</option>
+                <option value="Cash">Offline (Cash)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-field" style="margin-top:8px;">
+            <label>Transaction / Settlement Note (Optional)</label>
+            <input type="text" id="fltModalTxnNote" class="form-control-styled" placeholder="e.g. IMPS/UPI reference or Cash voucher receipt">
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-row-action" onclick="closeFleetPayoutModal()">Cancel</button>
+          <button type="submit" class="btn-primary-action"><i class="ph-bold ph-check"></i> Save Fleet Payout</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ==========================================================================
        JAVASCRIPT APPLICATION LOGIC
        ========================================================================== -->
@@ -1583,6 +1965,12 @@
 
         updateMetrics();
         renderBookings(allBookings);
+
+        updateDriverPaymentMetrics();
+        renderDriverPayments(allBookings);
+
+        updateFleetPaymentMetrics();
+        renderFleetPayments(allBookings);
 
         const countBadge = document.getElementById('badge-bookings-count');
         if (countBadge) countBadge.innerText = allBookings.length;
@@ -2060,6 +2448,20 @@
       document.getElementById('adm-discount').value = 0;
       document.getElementById('adm-driver-payment').value = booking.driverPayment || Math.round((booking.baseAmount || defaultBase) * 0.7);
       document.getElementById('adm-driver-pay-status').value = booking.driverPayStatus || 'Pending';
+      const drvModeEl = document.getElementById('adm-driver-pay-mode');
+      if (drvModeEl) drvModeEl.value = booking.driverPayMode || 'Online';
+
+      const fltOwnerEl = document.getElementById('adm-fleet-owner');
+      if (fltOwnerEl) fltOwnerEl.value = booking.fleetPartnerName || '';
+      const fltEmailEl = document.getElementById('adm-fleet-email');
+      if (fltEmailEl) fltEmailEl.value = booking.fleetPartnerEmail || '';
+      const fltPayEl = document.getElementById('adm-fleet-payment');
+      if (fltPayEl) fltPayEl.value = booking.fleetPayment || 0;
+      const fltPayStatusEl = document.getElementById('adm-fleet-pay-status');
+      if (fltPayStatusEl) fltPayStatusEl.value = booking.fleetPayStatus || 'Pending';
+      const fltPayModeEl = document.getElementById('adm-fleet-pay-mode');
+      if (fltPayModeEl) fltPayModeEl.value = booking.fleetPayMode || 'Online';
+
       document.getElementById('adm-notes').value = booking.details ? `Completed trip: ${booking.details}` : 'Thank you for choosing RhinoVoyage!';
 
       recalcAdminInvoice();
@@ -2091,6 +2493,14 @@
       const paymentStatus = document.getElementById('adm-pay-status').value || 'Paid';
       const driverPayment = Number(document.getElementById('adm-driver-payment').value || 0);
       const driverPayStatus = document.getElementById('adm-driver-pay-status').value || 'Pending';
+      const driverPayMode = document.getElementById('adm-driver-pay-mode') ? document.getElementById('adm-driver-pay-mode').value : 'Online';
+
+      const fleetPartnerName = document.getElementById('adm-fleet-owner') ? document.getElementById('adm-fleet-owner').value.trim() : '';
+      const fleetPartnerEmail = document.getElementById('adm-fleet-email') ? document.getElementById('adm-fleet-email').value.trim() : '';
+      const fleetPayment = document.getElementById('adm-fleet-payment') ? Number(document.getElementById('adm-fleet-payment').value || 0) : 0;
+      const fleetPayStatus = document.getElementById('adm-fleet-pay-status') ? document.getElementById('adm-fleet-pay-status').value : 'Pending';
+      const fleetPayMode = document.getElementById('adm-fleet-pay-mode') ? document.getElementById('adm-fleet-pay-mode').value : 'Online';
+
       const notes = document.getElementById('adm-notes').value || '';
 
       try {
@@ -2101,7 +2511,12 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ baseAmount, extraKmCharges, tollCharges, discount, paymentStatus, driverPayment, driverPayStatus, notes })
+          body: JSON.stringify({ 
+            baseAmount, extraKmCharges, tollCharges, discount, paymentStatus, 
+            driverPayment, driverPayStatus, driverPayMode,
+            fleetPayment, fleetPayStatus, fleetPayMode, fleetPartnerName, fleetPartnerEmail,
+            notes 
+          })
         });
 
         const data = await response.json();
@@ -2728,36 +3143,672 @@
     }
 
     // --------------------------------------------------------------------------
+    // DRIVER PAYMENTS MANAGEMENT
+    // --------------------------------------------------------------------------
+    let activeDriverPayoutId = null;
+
+    function updateDriverPaymentMetrics() {
+      let total = 0;
+      let pending = 0;
+      let pendingCount = 0;
+      let paid = 0;
+      let paidCount = 0;
+
+      allBookings.forEach(b => {
+        const pay = Number(b.driverPayment || 0);
+        total += pay;
+        if (b.driverPayStatus === 'Paid') {
+          paid += pay;
+          paidCount++;
+        } else if (b.driverId || pay > 0 || b.status === 'Completed') {
+          pending += pay;
+          pendingCount++;
+        }
+      });
+
+      const mTotal = document.getElementById('metric-driver-payout-total');
+      if (mTotal) mTotal.innerText = `₹${total.toLocaleString('en-IN')}`;
+      const mPend = document.getElementById('metric-driver-payout-pending');
+      if (mPend) mPend.innerText = `₹${pending.toLocaleString('en-IN')}`;
+      const mPendCnt = document.getElementById('metric-driver-payout-pending-count');
+      if (mPendCnt) mPendCnt.innerText = pendingCount;
+      const mPaid = document.getElementById('metric-driver-payout-paid');
+      if (mPaid) mPaid.innerText = `₹${paid.toLocaleString('en-IN')}`;
+      const mPaidCnt = document.getElementById('metric-driver-payout-paid-count');
+      if (mPaidCnt) mPaidCnt.innerText = paidCount;
+
+      const badge = document.getElementById('badge-driver-payments-count');
+      if (badge) badge.innerText = pendingCount > 0 ? `${pendingCount} Pending` : allBookings.length;
+    }
+
+    function renderDriverPayments(list) {
+      const tbody = document.getElementById('driverPaymentsTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state-cell">
+              <div class="empty-state-icon"><i class="ph ph-wallet"></i></div>
+              <div>No driver payment records found.</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach(b => {
+        const tr = document.createElement('tr');
+
+        // Trip & Route
+        const refDisplay = (b.id || '').toUpperCase().substring(0, 8);
+        const route = `${b.pickupLocation || 'Pickup'} ➔ ${b.dropLocation || 'Destination'}`;
+        const dateStr = b.pickupDate || 'Scheduled';
+        const carStr = b.carModel ? `${b.carModel} (${b.carNumber || ''})` : (b.vehicle || 'Standard Vehicle');
+
+        const tripCell = `
+          <div class="cell-title">#${refDisplay}</div>
+          <div class="cell-sub" style="font-weight:700; color:var(--text-main); margin-top:2px;">${route}</div>
+          <div class="cell-sub"><i class="ph-bold ph-calendar"></i> ${dateStr} • <i class="ph-bold ph-car"></i> ${carStr}</div>
+        `;
+
+        // Driver Partner
+        let driverCell = '';
+        if (b.driverName || b.driverId) {
+          const dPhone = b.phone || '';
+          const cleanPhone = dPhone.replace(/\D/g, '').slice(-10);
+          driverCell = `
+            <div class="cell-title"><i class="ph-bold ph-steering-wheel" style="color:var(--green);"></i> ${b.driverName || 'Assigned Driver'}</div>
+            ${cleanPhone ? `<div class="cell-sub" style="font-family:monospace; margin-top:2px;"><i class="ph-bold ph-phone"></i> +91 ${cleanPhone}</div>` : '<div class="cell-sub">Phone on dispatch</div>'}
+          `;
+        } else {
+          driverCell = `
+            <span style="color:var(--text-muted); font-size:0.82rem; font-style:italic;">No Driver Assigned</span>
+          `;
+        }
+
+        // Distance & Remarks
+        const extraKms = Number(b.extraKms || 0);
+        let remarksBadge = '';
+        if (extraKms > 0) {
+          remarksBadge += `<span class="service-tag" style="background:#FFF7ED; color:var(--orange-dark); font-weight:700; margin-bottom:4px; display:inline-block;">+${extraKms} Extra KMs</span>`;
+        }
+        if (b.driverNotes) {
+          remarksBadge += `<div style="font-size:0.75rem; color:var(--text-sub); background:#F8FAFC; border:1px solid var(--border-subtle); border-radius:6px; padding:4px 8px; margin-top:3px; max-width:260px;" title="${b.driverNotes}">"${b.driverNotes}"</div>`;
+        }
+        if (!remarksBadge) {
+          remarksBadge = `<span style="color:var(--text-muted); font-size:0.78rem;">Standard Route (0 extra km)</span>`;
+        }
+
+        // Payout Breakdown
+        const basePay = Number(b.driverBasePayment || 0);
+        const extraPay = Number(b.driverExtraKmPayment || 0);
+        const totalPay = Number(b.driverPayment || 0);
+        const rate = Number(b.driverExtraKmRate || 15);
+
+        let breakdownSub = '';
+        if (extraKms > 0 && extraPay > 0) {
+          breakdownSub = `<div class="cell-sub" style="font-size:0.72rem;">Base: ₹${basePay.toLocaleString('en-IN')} + Extra: ₹${extraPay.toLocaleString('en-IN')} (@₹${rate}/km)</div>`;
+        } else if (basePay > 0) {
+          breakdownSub = `<div class="cell-sub" style="font-size:0.72rem;">Agreed Base Driver Fare</div>`;
+        }
+
+        const payoutCell = `
+          <div style="font-size:1.1rem; font-weight:800; color:var(--green);">₹${totalPay.toLocaleString('en-IN')}</div>
+          ${breakdownSub}
+        `;
+
+        // Payment Status & Mode
+        const isPaid = (b.driverPayStatus === 'Paid');
+        const payMode = b.driverPayMode || 'Online';
+        const statusBadge = isPaid
+          ? `<span class="status-badge" style="background:#DCFCE7; color:#15803D;"><i class="ph-bold ph-check"></i> Paid</span>`
+          : `<span class="status-badge" style="background:#FEF3C7; color:#B45309;"><i class="ph-bold ph-hourglass"></i> Pending</span>`;
+        
+        const modeBadge = `<span style="font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:4px; background:${payMode === 'Cash' ? '#F3E8FF' : '#EFF6FF'}; color:${payMode === 'Cash' ? '#7C3AED' : '#2563EB'}; display:inline-block; margin-top:4px;"><i class="ph-bold ${payMode === 'Cash' ? 'ph-money' : 'ph-credit-card'}"></i> ${payMode === 'Cash' ? 'Cash (Offline)' : 'Online (UPI/Bank)'}</span>`;
+
+        let txnSub = '';
+        if (b.driverPayTxn) {
+          txnSub = `<div class="cell-sub" style="font-size:0.7rem; margin-top:2px;">Ref: ${b.driverPayTxn}</div>`;
+        }
+
+        const statusCell = `
+          <div>${statusBadge}</div>
+          <div>${modeBadge}</div>
+          ${txnSub}
+        `;
+
+        // Actions
+        const quickToggleBtn = isPaid
+          ? `<button class="btn-row-action" style="font-size:0.72rem; padding:3px 8px;" onclick="quickToggleDriverPay('${b.id}', 'Pending', '${payMode}')" title="Mark as Pending"><i class="ph-bold ph-arrow-counter-clockwise"></i> Mark Pending</button>`
+          : `<button class="btn-row-action complete" style="font-size:0.72rem; padding:3px 8px;" onclick="quickToggleDriverPay('${b.id}', 'Paid', '${payMode}')" title="Mark as Paid"><i class="ph-bold ph-check"></i> Mark Paid</button>`;
+
+        const actionCell = `
+          <div class="actions-cluster">
+            <button class="btn-row-action" style="font-size:0.75rem; padding:4px 10px; font-weight:700; color:var(--green-dark); background:#F1F5F9;" onclick="openDriverPayoutModal('${b.id}')">
+              <i class="ph-bold ph-pencil-simple"></i> Settle / Edit
+            </button>
+            ${quickToggleBtn}
+          </div>
+        `;
+
+        tr.innerHTML = `
+          <td>${tripCell}</td>
+          <td>${driverCell}</td>
+          <td>${remarksBadge}</td>
+          <td>${payoutCell}</td>
+          <td>${statusCell}</td>
+          <td>${actionCell}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterDriverPayments() {
+      const searchVal = (document.getElementById('driverPaySearchInput').value || '').toLowerCase().trim();
+      const statusVal = document.getElementById('driverPayFilterStatus').value;
+      const modeVal = document.getElementById('driverPayFilterMode').value;
+
+      const filtered = allBookings.filter(b => {
+        const matchesSearch = !searchVal || 
+          (b.driverName || '').toLowerCase().includes(searchVal) ||
+          (b.phone || '').toLowerCase().includes(searchVal) ||
+          (b.id || '').toLowerCase().includes(searchVal) ||
+          (b.pickupLocation || '').toLowerCase().includes(searchVal) ||
+          (b.dropLocation || '').toLowerCase().includes(searchVal);
+
+        const curStatus = b.driverPayStatus || 'Pending';
+        const matchesStatus = (statusVal === 'All') || (curStatus === statusVal);
+
+        const curMode = b.driverPayMode || 'Online';
+        const matchesMode = (modeVal === 'All') || (curMode === modeVal);
+
+        return matchesSearch && matchesStatus && matchesMode;
+      });
+
+      renderDriverPayments(filtered);
+    }
+
+    function openDriverPayoutModal(id) {
+      const booking = allBookings.find(b => b.id === id);
+      if (!booking) return;
+
+      activeDriverPayoutId = id;
+      document.getElementById('drvModalSubtitle').innerText = `Trip #${(booking.id || '').toUpperCase().substring(0, 8)} • Booking Payout Settlement`;
+      document.getElementById('drvModalDriverName').innerText = booking.driverName || 'Assigned Driver Partner';
+      document.getElementById('drvModalDriverPhone').innerText = booking.phone ? `Phone: ${booking.phone}` : 'Driver Phone: Contact on Dispatch';
+      document.getElementById('drvModalRoute').innerText = `${booking.pickupLocation || 'Pickup'} ➔ ${booking.dropLocation || 'Drop'}`;
+      document.getElementById('drvModalDate').innerText = booking.pickupDate ? `${booking.pickupDate} at ${booking.pickupTime || 'Morning'}` : 'Scheduled Trip';
+
+      const notes = booking.driverNotes || '';
+      const notesEl = document.getElementById('drvModalDriverNotesDisplay');
+      if (notes) {
+        notesEl.innerText = `"${notes}"`;
+      } else {
+        notesEl.innerText = 'No special remarks reported by driver.';
+      }
+
+      const defaultRate = Number(booking.driverExtraKmRate || 15);
+      const defaultKms = Number(booking.extraKms || 0);
+      const defaultBase = Number(booking.driverBasePayment || booking.driverPayment || 0);
+
+      document.getElementById('drvModalBasePay').value = defaultBase;
+      document.getElementById('drvModalExtraKms').value = defaultKms;
+      document.getElementById('drvModalKmRate').value = defaultRate;
+      document.getElementById('drvModalPayStatus').value = booking.driverPayStatus || 'Pending';
+      document.getElementById('drvModalPayMode').value = booking.driverPayMode || 'Online';
+      document.getElementById('drvModalTxnNote').value = booking.driverPayTxn || '';
+
+      recalcDriverPayoutModal();
+      document.getElementById('driverPayoutModal').classList.add('open');
+    }
+
+    function closeDriverPayoutModal() {
+      activeDriverPayoutId = null;
+      document.getElementById('driverPayoutModal').classList.remove('open');
+    }
+
+    function recalcDriverPayoutModal() {
+      const base = Number(document.getElementById('drvModalBasePay').value || 0);
+      const extraKm = Number(document.getElementById('drvModalExtraKms').value || 0);
+      const rate = Number(document.getElementById('drvModalKmRate').value || 15);
+      const extraPay = extraKm * rate;
+      const total = base + extraPay;
+
+      document.getElementById('drvModalExtraKmPay').value = extraPay;
+      document.getElementById('drvModalTotalPay').value = total;
+    }
+
+    async function submitDriverPayout() {
+      if (!activeDriverPayoutId) return;
+
+      const driverBasePayment = Number(document.getElementById('drvModalBasePay').value || 0);
+      const extraKms = Number(document.getElementById('drvModalExtraKms').value || 0);
+      const driverExtraKmRate = Number(document.getElementById('drvModalKmRate').value || 15);
+      const driverExtraKmPayment = Number(document.getElementById('drvModalExtraKmPay').value || 0);
+      const driverPayment = Number(document.getElementById('drvModalTotalPay').value || 0);
+      const driverPayStatus = document.getElementById('drvModalPayStatus').value;
+      const driverPayMode = document.getElementById('drvModalPayMode').value;
+      const driverPayTxn = document.getElementById('drvModalTxnNote').value.trim();
+
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${activeDriverPayoutId}/driver-payout`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            driverBasePayment,
+            extraKms,
+            driverExtraKmRate,
+            driverExtraKmPayment,
+            driverPayment,
+            driverPayStatus,
+            driverPayMode,
+            driverPayTxn
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to update driver payout.');
+
+        alert('Driver partner payout updated successfully! 💰');
+        closeDriverPayoutModal();
+
+        // Update local booking
+        const bIdx = allBookings.findIndex(b => b.id === activeDriverPayoutId);
+        if (bIdx !== -1) {
+          allBookings[bIdx] = { ...allBookings[bIdx], ...data.booking };
+        }
+        updateDriverPaymentMetrics();
+        filterDriverPayments();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function quickToggleDriverPay(bookingId, status, mode) {
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${bookingId}/driver-payout`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            driverPayStatus: status,
+            driverPayMode: mode || 'Online'
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to update status.');
+
+        const bIdx = allBookings.findIndex(b => b.id === bookingId);
+        if (bIdx !== -1) {
+          allBookings[bIdx] = { ...allBookings[bIdx], ...data.booking };
+        }
+        updateDriverPaymentMetrics();
+        filterDriverPayments();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // --------------------------------------------------------------------------
+    // FLEET PARTNER PAYMENTS MANAGEMENT
+    // --------------------------------------------------------------------------
+    let activeFleetPayoutId = null;
+
+    function updateFleetPaymentMetrics() {
+      let total = 0;
+      let pending = 0;
+      let pendingCount = 0;
+      let paid = 0;
+      let paidCount = 0;
+
+      allBookings.forEach(b => {
+        const pay = Number(b.fleetPayment || 0);
+        total += pay;
+        if (b.fleetPayStatus === 'Paid') {
+          paid += pay;
+          paidCount++;
+        } else if (b.carId || pay > 0 || b.status === 'Completed') {
+          pending += pay;
+          pendingCount++;
+        }
+      });
+
+      const mTotal = document.getElementById('metric-fleet-payout-total');
+      if (mTotal) mTotal.innerText = `₹${total.toLocaleString('en-IN')}`;
+      const mPend = document.getElementById('metric-fleet-payout-pending');
+      if (mPend) mPend.innerText = `₹${pending.toLocaleString('en-IN')}`;
+      const mPendCnt = document.getElementById('metric-fleet-payout-pending-count');
+      if (mPendCnt) mPendCnt.innerText = pendingCount;
+      const mPaid = document.getElementById('metric-fleet-payout-paid');
+      if (mPaid) mPaid.innerText = `₹${paid.toLocaleString('en-IN')}`;
+      const mPaidCnt = document.getElementById('metric-fleet-payout-paid-count');
+      if (mPaidCnt) mPaidCnt.innerText = paidCount;
+
+      const badge = document.getElementById('badge-fleet-payments-count');
+      if (badge) badge.innerText = pendingCount > 0 ? `${pendingCount} Pending` : allBookings.length;
+    }
+
+    function renderFleetPayments(list) {
+      const tbody = document.getElementById('fleetPaymentsTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state-cell">
+              <div class="empty-state-icon"><i class="ph ph-bank"></i></div>
+              <div>No fleet partner payment records found.</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach(b => {
+        const tr = document.createElement('tr');
+
+        // Journey Details
+        const refDisplay = (b.id || '').toUpperCase().substring(0, 8);
+        const route = `${b.pickupLocation || 'Pickup'} ➔ ${b.dropLocation || 'Destination'}`;
+        const dateStr = b.pickupDate || 'Scheduled';
+        const clientName = b.name || 'Customer';
+
+        const journeyCell = `
+          <div class="cell-title">#${refDisplay}</div>
+          <div class="cell-sub" style="font-weight:700; color:var(--text-main); margin-top:2px;">${route}</div>
+          <div class="cell-sub"><i class="ph-bold ph-calendar"></i> ${dateStr} • Client: ${clientName}</div>
+        `;
+
+        // Vehicle Information
+        let carCell = '';
+        if (b.carModel || b.carNumber) {
+          carCell = `
+            <div class="cell-title"><i class="ph-bold ph-car" style="color:var(--green);"></i> ${b.carModel || 'Fleet Vehicle'}</div>
+            <div style="margin-top:2px;"><span class="plate-badge">${b.carNumber || 'Plate Assigned'}</span></div>
+          `;
+        } else {
+          carCell = `
+            <div class="cell-title">${b.vehicle || 'Standard Vehicle'}</div>
+            <div class="cell-sub" style="font-style:italic;">No car assigned</div>
+          `;
+        }
+
+        // Fleet Partner (Car Owner)
+        let ownerCell = '';
+        const ownerName = b.fleetPartnerName || '';
+        const ownerEmail = b.fleetPartnerEmail || '';
+        const ownerPhone = b.fleetPartnerPhone || '';
+
+        if (ownerName || ownerEmail || ownerPhone) {
+          ownerCell = `
+            <div class="cell-title" style="font-weight:800;"><i class="ph-bold ph-user-circle"></i> ${ownerName || 'Vehicle Partner'}</div>
+            ${ownerEmail ? `<div class="cell-sub" style="color:var(--blue);"><i class="ph-bold ph-envelope"></i> ${ownerEmail}</div>` : ''}
+            ${ownerPhone ? `<div class="cell-sub" style="font-family:monospace;"><i class="ph-bold ph-phone"></i> ${ownerPhone}</div>` : ''}
+          `;
+        } else {
+          ownerCell = `
+            <span style="color:var(--text-muted); font-size:0.82rem; font-style:italic;">Direct Company Vehicle / Unassigned</span>
+          `;
+        }
+
+        // Total Trip Money
+        const fleetPay = Number(b.fleetPayment || 0);
+        const payCell = `
+          <div style="font-size:1.15rem; font-weight:800; color:var(--green);">₹${fleetPay.toLocaleString('en-IN')}</div>
+          <div class="cell-sub" style="font-size:0.72rem;">Trip Vendor Payout</div>
+        `;
+
+        // Payment Status & Mode
+        const isPaid = (b.fleetPayStatus === 'Paid');
+        const payMode = b.fleetPayMode || 'Online';
+        const statusBadge = isPaid
+          ? `<span class="status-badge" style="background:#DCFCE7; color:#15803D;"><i class="ph-bold ph-check"></i> Paid</span>`
+          : `<span class="status-badge" style="background:#FEF3C7; color:#B45309;"><i class="ph-bold ph-hourglass"></i> Pending</span>`;
+        
+        const modeBadge = `<span style="font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:4px; background:${payMode === 'Cash' ? '#F3E8FF' : '#EFF6FF'}; color:${payMode === 'Cash' ? '#7C3AED' : '#2563EB'}; display:inline-block; margin-top:4px;"><i class="ph-bold ${payMode === 'Cash' ? 'ph-money' : 'ph-credit-card'}"></i> ${payMode === 'Cash' ? 'Cash (Offline)' : 'Online (UPI/Bank)'}</span>`;
+
+        let txnSub = '';
+        if (b.fleetPayTxn) {
+          txnSub = `<div class="cell-sub" style="font-size:0.7rem; margin-top:2px;">Ref: ${b.fleetPayTxn}</div>`;
+        }
+
+        const statusCell = `
+          <div>${statusBadge}</div>
+          <div>${modeBadge}</div>
+          ${txnSub}
+        `;
+
+        // Actions
+        const quickToggleBtn = isPaid
+          ? `<button class="btn-row-action" style="font-size:0.72rem; padding:3px 8px;" onclick="quickToggleFleetPay('${b.id}', 'Pending', '${payMode}')" title="Mark as Pending"><i class="ph-bold ph-arrow-counter-clockwise"></i> Mark Pending</button>`
+          : `<button class="btn-row-action complete" style="font-size:0.72rem; padding:3px 8px;" onclick="quickToggleFleetPay('${b.id}', 'Paid', '${payMode}')" title="Mark as Paid"><i class="ph-bold ph-check"></i> Mark Paid</button>`;
+
+        const actionCell = `
+          <div class="actions-cluster">
+            <button class="btn-row-action" style="font-size:0.75rem; padding:4px 10px; font-weight:700; color:var(--green-dark); background:#F1F5F9;" onclick="openFleetPayoutModal('${b.id}')">
+              <i class="ph-bold ph-pencil-simple"></i> Update Payout
+            </button>
+            ${quickToggleBtn}
+          </div>
+        `;
+
+        tr.innerHTML = `
+          <td>${journeyCell}</td>
+          <td>${carCell}</td>
+          <td>${ownerCell}</td>
+          <td>${payCell}</td>
+          <td>${statusCell}</td>
+          <td>${actionCell}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterFleetPayments() {
+      const searchVal = (document.getElementById('fleetPaySearchInput').value || '').toLowerCase().trim();
+      const statusVal = document.getElementById('fleetPayFilterStatus').value;
+      const modeVal = document.getElementById('fleetPayFilterMode').value;
+
+      const filtered = allBookings.filter(b => {
+        const matchesSearch = !searchVal || 
+          (b.carModel || '').toLowerCase().includes(searchVal) ||
+          (b.carNumber || '').toLowerCase().includes(searchVal) ||
+          (b.fleetPartnerName || '').toLowerCase().includes(searchVal) ||
+          (b.fleetPartnerEmail || '').toLowerCase().includes(searchVal) ||
+          (b.id || '').toLowerCase().includes(searchVal) ||
+          (b.pickupLocation || '').toLowerCase().includes(searchVal);
+
+        const curStatus = b.fleetPayStatus || 'Pending';
+        const matchesStatus = (statusVal === 'All') || (curStatus === statusVal);
+
+        const curMode = b.fleetPayMode || 'Online';
+        const matchesMode = (modeVal === 'All') || (curMode === modeVal);
+
+        return matchesSearch && matchesStatus && matchesMode;
+      });
+
+      renderFleetPayments(filtered);
+    }
+
+    function openFleetPayoutModal(id) {
+      const booking = allBookings.find(b => b.id === id);
+      if (!booking) return;
+
+      activeFleetPayoutId = id;
+      document.getElementById('fltModalSubtitle').innerText = `Trip #${(booking.id || '').toUpperCase().substring(0, 8)} • Vehicle Vendor Settlement`;
+      document.getElementById('fltModalCarName').innerText = booking.carModel || booking.vehicle || 'Standard Vehicle';
+      document.getElementById('fltModalPlateNumber').innerText = booking.carNumber ? `Plate: ${booking.carNumber}` : 'Plate: Unassigned';
+      document.getElementById('fltModalRoute').innerText = `${booking.pickupLocation || 'Pickup'} ➔ ${booking.dropLocation || 'Drop'}`;
+      document.getElementById('fltModalDate').innerText = booking.pickupDate ? `${booking.pickupDate} at ${booking.pickupTime || 'Morning'}` : 'Scheduled Trip';
+
+      // Auto-populate from assigned car if not on booking yet
+      let defaultOwner = booking.fleetPartnerName || '';
+      let defaultEmail = booking.fleetPartnerEmail || '';
+      let defaultPhone = booking.fleetPartnerPhone || '';
+      if (!defaultOwner && booking.carId) {
+        const car = allCars.find(c => c.id === booking.carId);
+        if (car) {
+          defaultOwner = car.owner || '';
+          defaultEmail = car.ownerEmail || '';
+          defaultPhone = car.ownerPhone || '';
+        }
+      }
+
+      document.getElementById('fltModalOwnerName').value = defaultOwner;
+      document.getElementById('fltModalOwnerEmail').value = defaultEmail;
+      document.getElementById('fltModalOwnerPhone').value = defaultPhone;
+      document.getElementById('fltModalPayment').value = booking.fleetPayment || 0;
+      document.getElementById('fltModalPayStatus').value = booking.fleetPayStatus || 'Pending';
+      document.getElementById('fltModalPayMode').value = booking.fleetPayMode || 'Online';
+      document.getElementById('fltModalTxnNote').value = booking.fleetPayTxn || '';
+
+      document.getElementById('fleetPayoutModal').classList.add('open');
+    }
+
+    function closeFleetPayoutModal() {
+      activeFleetPayoutId = null;
+      document.getElementById('fleetPayoutModal').classList.remove('open');
+    }
+
+    async function submitFleetPayout() {
+      if (!activeFleetPayoutId) return;
+
+      const fleetPartnerName = document.getElementById('fltModalOwnerName').value.trim();
+      const fleetPartnerEmail = document.getElementById('fltModalOwnerEmail').value.trim();
+      const fleetPartnerPhone = document.getElementById('fltModalOwnerPhone').value.trim();
+      const fleetPayment = Number(document.getElementById('fltModalPayment').value || 0);
+      const fleetPayStatus = document.getElementById('fltModalPayStatus').value;
+      const fleetPayMode = document.getElementById('fltModalPayMode').value;
+      const fleetPayTxn = document.getElementById('fltModalTxnNote').value.trim();
+
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${activeFleetPayoutId}/fleet-payout`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            fleetPartnerName,
+            fleetPartnerEmail,
+            fleetPartnerPhone,
+            fleetPayment,
+            fleetPayStatus,
+            fleetPayMode,
+            fleetPayTxn
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to update fleet partner payout.');
+
+        alert('Fleet partner payout updated successfully! 🚗💰');
+        closeFleetPayoutModal();
+
+        // Update local booking
+        const bIdx = allBookings.findIndex(b => b.id === activeFleetPayoutId);
+        if (bIdx !== -1) {
+          allBookings[bIdx] = { ...allBookings[bIdx], ...data.booking };
+        }
+        updateFleetPaymentMetrics();
+        filterFleetPayments();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function quickToggleFleetPay(bookingId, status, mode) {
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${bookingId}/fleet-payout`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            fleetPayStatus: status,
+            fleetPayMode: mode || 'Online'
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to update fleet status.');
+
+        const bIdx = allBookings.findIndex(b => b.id === bookingId);
+        if (bIdx !== -1) {
+          allBookings[bIdx] = { ...allBookings[bIdx], ...data.booking };
+        }
+        updateFleetPaymentMetrics();
+        filterFleetPayments();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // --------------------------------------------------------------------------
     // 6. TAB SWITCHER & LOGOUT
     // --------------------------------------------------------------------------
     function switchTab(tab) {
       const bSec = document.getElementById('bookings-section');
       const dSec = document.getElementById('drivers-section');
       const cSec = document.getElementById('cars-section');
+      const dpSec = document.getElementById('driver-payments-section');
+      const fpSec = document.getElementById('fleet-payments-section');
 
       const bBtn = document.getElementById('tab-bookings-btn');
       const dBtn = document.getElementById('tab-drivers-btn');
       const cBtn = document.getElementById('tab-cars-btn');
+      const dpBtn = document.getElementById('tab-driver-payments-btn');
+      const fpBtn = document.getElementById('tab-fleet-payments-btn');
 
-      bSec.style.display = 'none';
-      dSec.style.display = 'none';
-      cSec.style.display = 'none';
+      if (bSec) bSec.style.display = 'none';
+      if (dSec) dSec.style.display = 'none';
+      if (cSec) cSec.style.display = 'none';
+      if (dpSec) dpSec.style.display = 'none';
+      if (fpSec) fpSec.style.display = 'none';
 
-      bBtn.classList.remove('active');
-      dBtn.classList.remove('active');
-      cBtn.classList.remove('active');
+      if (bBtn) bBtn.classList.remove('active');
+      if (dBtn) dBtn.classList.remove('active');
+      if (cBtn) cBtn.classList.remove('active');
+      if (dpBtn) dpBtn.classList.remove('active');
+      if (fpBtn) fpBtn.classList.remove('active');
 
       if (tab === 'bookings') {
-        bSec.style.display = 'block';
-        bBtn.classList.add('active');
+        if (bSec) bSec.style.display = 'block';
+        if (bBtn) bBtn.classList.add('active');
       } else if (tab === 'drivers') {
-        dSec.style.display = 'block';
-        dBtn.classList.add('active');
+        if (dSec) dSec.style.display = 'block';
+        if (dBtn) dBtn.classList.add('active');
         fetchDrivers();
       } else if (tab === 'cars') {
-        cSec.style.display = 'block';
-        cBtn.classList.add('active');
+        if (cSec) cSec.style.display = 'block';
+        if (cBtn) cBtn.classList.add('active');
         fetchCars();
+      } else if (tab === 'driver-payments') {
+        if (dpSec) dpSec.style.display = 'block';
+        if (dpBtn) dpBtn.classList.add('active');
+        updateDriverPaymentMetrics();
+        filterDriverPayments();
+      } else if (tab === 'fleet-payments') {
+        if (fpSec) fpSec.style.display = 'block';
+        if (fpBtn) fpBtn.classList.add('active');
+        updateFleetPaymentMetrics();
+        filterFleetPayments();
       }
     }
 

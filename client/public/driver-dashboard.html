@@ -628,6 +628,82 @@
       color: var(--text);
       margin-bottom: 0.35rem;
     }
+
+    /* Modal System for Trip Reporting */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.open .modal-card {
+      transform: translateY(0);
+    }
+    .modal-head {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 1.5rem;
+    }
+    .modal-foot {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: #F8FAFC;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--green);
+    }
   </style>
 </head>
 <body>
@@ -712,6 +788,55 @@
     </section>
 
   </main>
+
+  <!-- COMPLETE JOURNEY & REPORT MODAL -->
+  <div class="modal-overlay" id="driverCompleteModal" onclick="if(event.target===this) closeDriverCompleteModal();">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <div style="font-size:1.1rem; font-weight:800; color:var(--text);"><i class="ph-bold ph-flag-checkered" style="color:var(--emerald);"></i> Complete Journey Report</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;" id="modalTripRefSubtitle">Trip #RV...</div>
+        </div>
+        <button onclick="closeDriverCompleteModal()" style="background:none; border:none; font-size:1.25rem; cursor:pointer; color:var(--text-muted);">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label"><i class="ph-bold ph-gauge"></i> Additional Kilometers Driven (Extra KMs)</label>
+          <input type="number" id="repExtraKm" class="form-input" min="0" value="0" placeholder="0" oninput="recalcDriverReport()">
+          <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Enter extra km traveled beyond original itinerary (or leave 0 if none).</p>
+        </div>
+
+        <!-- Calculation preview box -->
+        <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; margin-bottom:1.25rem;">
+          <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px;">Driver Payout Calculation</div>
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+            <span style="color:var(--text-sub);">Base Trip Pay:</span>
+            <span style="font-weight:700;" id="repBasePay">₹0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:6px;">
+            <span style="color:var(--text-sub);">Extra KM Compensation (<span id="repKmRateNote">@ ₹15/km</span>):</span>
+            <span style="font-weight:700; color:var(--green);" id="repExtraKmPay">+₹0</span>
+          </div>
+          <div style="border-top:1px dashed var(--border); padding-top:6px; display:flex; justify-content:space-between; font-size:0.95rem; font-weight:800;">
+            <span>Estimated Total Payout:</span>
+            <span style="color:var(--emerald);" id="repTotalPay">₹0</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="ph-bold ph-chat-text"></i> Driver Remarks & Journey Notes</label>
+          <textarea id="repRemarks" class="form-textarea" rows="3" placeholder="e.g. Extra sightseeing detour to Kamakhya temple; Toll ₹120 paid; Dropped safely at 6:30 PM."></textarea>
+          <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Admin will read this when releasing your payout.</p>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn-large" style="background:#F1F5F9; color:var(--text-sub); border:1px solid var(--border);" onclick="closeDriverCompleteModal()">Cancel</button>
+        <button type="button" class="btn-large btn-complete" id="btnSubmitCompleteReport" onclick="submitDriverCompleteReport()">
+          <i class="ph-bold ph-check-circle"></i> Confirm & Submit Report
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- JAVASCRIPT ENGINE -->
   <script>
@@ -914,27 +1039,57 @@
         // Driver Payout View (Driver ONLY sees their own pay, never customer fare)
         let payoutHtml = '';
         const driverPay = Number(trip.driverPayment || 0);
+        const basePay = Number(trip.driverBasePayment || 0);
+        const extraKmPay = Number(trip.driverExtraKmPayment || 0);
+        const extraKms = Number(trip.extraKms || 0);
+        const isPaid = (trip.driverPayStatus === 'Paid');
+        const payMode = trip.driverPayMode || 'Online';
+
+        let breakdownText = '';
+        if (extraKms > 0 && extraKmPay > 0) {
+          breakdownText = `<div style="font-size:0.75rem; color:var(--text-sub); margin-top:3px;">(Base: ₹${basePay.toLocaleString('en-IN')} + ${extraKms} Extra KMs: ₹${extraKmPay.toLocaleString('en-IN')})</div>`;
+        }
+
+        let remarksHtml = '';
+        if (trip.driverNotes) {
+          remarksHtml = `
+            <div style="font-size:0.8rem; background:#F8FAFC; border:1px solid var(--border); padding:8px 10px; border-radius:6px; margin-top:6px; color:var(--text-sub); width:100%;">
+              <i class="ph-bold ph-chat-text" style="color:var(--green);"></i> <strong>Your Remarks:</strong> ${trip.driverNotes}
+            </div>
+          `;
+        }
 
         if (driverPay > 0) {
-          const isPaid = (trip.driverPayStatus === 'Paid');
           payoutHtml = `
-            <div class="driver-payout-box">
-              <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="payout-val">₹${driverPay.toLocaleString('en-IN')}</span>
-                <span class="payout-badge ${isPaid ? 'payout-paid' : 'payout-pending'}">
-                  ${isPaid ? '✓ Paid to You' : 'Pending Admin Release'}
+            <div class="driver-payout-box" style="flex-direction:column; align-items:flex-start; gap:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:8px;">
+                <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="payout-val">₹${driverPay.toLocaleString('en-IN')}</span>
+                  <span class="payout-badge ${isPaid ? 'payout-paid' : 'payout-pending'}">
+                    ${isPaid ? '✓ Paid to You' : 'Pending Admin Release'}
+                  </span>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:6px;">
+                ${breakdownText}
+                <span style="font-size:0.75rem; font-weight:700; color:var(--text-sub);">
+                  <i class="ph-bold ${payMode === 'Cash' ? 'ph-money' : 'ph-credit-card'}"></i> Payout Mode: ${payMode === 'Cash' ? 'Offline (Cash)' : 'Online (UPI/Bank)'}
                 </span>
               </div>
+              ${remarksHtml}
             </div>
           `;
         } else {
           payoutHtml = `
-            <div class="driver-payout-box">
-              <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
-              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">
-                ${st === 'Completed' ? 'Admin is calculating your payout percentage' : 'Will be updated upon journey completion'}
-              </span>
+            <div class="driver-payout-box" style="flex-direction:column; align-items:flex-start; gap:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:8px;">
+                <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">
+                  ${st === 'Completed' ? 'Admin is calculating your payout percentage' : 'Will be updated upon journey completion'}
+                </span>
+              </div>
+              ${remarksHtml}
             </div>
           `;
         }
@@ -963,15 +1118,20 @@
         } else if (st === 'In Progress') {
           actionButtonsHtml = `
             <div class="action-btn-row">
-              <button class="btn-large btn-complete" onclick="completeTrip('${trip.id}')">
+              <button class="btn-large btn-complete" onclick="openCompleteTripModal('${trip.id}')">
                 <i class="ph-bold ph-check-circle"></i> 🏁 Tap to Complete Trip
               </button>
             </div>
           `;
         } else if (st === 'Completed') {
           actionButtonsHtml = `
-            <div style="text-align: center; font-size: 0.88rem; font-weight: 700; color: var(--emerald); padding: 8px; background: var(--emerald-pale); border-radius: var(--radius-sm);">
-              ✓ Trip Finished. Admin will verify details and credit your driver payout.
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="text-align: center; font-size: 0.88rem; font-weight: 700; color: var(--emerald); padding: 8px; background: var(--emerald-pale); border-radius: var(--radius-sm);">
+                ✓ Trip Finished. Admin will verify details and credit your driver payout.
+              </div>
+              <button class="btn-large" style="background:#F8FAFC; color:var(--text); border:1.5px solid var(--border); font-size:0.84rem; padding:8px 12px;" onclick="openCompleteTripModal('${trip.id}', true)">
+                <i class="ph-bold ph-pencil-simple"></i> Share / Update Additional KMs or Remarks
+              </button>
             </div>
           `;
         }
@@ -1106,12 +1266,61 @@
       }
     }
 
-    // Direct one-tap trip completion (NO invoice generation by driver!)
-    async function completeTrip(tripId) {
-      if (!confirm('Have you reached destination and safely dropped the passenger? Tap OK to finish trip.')) return;
+    // Journey Completion & Reporting Flow
+    let activeReportingTrip = null;
+    let isReportingUpdateOnly = false;
 
-      const extraKmInput = prompt('Any extra kilometers traveled beyond package? (Enter number, or leave 0):', '0');
-      const extraKms = Number(extraKmInput || 0);
+    function openCompleteTripModal(tripId, isUpdate = false) {
+      const trip = allTrips.find(t => t.id === tripId);
+      if (!trip) return;
+      activeReportingTrip = trip;
+      isReportingUpdateOnly = isUpdate;
+
+      document.getElementById('modalTripRefSubtitle').innerText = `Trip #${(trip.id || '').toUpperCase().substring(0, 8)} • ${trip.pickupLocation || 'Pickup'} to ${trip.dropLocation || 'Destination'}`;
+      document.getElementById('repExtraKm').value = trip.extraKms || 0;
+      document.getElementById('repRemarks').value = trip.driverNotes || '';
+
+      const rate = Number(trip.driverExtraKmRate || 15);
+      document.getElementById('repKmRateNote').innerText = `@ ₹${rate}/km`;
+
+      const submitBtn = document.getElementById('btnSubmitCompleteReport');
+      if (isUpdate) {
+        submitBtn.innerHTML = '<i class="ph-bold ph-check"></i> Update Trip Remarks & KMs';
+      } else {
+        submitBtn.innerHTML = '<i class="ph-bold ph-check-circle"></i> 🏁 Confirm & Complete Trip';
+      }
+
+      recalcDriverReport();
+      document.getElementById('driverCompleteModal').classList.add('open');
+    }
+
+    function closeDriverCompleteModal() {
+      document.getElementById('driverCompleteModal').classList.remove('open');
+      activeReportingTrip = null;
+    }
+
+    function recalcDriverReport() {
+      if (!activeReportingTrip) return;
+      const extraKm = Number(document.getElementById('repExtraKm').value || 0);
+      const rate = Number(activeReportingTrip.driverExtraKmRate || 15);
+      const base = Number(activeReportingTrip.driverBasePayment || activeReportingTrip.driverPayment || 0);
+      const extraKmPay = extraKm * rate;
+      const total = base + extraKmPay;
+
+      document.getElementById('repBasePay').innerText = `₹${base.toLocaleString('en-IN')}`;
+      document.getElementById('repExtraKmPay').innerText = `+₹${extraKmPay.toLocaleString('en-IN')}`;
+      document.getElementById('repTotalPay').innerText = `₹${total.toLocaleString('en-IN')}`;
+    }
+
+    async function submitDriverCompleteReport() {
+      if (!activeReportingTrip) return;
+      const tripId = activeReportingTrip.id;
+      const extraKms = Number(document.getElementById('repExtraKm').value || 0);
+      const driverNotes = document.getElementById('repRemarks').value.trim();
+
+      const submitBtn = document.getElementById('btnSubmitCompleteReport');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Submitting...';
 
       try {
         const apiBase = getApi();
@@ -1121,20 +1330,24 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             status: 'Completed',
-            extraKms
+            extraKms,
+            driverNotes
           })
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Failed to complete trip.');
+        if (!response.ok) throw new Error(data.message || 'Failed to submit report.');
 
-        alert('Trip completed! Admin will verify and credit your payout.');
+        alert(isReportingUpdateOnly ? 'Trip remarks and extra kilometers updated successfully!' : 'Journey completed! Your report was sent to admin.');
+        closeDriverCompleteModal();
         switchTab('completed');
-        loadDriverTrips();
+        await loadDriverTrips();
       } catch (err) {
         alert(err.message);
+      } finally {
+        submitBtn.disabled = false;
       }
     }
 

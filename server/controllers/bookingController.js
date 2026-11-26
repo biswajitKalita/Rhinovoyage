@@ -126,7 +126,13 @@ exports.getUserBookings = async (req, res) => {
           canViewContact,
           phone: canViewContact ? (b.phone || '') : '',
           driverPayment: Number(b.driverPayment || 0),
-          driverPayStatus: b.driverPayStatus || 'Pending'
+          driverBasePayment: Number(b.driverBasePayment || 0),
+          driverExtraKmRate: Number(b.driverExtraKmRate || 15),
+          driverExtraKmPayment: Number(b.driverExtraKmPayment || 0),
+          extraKms: Number(b.extraKms || 0),
+          driverNotes: b.driverNotes || '',
+          driverPayStatus: b.driverPayStatus || 'Pending',
+          driverPayMode: b.driverPayMode || 'Online'
         };
       }).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
@@ -307,12 +313,27 @@ exports.driverUpdateTripStatus = async (req, res) => {
       updateFields.status = 'In Progress';
       updateFields.driverStatus = 'In Progress';
       updateFields.tripStartedAt = new Date().toISOString();
-    } else if (status === 'Completed') {
+    } else if (status === 'Completed' || (booking.status === 'Completed' && (extraKms !== undefined || driverNotes !== undefined))) {
       updateFields.status = 'Completed';
       updateFields.driverStatus = 'Completed';
-      updateFields.completedAt = new Date().toISOString();
-      if (extraKms) updateFields.extraKms = Number(extraKms);
-      if (driverNotes) updateFields.driverNotes = driverNotes;
+      if (!booking.completedAt) updateFields.completedAt = new Date().toISOString();
+      if (extraKms !== undefined) updateFields.extraKms = Number(extraKms);
+      if (driverNotes !== undefined) updateFields.driverNotes = driverNotes;
+
+      // Calculate extra KM compensation differently (Base Pay + Extra KM compensation)
+      const extraKmRate = Number(booking.driverExtraKmRate || 15);
+      const reportedExtraKms = (extraKms !== undefined) ? Number(extraKms) : Number(booking.extraKms || 0);
+      const extraKmPay = reportedExtraKms * extraKmRate;
+
+      updateFields.driverExtraKmRate = extraKmRate;
+      updateFields.driverExtraKmPayment = extraKmPay;
+
+      const basePay = Number(booking.driverBasePayment || booking.driverPayment || 0);
+      updateFields.driverBasePayment = basePay;
+      updateFields.driverPayment = basePay + extraKmPay;
+
+      if (!booking.driverPayStatus) updateFields.driverPayStatus = 'Pending';
+      if (!booking.driverPayMode) updateFields.driverPayMode = 'Online';
       // Note: Driver does NOT generate invoice! Admin verifies and generates invoice & driver payout.
     }
 
@@ -360,8 +381,20 @@ exports.completeBooking = async (req, res) => {
       invoice: invoiceData,
       totalAmount: invoiceData.totalAmount,
       invoiceNumber: invoiceData.invoiceNumber,
-      driverPayment: req.body.driverPayment ? Number(req.body.driverPayment) : (booking.driverPayment || 0),
-      driverPayStatus: req.body.driverPayStatus || booking.driverPayStatus || 'Pending'
+      driverPayment: req.body.driverPayment !== undefined ? Number(req.body.driverPayment) : (booking.driverPayment || 0),
+      driverBasePayment: req.body.driverBasePayment !== undefined ? Number(req.body.driverBasePayment) : (booking.driverBasePayment || 0),
+      driverExtraKmRate: req.body.driverExtraKmRate !== undefined ? Number(req.body.driverExtraKmRate) : (booking.driverExtraKmRate || 15),
+      driverExtraKmPayment: req.body.driverExtraKmPayment !== undefined ? Number(req.body.driverExtraKmPayment) : (booking.driverExtraKmPayment || 0),
+      extraKms: req.body.extraKms !== undefined ? Number(req.body.extraKms) : (booking.extraKms || 0),
+      driverNotes: req.body.driverNotes !== undefined ? req.body.driverNotes : (booking.driverNotes || ''),
+      driverPayStatus: req.body.driverPayStatus || booking.driverPayStatus || 'Pending',
+      driverPayMode: req.body.driverPayMode || booking.driverPayMode || 'Online',
+      fleetPayment: req.body.fleetPayment !== undefined ? Number(req.body.fleetPayment) : (booking.fleetPayment || 0),
+      fleetPayStatus: req.body.fleetPayStatus || booking.fleetPayStatus || 'Pending',
+      fleetPayMode: req.body.fleetPayMode || booking.fleetPayMode || 'Online',
+      fleetPartnerName: req.body.fleetPartnerName || booking.fleetPartnerName || '',
+      fleetPartnerEmail: req.body.fleetPartnerEmail || booking.fleetPartnerEmail || '',
+      fleetPartnerPhone: req.body.fleetPartnerPhone || booking.fleetPartnerPhone || ''
     };
 
     await db.update('bookings', { id }, updateData);
@@ -389,7 +422,17 @@ exports.completeBooking = async (req, res) => {
 exports.adminSetDriverPayout = async (req, res) => {
   try {
     const { id } = req.params;
-    const { driverPayment, driverPayStatus } = req.body;
+    const { 
+      driverPayment, 
+      driverBasePayment, 
+      driverExtraKmRate, 
+      driverExtraKmPayment, 
+      extraKms,
+      driverPayStatus, 
+      driverPayMode, 
+      driverPayTxn,
+      driverNotes 
+    } = req.body;
 
     const booking = await db.findOne('bookings', { id });
     if (!booking) {
@@ -397,15 +440,88 @@ exports.adminSetDriverPayout = async (req, res) => {
     }
 
     const updateFields = {
-      driverPayment: Number(driverPayment || 0),
-      driverPayStatus: driverPayStatus || 'Pending',
       driverPayoutUpdatedAt: new Date().toISOString()
     };
+
+    if (driverBasePayment !== undefined) updateFields.driverBasePayment = Number(driverBasePayment);
+    if (driverExtraKmRate !== undefined) updateFields.driverExtraKmRate = Number(driverExtraKmRate);
+    if (extraKms !== undefined) updateFields.extraKms = Number(extraKms);
+    if (driverNotes !== undefined) updateFields.driverNotes = driverNotes;
+
+    const rate = updateFields.driverExtraKmRate !== undefined ? updateFields.driverExtraKmRate : Number(booking.driverExtraKmRate || 15);
+    const currentExtraKms = updateFields.extraKms !== undefined ? updateFields.extraKms : Number(booking.extraKms || 0);
+    const calculatedExtraPay = currentExtraKms * rate;
+    updateFields.driverExtraKmPayment = (driverExtraKmPayment !== undefined) ? Number(driverExtraKmPayment) : calculatedExtraPay;
+
+    if (driverPayment !== undefined) {
+      updateFields.driverPayment = Number(driverPayment);
+    } else {
+      const base = updateFields.driverBasePayment !== undefined ? updateFields.driverBasePayment : Number(booking.driverBasePayment || booking.driverPayment || 0);
+      updateFields.driverPayment = base + updateFields.driverExtraKmPayment;
+    }
+
+    if (driverPayStatus !== undefined) {
+      updateFields.driverPayStatus = driverPayStatus;
+      if (driverPayStatus === 'Paid' && !booking.driverPaidAt) {
+        updateFields.driverPaidAt = new Date().toISOString();
+      }
+    }
+    if (driverPayMode !== undefined) updateFields.driverPayMode = driverPayMode;
+    if (driverPayTxn !== undefined) updateFields.driverPayTxn = driverPayTxn;
 
     await db.update('bookings', { id }, updateFields);
     res.status(200).json({ success: true, message: 'Driver payout updated successfully.', booking: { ...booking, ...updateFields } });
   } catch (error) {
+    console.error('Update driver payout error:', error);
     res.status(500).json({ success: false, message: 'Server error updating driver payout.' });
+  }
+};
+
+// @desc    Admin set/update fleet partner payout & status
+// @route   PUT /api/bookings/:id/fleet-payout
+// @access  Private/Admin
+exports.adminSetFleetPayout = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { 
+      fleetPayment, 
+      fleetPayStatus, 
+      fleetPayMode, 
+      fleetPartnerName, 
+      fleetPartnerEmail, 
+      fleetPartnerPhone, 
+      fleetPayTxn, 
+      fleetNotes 
+    } = req.body;
+
+    const booking = await db.findOne('bookings', { id });
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found.' });
+    }
+
+    const updateFields = {
+      fleetPayoutUpdatedAt: new Date().toISOString()
+    };
+
+    if (fleetPayment !== undefined) updateFields.fleetPayment = Number(fleetPayment);
+    if (fleetPayStatus !== undefined) {
+      updateFields.fleetPayStatus = fleetPayStatus;
+      if (fleetPayStatus === 'Paid' && !booking.fleetPaidAt) {
+        updateFields.fleetPaidAt = new Date().toISOString();
+      }
+    }
+    if (fleetPayMode !== undefined) updateFields.fleetPayMode = fleetPayMode;
+    if (fleetPartnerName !== undefined) updateFields.fleetPartnerName = fleetPartnerName;
+    if (fleetPartnerEmail !== undefined) updateFields.fleetPartnerEmail = fleetPartnerEmail;
+    if (fleetPartnerPhone !== undefined) updateFields.fleetPartnerPhone = fleetPartnerPhone;
+    if (fleetPayTxn !== undefined) updateFields.fleetPayTxn = fleetPayTxn;
+    if (fleetNotes !== undefined) updateFields.fleetNotes = fleetNotes;
+
+    await db.update('bookings', { id }, updateFields);
+    res.status(200).json({ success: true, message: 'Fleet partner payout updated successfully.', booking: { ...booking, ...updateFields } });
+  } catch (error) {
+    console.error('Update fleet payout error:', error);
+    res.status(500).json({ success: false, message: 'Server error updating fleet partner payout.' });
   }
 };
 
@@ -584,6 +700,10 @@ exports.assignCar = async (req, res) => {
 
     let carModel = '';
     let carNumber = '';
+    let fleetPartnerName = booking.fleetPartnerName || '';
+    let fleetPartnerEmail = booking.fleetPartnerEmail || '';
+    let fleetPartnerPhone = booking.fleetPartnerPhone || '';
+
     if (carId) {
       const car = await db.findOne('cars', { id: carId });
       if (!car) {
@@ -591,12 +711,26 @@ exports.assignCar = async (req, res) => {
       }
       carModel = car.modelName;
       carNumber = car.plateNumber;
+      if (car.owner) fleetPartnerName = car.owner;
+      if (car.ownerEmail) fleetPartnerEmail = car.ownerEmail;
+      if (car.ownerPhone) fleetPartnerPhone = car.ownerPhone;
     }
 
-    // Update booking in DB
-    await db.update('bookings', { id }, { carId: carId || '', carModel, carNumber });
+    const updateFields = {
+      carId: carId || '',
+      carModel,
+      carNumber,
+      fleetPartnerName,
+      fleetPartnerEmail,
+      fleetPartnerPhone
+    };
+    if (!booking.fleetPayStatus) updateFields.fleetPayStatus = 'Pending';
+    if (!booking.fleetPayMode) updateFields.fleetPayMode = 'Online';
 
-    const updatedBooking = { ...booking, carId: carId || '', carModel, carNumber };
+    // Update booking in DB
+    await db.update('bookings', { id }, updateFields);
+
+    const updatedBooking = { ...booking, ...updateFields };
 
     // Sync booking status/assignment update to Google Sheet
     syncBooking(updatedBooking, 'assign_car').catch(err => console.error('Booking car update sheet sync error:', err));
