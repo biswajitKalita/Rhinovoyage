@@ -69,7 +69,66 @@ exports.adminAddDriver = async (req, res) => {
     // Check if email already exists
     const existingUser = await db.findOne('users', { email: email.toLowerCase() });
     if (existingUser) {
-      return res.status(400).json({ success: false, message: 'An account with this email address already exists.' });
+      if (existingUser.role === 'admin') {
+        return res.status(400).json({ success: false, message: 'Cannot convert administrator account to driver.' });
+      }
+      if (existingUser.role === 'driver') {
+        return res.status(400).json({ success: false, message: 'A driver account with this email address already exists.' });
+      }
+
+      // Upgrade existing customer account to verified Driver Partner
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      let savedAadharPath = '';
+      let savedLicensePath = '';
+      try {
+        savedAadharPath = saveBase64Image(aadharPhoto, 'aadhar');
+        savedLicensePath = saveBase64Image(licensePhoto, 'license');
+      } catch (uploadErr) {
+        return res.status(400).json({ success: false, message: uploadErr.message });
+      }
+
+      await db.update('users', { id: existingUser.id }, {
+        name,
+        password: hashedPassword,
+        phone,
+        role: 'driver',
+        aadhar,
+        license,
+        aadharPhoto: savedAadharPath,
+        licensePhoto: savedLicensePath,
+        verificationStatus: 'Approved'
+      });
+
+      const updatedDriver = {
+        ...existingUser,
+        name,
+        phone,
+        role: 'driver',
+        aadhar,
+        license,
+        aadharPhoto: savedAadharPath,
+        licensePhoto: savedLicensePath,
+        verificationStatus: 'Approved'
+      };
+      syncUserLog(updatedDriver, 'upgrade_driver').catch(err => console.error('Admin add driver sheets sync error:', err));
+
+      return res.status(200).json({
+        success: true,
+        message: 'Existing user account upgraded to Driver Partner and approved successfully! 🎉',
+        driver: {
+          id: existingUser.id,
+          name,
+          email: existingUser.email,
+          phone,
+          role: 'driver',
+          aadhar,
+          license,
+          aadharPhoto: savedAadharPath,
+          licensePhoto: savedLicensePath,
+          verificationStatus: 'Approved'
+        }
+      });
     }
 
     // Hash password
