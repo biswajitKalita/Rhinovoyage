@@ -84,7 +84,7 @@
   <link rel="stylesheet" href="./src/css/packages.css?v=4.2">
   <link rel="stylesheet" href="./src/css/rentals.css?v=4.2">
   <link rel="stylesheet" href="./src/css/spotlight.css?v=4.2">
-  <link rel="stylesheet" href="./src/css/booking.css?v=4.2">
+  <link rel="stylesheet" href="./src/css/booking.css?v=4.3">
   <link rel="stylesheet" href="./src/css/testimonials.css?v=4.2">
   <link rel="stylesheet" href="./src/css/footer.css?v=4.2">
   <script src="./config.js?v=4.2"></script>
@@ -778,20 +778,23 @@
         <h3>Booking Request Form</h3>
         <p class="subtitle">Quick details for your trip quote</p>
 
-        <!-- Authentication Required Warning Banner -->
-        <div id="booking-login-banner"
-          style="background: var(--orange-pale); border: 1.5px dashed var(--orange); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; text-align: center; display: none;">
-          <h4
-            style="color: var(--orange-dark); font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 6px;">
-            Login Required to Book</h4>
-          <p style="font-size: 0.85rem; color: var(--text-mid); margin-bottom: 12px;">You must be logged in to submit a
-            heritage trip or rental booking request.</p>
-          <div style="display: flex; gap: 10px; justify-content: center;">
-            <a href="login.html" class="btn-primary"
-              style="padding: 6px 16px; font-size: 0.8rem; background: var(--orange); border-color: var(--orange); text-decoration: none; border-radius: 6px; color: white; font-weight: 700; display: inline-block;">Log
-              In</a>
-            <a href="login.html?tab=register" class="btn-secondary"
-              style="padding: 6px 16px; font-size: 0.8rem; border-color: var(--orange-light); color: var(--orange-dark); text-decoration: none; border-radius: 6px; font-weight: 700; background: transparent; border: 1px solid var(--orange-light); display: inline-block;">Register</a>
+        <!-- Authentication Required Notice Banner -->
+        <div id="booking-login-banner" class="booking-login-banner" style="display: none;">
+          <div class="blb-header">
+            <div class="blb-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <div class="blb-content">
+              <h4 class="blb-title">Login Required to Book</h4>
+              <p class="blb-subtitle">Please sign in or create an account to submit your booking. Your tour & vehicle details are automatically saved.</p>
+            </div>
+          </div>
+          <div class="blb-actions">
+            <a href="login.html" class="blb-btn blb-btn-primary">Log In</a>
+            <a href="login.html?tab=register" class="blb-btn blb-btn-secondary">Register</a>
           </div>
         </div>
 
