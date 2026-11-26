@@ -291,3 +291,135 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ========================================================
+   AUTHENTICATION REQUIRED NOTICE (PREMIUM LUXURY CARD)
+======================================================== */
+.booking-login-banner {
+    background: linear-gradient(135deg, #FAF7F2 0%, #F5EFE6 100%);
+    border: 1px solid rgba(27, 67, 50, 0.14);
+    border-left: 4px solid var(--green);
+    border-radius: 14px;
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 18px -2px rgba(27, 67, 50, 0.06), 0 2px 6px -1px rgba(27, 67, 50, 0.03);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.booking-login-banner::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(200, 149, 26, 0.09) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.booking-login-banner .blb-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+}
+
+.booking-login-banner .blb-icon-badge {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 10px;
+    background: rgba(27, 67, 50, 0.08);
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(27, 67, 50, 0.08);
+}
+
+.booking-login-banner .blb-icon-badge svg {
+    width: 18px;
+    height: 18px;
+}
+
+.booking-login-banner .blb-content {
+    flex: 1;
+}
+
+.booking-login-banner .blb-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 3px;
+    letter-spacing: -0.01em;
+}
+
+.booking-login-banner .blb-subtitle {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.86rem;
+    color: var(--text-mid);
+    line-height: 1.48;
+    margin: 0;
+}
+
+.booking-login-banner .blb-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0.85rem;
+    padding-left: 47px;
+}
+
+.booking-login-banner .blb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 20px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    line-height: 1.4;
+}
+
+.booking-login-banner .blb-btn-primary {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
+    color: #ffffff !important;
+    border: 1px solid var(--green);
+    box-shadow: 0 2px 8px rgba(27, 67, 50, 0.25);
+}
+
+.booking-login-banner .blb-btn-primary:hover {
+    background: var(--green-mid);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(27, 67, 50, 0.32);
+}
+
+.booking-login-banner .blb-btn-secondary {
+    background: #ffffff;
+    color: var(--green) !important;
+    border: 1.5px solid rgba(27, 67, 50, 0.25);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.booking-login-banner .blb-btn-secondary:hover {
+    background: rgba(27, 67, 50, 0.04);
+    border-color: var(--green);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 520px) {
+    .booking-login-banner .blb-actions {
+        padding-left: 0;
+        width: 100%;
+    }
+    .booking-login-banner .blb-btn {
+        flex: 1;
+        text-align: center;
+    }
+}

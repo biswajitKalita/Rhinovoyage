@@ -90,6 +90,13 @@ nav.scrolled {
     color: var(--orange-light);
 }
 
+/* Right Actions Container */
+.nav-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 /* Button */
 .nav-cta {
     background: var(--orange);
@@ -183,10 +190,11 @@ nav.scrolled {
         padding: 0.5rem 0;
     }
 
+    .nav-right-actions {
+        gap: 12px;
+    }
+
     .nav-cta {
-        display: inline-block;
-        margin-left: auto;
-        margin-right: 1.25rem;
         font-size: 0.8rem;
         padding: 0.45rem 1rem;
         border-radius: 6px;
@@ -226,10 +234,13 @@ nav.scrolled {
         height: 44px !important;
     }
 
+    .nav-right-actions {
+        gap: 8px;
+    }
+
     .nav-cta {
-        margin-right: 0.75rem;
         font-size: 0.75rem;
-        padding: 0.4rem 0.75rem;
+        padding: 0.4rem 0.65rem;
     }
 
     .hamburger {

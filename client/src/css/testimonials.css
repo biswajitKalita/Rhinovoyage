@@ -6,69 +6,34 @@
     background: white;
 }
 
-/* Slider Base Styles */
+/* On Desktop / Web View (> 768px): clean static 3-column grid, arrows and progress hidden */
 .testi-slider-wrapper {
     position: relative;
     width: 100%;
-    padding: 0 3rem;
+    padding: 0;
     box-sizing: border-box;
 }
 
 .testi-slider-container {
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
     position: relative;
 }
 
 .testi-grid {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    width: max-content;
-    transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    width: 100%;
+    transform: none !important;
 }
 
 .testi-slider-wrapper .slider-arrow {
-    display: flex;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
-    z-index: 10;
-}
-
-.testi-prev-arrow {
-    left: -0.5rem;
-}
-
-.testi-next-arrow {
-    right: -0.5rem;
+    display: none !important;
 }
 
 .testi-progress-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-}
-
-.testi-progress-track {
-    width: 250px;
-    height: 6px;
-    background: rgba(0, 0, 0, 0.08);
-    border-radius: 6px;
-    position: relative;
-    overflow: hidden;
-}
-
-.testi-progress-bar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 33%;
-    background: var(--orange);
-    border-radius: 6px;
-    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: none;
 }
 
 /* Card */
@@ -77,10 +42,9 @@
     border-radius: 16px;
     padding: 2rem;
     position: relative;
-    width: 380px;
+    width: 100%;
     box-sizing: border-box;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    flex-shrink: 0;
 }
 
 .testi-card:hover {
@@ -180,7 +144,16 @@
         padding: 0.5rem 0;
     }
 
+    .testi-grid {
+        display: flex !important;
+        flex-direction: row !important;
+        width: max-content !important;
+        gap: 1.5rem;
+        transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
     .testi-slider-wrapper .slider-arrow {
+        display: flex !important;
         position: static;
         transform: none;
         grid-row: 2;
@@ -203,15 +176,33 @@
     
     .testi-card {
         width: 320px;
+        flex-shrink: 0;
     }
 
     .testi-progress-container {
+        display: flex;
+        justify-content: center;
         margin-top: 1.5rem;
     }
 
     .testi-progress-track {
         width: 200px;
         height: 4px;
+        background: rgba(0, 0, 0, 0.08);
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .testi-progress-bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 33%;
+        background: var(--orange);
+        border-radius: 4px;
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
 }
 
@@ -235,5 +226,6 @@
         width: calc(100vw - 2.5rem);
         max-width: 300px;
         padding: 1.5rem;
+        flex-shrink: 0;
     }
 }
