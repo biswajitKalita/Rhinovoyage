@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Driver Partner Portal — RhinoVoyage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0D281E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Driver Partner Portal — RhinoVoyage Operations</title>
 
   <!-- Favicons -->
   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
@@ -21,7 +24,7 @@
   <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="./config.js"></script>
 
@@ -30,21 +33,26 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     :root {
       --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --bg: #F8FAFC;
+      --font-mono: 'Space Grotesk', monospace;
+
+      --bg: #F4F6F8;
       --card-bg: #FFFFFF;
       --border: #E2E8F0;
+      --border-subtle: #EDF2F7;
 
       --green-dark: #0D281E;
       --green: #1B4332;
       --green-mid: #2D6A4F;
-      --emerald: #16A34A;
-      --emerald-pale: #F0FDF4;
+      --emerald: #10B981;
+      --emerald-dark: #059669;
+      --emerald-pale: #ECFDF5;
 
-      --orange: #E8651A;
+      --orange: #EA580C;
       --orange-pale: #FFF7ED;
 
       --blue: #2563EB;
@@ -53,16 +61,21 @@
       --amber: #D97706;
       --amber-pale: #FFFBEB;
 
-      --rose: #DC2626;
-      --rose-pale: #FEF2F2;
+      --rose: #E11D48;
+      --rose-pale: #FFF1F2;
 
       --text: #0F172A;
       --text-sub: #475569;
       --text-muted: #64748B;
 
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 10px 25px -4px rgba(15, 23, 42, 0.1), 0 4px 8px -2px rgba(15, 23, 42, 0.06);
+
       --radius-sm: 8px;
       --radius-md: 12px;
-      --radius-lg: 16px;
+      --radius-lg: 18px;
+      --radius-xl: 22px;
       --radius-pill: 9999px;
     }
 
@@ -75,25 +88,30 @@
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
       line-height: 1.5;
+      padding-bottom: env(safe-area-inset-bottom, 16px);
     }
 
-    /* Simple Header */
+    /* ==========================================================================
+       1. HEADER (SLEEK & APP-LIKE)
+       ========================================================================== */
     header {
-      background: white;
+      background: #FFFFFF;
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      padding-top: env(safe-area-inset-top, 0);
     }
 
     .header-inner {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 0.85rem 1.25rem;
+      padding: 0.75rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
 
     .brand {
@@ -104,37 +122,135 @@
     }
 
     .logo-img {
-      height: 36px;
+      height: 34px;
       object-fit: contain;
     }
 
-    .header-badge {
-      font-size: 0.72rem;
-      font-weight: 700;
-      background: var(--green-pale, #EBF8F2);
+    .brand-text-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 800;
       color: var(--green);
-      padding: 3px 8px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .header-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      background: var(--emerald-pale);
+      color: var(--emerald-dark);
+      padding: 2px 7px;
       border-radius: var(--radius-pill);
       text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: inline-block;
+      width: fit-content;
+      margin-top: 2px;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
-    .driver-name-tag {
-      font-size: 0.88rem;
+    .duty-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--emerald-dark);
+      cursor: pointer;
+    }
+
+    .duty-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    .driver-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .driver-chip:hover {
+      background: #EDF2F7;
+    }
+
+    .driver-chip-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .driver-chip-name {
+      font-size: 0.8rem;
       font-weight: 700;
+      color: var(--text);
+      max-width: 100px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-header-icon {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-header-icon:hover {
+      background: #F1F5F9;
       color: var(--text);
     }
 
     .btn-logout {
-      background: #F1F5F9;
-      color: var(--text-sub);
-      border: 1px solid var(--border);
-      font-size: 0.82rem;
+      background: #FFF1F2;
+      border: 1px solid #FECDD3;
+      color: var(--rose);
+      font-size: 0.78rem;
       font-weight: 700;
       padding: 6px 12px;
       border-radius: var(--radius-sm);
@@ -142,147 +258,390 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
+      transition: background 0.15s;
     }
 
     .btn-logout:hover {
-      background: var(--rose-pale);
-      color: var(--rose);
-      border-color: #FECACA;
+      background: #FFE4E6;
     }
 
-    /* Main Container */
+    @media (max-width: 500px) {
+      .driver-chip-name { display: none; }
+      .driver-chip { padding: 4px; }
+      .logout-text { display: none; }
+      .btn-logout { padding: 6px 9px; }
+    }
+
+    /* ==========================================================================
+       2. MAIN CONTAINER & HERO
+       ========================================================================== */
     main {
-      max-width: 900px;
+      max-width: 960px;
       width: 100%;
-      margin: 1.5rem auto 3rem;
+      margin: 1rem auto 5rem;
       padding: 0 1rem;
       flex: 1;
     }
 
-    /* Driver Earnings Card (Simple & Minimal) */
-    .earnings-summary-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    @media (max-width: 768px) {
+      main {
+        margin: 0.75rem auto 5.5rem;
+        padding: 0 0.85rem;
+      }
     }
 
-    .earnings-header {
+    /* Hero / Greeting Card */
+    .hero-card {
+      background: linear-gradient(135deg, #0D281E 0%, #1B4332 60%, #2D6A4F 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 12px 28px -6px rgba(13, 40, 30, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      right: -30px;
+      bottom: -30px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-top-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      border-bottom: 1px dashed var(--border);
-      padding-bottom: 0.75rem;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
     }
 
-    .earnings-title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--text);
+    .hero-greeting {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 700;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .earnings-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1rem;
+    .hero-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+      margin-top: 3px;
     }
 
-    @media (max-width: 600px) {
+    .hero-date {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .hero-partner-tag {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #FFFFFF;
+    }
+
+    /* Earnings Grid inside Hero */
+    .earnings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 650px) {
       .earnings-grid {
         grid-template-columns: 1fr;
-        gap: 0.75rem;
+        gap: 8px;
       }
     }
 
-    .metric-box {
-      background: #F8FAFC;
-      border: 1px solid var(--border);
+    .metric-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: var(--radius-md);
       padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .metric-label {
-      font-size: 0.75rem;
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .metric-title {
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 2px;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.8);
     }
 
-    .metric-amount {
+    .metric-icon-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .metric-icon-circle.paid { background: rgba(16, 185, 129, 0.3); color: #6EE7B7; }
+    .metric-icon-circle.pending { background: rgba(245, 158, 11, 0.3); color: #FCD34D; }
+    .metric-icon-circle.trips { background: rgba(59, 130, 246, 0.3); color: #93C5FD; }
+
+    .metric-val {
+      font-family: var(--font-mono);
       font-size: 1.45rem;
-      font-weight: 800;
-      color: var(--green);
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
     }
 
-    .metric-note {
-      font-size: 0.72rem;
-      color: var(--text-muted);
+    .metric-sub {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.65);
       margin-top: 2px;
     }
 
-    /* Tabs Filter Bar */
-    .tabs-bar {
+    /* ==========================================================================
+       3. NAVIGATION TABS (DESKTOP & MOBILE-FIRST)
+       ========================================================================== */
+    /* Desktop Tabs Bar */
+    .desktop-tabs-bar {
       display: flex;
       gap: 8px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      padding: 6px;
+      border-radius: var(--radius-pill);
       margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-sm);
       overflow-x: auto;
-      padding-bottom: 4px;
     }
 
-    .tab-item {
-      background: white;
-      border: 1px solid var(--border);
-      padding: 0.55rem 1.15rem;
+    .tab-pill {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0.65rem 1.15rem;
       border-radius: var(--radius-pill);
-      font-size: 0.84rem;
+      font-family: var(--font-main);
+      font-size: 0.85rem;
       font-weight: 700;
       color: var(--text-sub);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      gap: 7px;
       white-space: nowrap;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .tab-item.active {
+    .tab-pill:hover {
+      color: var(--text);
+      background: #F8FAFC;
+    }
+
+    .tab-pill.active {
       background: var(--green);
-      color: white;
-      border-color: var(--green);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(27, 67, 50, 0.25);
     }
 
-    .tab-count {
+    .tab-badge {
       font-size: 0.72rem;
-      background: rgba(0,0,0,0.08);
-      padding: 2px 6px;
+      font-weight: 800;
+      padding: 2px 7px;
       border-radius: var(--radius-pill);
+      background: #E2E8F0;
+      color: var(--text);
     }
 
-    .tab-item.active .tab-count {
-      background: rgba(255,255,255,0.25);
+    .tab-pill.active .tab-badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
     }
 
-    /* Trip Dossier Cards */
+    /* Mobile Bottom Navigation (Smartphone App Style) */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+      z-index: 999;
+      padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0));
+    }
+
+    .mobile-nav-inner {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .m-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      padding: 6px 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+      font-family: var(--font-main);
+      transition: color 0.15s;
+    }
+
+    .m-nav-icon-wrap {
+      position: relative;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .m-nav-badge {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      background: var(--rose);
+      color: white;
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 99px;
+      min-width: 16px;
+      text-align: center;
+    }
+
+    .m-nav-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .m-nav-item.active {
+      color: var(--green);
+    }
+
+    .m-nav-item.active .m-nav-icon-wrap {
+      transform: scale(1.08);
+      color: var(--green);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-bottom-nav {
+        display: block;
+      }
+      .desktop-tabs-bar {
+        display: none;
+      }
+    }
+
+    /* ==========================================================================
+       4. COMPLETED HISTORY SUMMARY BANNER (NEW!)
+       ========================================================================== */
+    .completed-history-header {
+      background: #FFFFFF;
+      border: 1.5px solid #BBF7D0;
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.06);
+    }
+
+    .completed-header-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--emerald-dark);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .completed-header-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .completed-total-chip {
+      background: var(--emerald-pale);
+      border: 1px solid #86EFAC;
+      color: var(--emerald-dark);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ==========================================================================
+       5. TRIP CARDS (MOBILE-OPTIMIZED DOSSIER)
+       ========================================================================== */
     .trips-list {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1.15rem;
     }
 
     .trip-card {
       background: var(--card-bg);
       border: 1.5px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.35rem 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      padding: 1.25rem 1.35rem;
+      box-shadow: var(--shadow-sm);
       position: relative;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .trip-card:hover {
+      box-shadow: var(--shadow-md);
     }
 
     .trip-card.border-new {
@@ -295,7 +654,7 @@
       border-left: 6px solid var(--emerald);
     }
 
-    /* Trip Header */
+    /* Card Top Bar */
     .card-top {
       display: flex;
       justify-content: space-between;
@@ -307,119 +666,220 @@
       gap: 8px;
     }
 
-    .trip-id-badge {
-      font-family: monospace;
+    /* Numbering for Completed Trips (1, 2, 3...) */
+    .trip-seq-badge-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .trip-seq-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--emerald);
+      color: white;
+      font-family: var(--font-mono);
       font-size: 0.95rem;
       font-weight: 800;
-      background: #F1F5F9;
-      padding: 3px 8px;
-      border-radius: 6px;
-      color: var(--text);
-    }
-
-    .status-pill {
-      font-size: 0.78rem;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: var(--radius-pill);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .st-new { background: var(--amber-pale); color: var(--amber); }
-    .st-accepted { background: var(--blue-pale); color: var(--blue); }
-    .st-progress { background: #FAF5FF; color: #9333EA; }
-    .st-completed { background: var(--emerald-pale); color: var(--emerald); }
-
-    /* Route Box (Large & Obvious) */
-    .route-box {
-      background: #F8FAFC;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .route-row {
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 0.75rem;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35);
+      flex-shrink: 0;
     }
 
-    .route-row:last-child {
-      margin-bottom: 0;
+    .trip-seq-label-col {
+      display: flex;
+      flex-direction: column;
     }
 
-    .route-icon {
-      font-size: 1.25rem;
-      line-height: 1;
+    .trip-seq-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .trip-id-badge {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: #F1F5F9;
+      padding: 2px 7px;
+      border-radius: 6px;
+      color: var(--text-sub);
+      display: inline-block;
+      width: fit-content;
       margin-top: 2px;
     }
 
-    .route-content {
+    .status-pill {
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .st-new { background: var(--amber-pale); color: var(--amber); border: 1px solid #FDE68A; }
+    .st-accepted { background: var(--blue-pale); color: var(--blue); border: 1px solid #BFDBFE; }
+    .st-progress { background: #FAF5FF; color: #9333EA; border: 1px solid #E9D5FF; }
+    .st-completed { background: var(--emerald-pale); color: var(--emerald-dark); border: 1px solid #A7F3D0; }
+
+    /* Modern Route Timeline (Uber / Maps Style) */
+    .route-timeline-card {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+      margin-bottom: 1rem;
+    }
+
+    .route-point {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+    }
+
+    .route-point:first-child {
+      padding-bottom: 0.85rem;
+    }
+
+    /* Vertical connector line */
+    .route-point:first-child::after {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 22px;
+      bottom: 2px;
+      width: 2px;
+      background: #CBD5E1;
+      border-radius: 1px;
+    }
+
+    .point-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      z-index: 1;
+      margin-top: 1px;
+    }
+
+    .point-dot.pickup {
+      background: #10B981;
+      color: white;
+      box-shadow: 0 0 0 3px #D1FAE5;
+    }
+
+    .point-dot.drop {
+      background: #E11D48;
+      color: white;
+      box-shadow: 0 0 0 3px #FFE4E6;
+    }
+
+    .point-info {
+      flex: 1;
       line-height: 1.3;
     }
 
-    .route-label {
-      font-size: 0.7rem;
+    .point-tag {
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--text-muted);
     }
 
-    .route-place {
+    .point-name {
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--text);
       margin-top: 2px;
     }
 
-    .route-time {
+    .point-meta {
       font-size: 0.82rem;
       font-weight: 700;
       color: var(--green);
-      margin-top: 2px;
+      margin-top: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    /* Passenger & Vehicle Info */
-    .details-row {
+    /* Passenger & Vehicle Chips */
+    .details-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 1rem;
     }
 
-    @media (max-width: 550px) {
-      .details-row {
+    @media (max-width: 520px) {
+      .details-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    .detail-card {
+    .detail-item {
       background: #FFFFFF;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 0.75rem 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .detail-icon-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #F1F5F9;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .detail-text-col {
+      flex: 1;
+      min-width: 0;
     }
 
     .detail-label {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
       color: var(--text-muted);
-      margin-bottom: 3px;
     }
 
     .detail-val {
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
     }
 
-    /* Contact Protection Box (2-Hour Rule) */
-    .contact-container {
+    /* Contact Protection (2-Hour Rule) */
+    .contact-box {
       background: #FFFBEB;
       border: 1.5px solid #FDE68A;
       border-radius: var(--radius-md);
@@ -427,30 +887,30 @@
       margin-bottom: 1rem;
     }
 
-    .contact-container.unlocked {
+    .contact-box.unlocked {
       background: #F0FDF4;
       border-color: #86EFAC;
     }
 
-    .contact-header {
-      font-size: 0.78rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+    .contact-top-row {
       display: flex;
       align-items: center;
       gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
       margin-bottom: 6px;
     }
 
-    .contact-locked-msg {
-      font-size: 0.84rem;
+    .contact-locked-text {
+      font-size: 0.82rem;
       color: var(--amber);
       font-weight: 600;
       line-height: 1.35;
     }
 
-    .contact-unlocked-row {
+    .contact-actions-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -458,54 +918,69 @@
       gap: 8px;
     }
 
-    .phone-text {
-      font-size: 1.15rem;
+    .contact-phone-display {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
       font-weight: 800;
       color: var(--green);
     }
 
-    .contact-buttons {
+    .contact-buttons-group {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .btn-contact-wa {
+    .btn-wa-touch {
       background: #25D366;
-      color: white;
+      color: #FFFFFF;
       text-decoration: none;
       font-size: 0.85rem;
-      font-weight: 700;
-      padding: 8px 16px;
+      font-weight: 800;
+      padding: 9px 18px;
       border-radius: var(--radius-sm);
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 2px 6px rgba(37, 211, 102, 0.25);
+      transition: background 0.15s;
     }
 
-    .btn-contact-wa:hover {
+    .btn-wa-touch:hover {
       background: #1EBE5D;
     }
 
-    .btn-contact-call {
+    .btn-call-touch {
       background: #0F172A;
-      color: white;
+      color: #FFFFFF;
       text-decoration: none;
       font-size: 0.85rem;
-      font-weight: 700;
-      padding: 8px 16px;
+      font-weight: 800;
+      padding: 9px 18px;
       border-radius: var(--radius-sm);
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      transition: background 0.15s;
     }
 
-    /* Driver Payment Box (Only Driver Payment Shown!) */
-    .driver-payout-box {
-      background: #F1F5F9;
+    .btn-call-touch:hover {
+      background: #1E293B;
+    }
+
+    /* Driver Payout Box */
+    .driver-payout-panel {
+      background: #F8FAFC;
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: 0.85rem 1rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .payout-main-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -513,46 +988,71 @@
       gap: 8px;
     }
 
-    .payout-label {
+    .payout-tag-label {
       font-size: 0.82rem;
       font-weight: 800;
       color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    .payout-val {
-      font-size: 1.25rem;
+    .payout-val-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .payout-number {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
       font-weight: 800;
       color: var(--green);
     }
 
-    .payout-badge {
+    .payout-status-pill {
       font-size: 0.72rem;
       font-weight: 800;
-      padding: 2px 8px;
+      padding: 3px 9px;
       border-radius: var(--radius-pill);
     }
 
-    .payout-paid { background: #DCFCE7; color: var(--emerald); }
-    .payout-pending { background: #FEF3C7; color: var(--amber); }
+    .payout-status-pill.paid { background: #DCFCE7; color: var(--emerald-dark); }
+    .payout-status-pill.pending { background: #FEF3C7; color: var(--amber); }
 
-    /* Action Buttons (Large, Touch Friendly) */
-    .action-btn-row {
+    .payout-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-top: 1px dashed var(--border);
+      padding-top: 6px;
+      margin-top: 2px;
+    }
+
+    /* Big Touch Action Buttons */
+    .action-row {
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
     }
 
-    .action-btn-row.dual {
+    .action-row.dual {
       grid-template-columns: 2fr 1fr;
     }
 
-    @media (max-width: 500px) {
-      .action-btn-row.dual {
+    @media (max-width: 480px) {
+      .action-row.dual {
         grid-template-columns: 1fr;
       }
     }
 
-    .btn-large {
+    .btn-driver-touch {
+      min-height: 48px;
       padding: 0.85rem 1.25rem;
       border-radius: var(--radius-md);
       font-family: var(--font-main);
@@ -567,139 +1067,156 @@
       transition: all 0.2s;
     }
 
-    .btn-accept {
+    .btn-driver-touch:active {
+      transform: scale(0.98);
+    }
+
+    .btn-touch-accept {
       background: var(--green);
-      color: white;
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(27, 67, 50, 0.25);
     }
+    .btn-touch-accept:hover { background: var(--green-mid); }
 
-    .btn-accept:hover {
-      background: var(--green-mid);
-    }
-
-    .btn-reject {
-      background: white;
+    .btn-touch-decline {
+      background: #FFFFFF;
       color: var(--rose);
-      border: 1.5px solid #FECACA;
+      border: 1.5px solid #FECDD3;
     }
+    .btn-touch-decline:hover { background: #FFF1F2; }
 
-    .btn-reject:hover {
-      background: var(--rose-pale);
-    }
-
-    .btn-start {
+    .btn-touch-start {
       background: var(--blue);
-      color: white;
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
+    .btn-touch-start:hover { background: #1D4ED8; }
 
-    .btn-start:hover {
-      background: #1D4ED8;
-    }
-
-    .btn-complete {
+    .btn-touch-complete {
       background: var(--emerald);
-      color: white;
-      font-size: 1rem;
-      padding: 0.95rem 1.5rem;
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
     }
+    .btn-touch-complete:hover { background: var(--emerald-dark); }
 
-    .btn-complete:hover {
-      background: #15803D;
+    .completed-notice-banner {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: var(--emerald-dark);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     /* Empty state */
     .empty-box {
-      background: white;
-      border: 1.5px dashed var(--border);
-      border-radius: var(--radius-lg);
+      background: #FFFFFF;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-xl);
       padding: 3.5rem 1.5rem;
       text-align: center;
       color: var(--text-muted);
     }
 
     .empty-box i {
-      font-size: 3rem;
+      font-size: 3.2rem;
       color: var(--text-muted);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.85rem;
     }
 
     .empty-box h3 {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 800;
       color: var(--text);
       margin-bottom: 0.35rem;
     }
 
-    /* Driver Profile Card & Grid */
-    .profile-section {
-      margin-bottom: 2rem;
-    }
+    /* ==========================================================================
+       6. DRIVER PROFILE SECTION (PREMIUM APP STYLE)
+       ========================================================================== */
     .profile-card {
-      background: var(--card-bg);
+      background: #FFFFFF;
       border: 1.5px solid var(--border);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       padding: 1.75rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      box-shadow: var(--shadow-sm);
     }
-    .profile-hero {
+
+    .profile-hero-row {
       display: flex;
       align-items: center;
       gap: 1.25rem;
       border-bottom: 1px dashed var(--border);
-      padding-bottom: 1.25rem;
+      padding-bottom: 1.5rem;
       margin-bottom: 1.5rem;
       flex-wrap: wrap;
     }
-    .profile-avatar {
-      width: 68px;
-      height: 68px;
+
+    .profile-avatar-large {
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      background: var(--green);
-      color: white;
-      font-size: 1.6rem;
+      background: linear-gradient(135deg, #0D281E 0%, #1B4332 100%);
+      color: #FFFFFF;
+      font-size: 1.8rem;
       font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(27, 67, 50, 0.25);
+      box-shadow: 0 4px 14px rgba(27, 67, 50, 0.25);
+      flex-shrink: 0;
     }
-    .profile-title-group h2 {
-      font-size: 1.35rem;
+
+    .profile-title-col h2 {
+      font-size: 1.45rem;
       font-weight: 800;
       color: var(--text);
     }
-    .profile-meta-row {
+
+    .profile-meta-chips {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 4px;
+      gap: 8px;
+      margin-top: 6px;
       flex-wrap: wrap;
     }
-    .profile-id-pill {
-      font-family: monospace;
-      font-size: 0.82rem;
+
+    .profile-id-chip {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
       font-weight: 700;
       background: #F1F5F9;
-      padding: 2px 8px;
+      padding: 3px 9px;
       border-radius: 6px;
       color: var(--text-sub);
     }
+
     .profile-verified-badge {
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 800;
-      color: var(--emerald);
+      color: var(--emerald-dark);
       background: var(--emerald-pale);
+      border: 1px solid #A7F3D0;
       padding: 3px 10px;
       border-radius: var(--radius-pill);
       display: inline-flex;
       align-items: center;
       gap: 4px;
     }
+
     .profile-stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 12px;
       margin-bottom: 1.5rem;
     }
+
     .pstat-box {
       background: #F8FAFC;
       border: 1px solid var(--border);
@@ -707,24 +1224,30 @@
       padding: 1rem;
       text-align: center;
     }
+
     .pstat-num {
-      font-size: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 1.55rem;
       font-weight: 800;
       color: var(--green);
     }
+
     .pstat-lbl {
-      font-size: 0.74rem;
-      font-weight: 700;
+      font-size: 0.72rem;
+      font-weight: 800;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin-top: 3px;
     }
-    .profile-details-grid {
+
+    .profile-info-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
-    .pdetail-item {
+
+    .pinfo-item {
       background: #FFFFFF;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
@@ -733,29 +1256,34 @@
       align-items: flex-start;
       gap: 12px;
     }
-    .pdetail-icon {
+
+    .pinfo-icon {
       font-size: 1.35rem;
       color: var(--green);
       margin-top: 2px;
     }
-    .pdetail-lbl {
-      font-size: 0.72rem;
+
+    .pinfo-label {
+      font-size: 0.7rem;
       font-weight: 800;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
       color: var(--text-muted);
     }
-    .pdetail-val {
+
+    .pinfo-val {
       font-size: 0.95rem;
       font-weight: 700;
       color: var(--text);
       word-break: break-all;
       margin-top: 2px;
     }
+
     .pdoc-link {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 0.75rem;
+      font-size: 0.76rem;
       font-weight: 700;
       color: var(--blue);
       text-decoration: underline;
@@ -765,76 +1293,114 @@
 </head>
 <body>
 
-  <!-- SIMPLE CLEAN HEADER -->
+  <!-- ==========================================================================
+       TOP APP HEADER
+       ========================================================================== -->
   <header>
     <div class="header-inner">
       <a href="index.html" class="brand">
         <img src="./logo.png" alt="RhinoVoyage Logo" class="logo-img">
-        <span class="header-badge">Driver Portal</span>
+        <div class="brand-text-col">
+          <span class="brand-title">RHINOVOYAGE</span>
+          <span class="header-badge">Driver Portal</span>
+        </div>
       </a>
 
       <div class="header-right">
-        <span class="driver-name-tag" id="topDriverName" onclick="switchTab('profile')" style="cursor:pointer;" title="View My Profile">Driver Partner</span>
-        <button class="btn-logout" onclick="handleLogout()">
-          <i class="ph-bold ph-sign-out"></i> Log Out
+        <!-- Duty Status Indicator -->
+        <div class="duty-pill" onclick="switchTab('profile')" title="You are Active and Available">
+          <span class="duty-dot"></span>
+          <span>On Duty</span>
+        </div>
+
+        <!-- Driver Chip -->
+        <div class="driver-chip" onclick="switchTab('profile')" title="View My Profile & Stats">
+          <div class="driver-chip-avatar" id="topAvatar">DP</div>
+          <span class="driver-chip-name" id="topDriverName">Driver</span>
+        </div>
+
+        <!-- Refresh Button -->
+        <button class="btn-header-icon" onclick="refreshPortal()" title="Refresh Assigned Trips">
+          <i class="ph-bold ph-arrows-clockwise" id="refreshPortalIcon"></i>
+        </button>
+
+        <!-- Log Out Button -->
+        <button class="btn-logout" onclick="handleLogout()" title="Sign Out of Portal">
+          <i class="ph-bold ph-sign-out"></i>
+          <span class="logout-text">Log Out</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- MAIN VIEW -->
+  <!-- ==========================================================================
+       MAIN CONTENT VIEW
+       ========================================================================== -->
   <main>
 
-    <!-- 1. DRIVER EARNINGS SUMMARY (ONLY DRIVER PAYOUT SHOWN) -->
-    <section class="earnings-summary-card">
-      <div class="earnings-header">
-        <div class="earnings-title">
-          <i class="ph-bold ph-wallet" style="color: var(--green); font-size: 1.25rem;"></i> My Earnings & Payouts
+    <!-- 1. DRIVER EARNINGS HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-top-row">
+        <div>
+          <div class="hero-greeting">
+            <i class="ph-bold ph-steering-wheel"></i> Operations Portal
+          </div>
+          <h1 class="hero-name" id="heroGreetingName">Welcome back, Partner!</h1>
+          <p class="hero-date" id="heroCurrentDate">Scheduled Driver Dispatches</p>
         </div>
-        <span style="font-size: 0.76rem; font-weight: 700; color: var(--emerald); background: var(--emerald-pale); padding: 3px 8px; border-radius: 99px;">
-          <i class="ph-bold ph-shield-check"></i> Verified Driver
-        </span>
+        <div class="hero-partner-tag">
+          <i class="ph-bold ph-shield-check"></i> Verified Partner
+        </div>
       </div>
 
       <div class="earnings-grid">
-        <div class="metric-box">
-          <div class="metric-label">Paid to You</div>
-          <div class="metric-amount" id="sumPaidAmount">₹0</div>
-          <div class="metric-note">Received directly</div>
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title">Paid to You</span>
+            <div class="metric-icon-circle paid"><i class="ph-bold ph-check"></i></div>
+          </div>
+          <div class="metric-val" id="sumPaidAmount">₹0</div>
+          <div class="metric-sub">Received directly (Cash/Bank)</div>
         </div>
 
-        <div class="metric-box">
-          <div class="metric-label">Pending Payout</div>
-          <div class="metric-amount" id="sumPendingAmount" style="color: var(--amber);">₹0</div>
-          <div class="metric-note">Awaiting admin release</div>
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title">Pending Payout</span>
+            <div class="metric-icon-circle pending"><i class="ph-bold ph-clock"></i></div>
+          </div>
+          <div class="metric-val" id="sumPendingAmount">₹0</div>
+          <div class="metric-sub">Awaiting Admin release</div>
         </div>
 
-        <div class="metric-box">
-          <div class="metric-label">Completed Trips</div>
-          <div class="metric-amount" id="sumTripsCount" style="color: var(--text);">0</div>
-          <div class="metric-note">Successful journeys</div>
+        <div class="metric-card">
+          <div class="metric-top">
+            <span class="metric-title">Completed Trips</span>
+            <div class="metric-icon-circle trips"><i class="ph-bold ph-trophy"></i></div>
+          </div>
+          <div class="metric-val" id="sumTripsCount">0</div>
+          <div class="metric-sub">Lifetime completed journeys</div>
         </div>
       </div>
     </section>
 
-    <!-- 2. FILTER TABS (SIMPLE & OBVIOUS) -->
-    <div class="tabs-bar">
-      <button class="tab-item active" id="tab-new-btn" onclick="switchTab('new')">
+    <!-- 2. DESKTOP SEGMENTED TABS (Hidden on mobile) -->
+    <div class="desktop-tabs-bar">
+      <button class="tab-pill active" id="tab-new-btn" onclick="switchTab('new')">
         <i class="ph-bold ph-bell-ringing"></i> New Trips
-        <span class="tab-count" id="badge-new-count">0</span>
+        <span class="tab-badge" id="badge-new-count">0</span>
       </button>
 
-      <button class="tab-item" id="tab-active-btn" onclick="switchTab('active')">
+      <button class="tab-pill" id="tab-active-btn" onclick="switchTab('active')">
         <i class="ph-bold ph-steering-wheel"></i> Active / On Road
-        <span class="tab-count" id="badge-active-count">0</span>
+        <span class="tab-badge" id="badge-active-count">0</span>
       </button>
 
-      <button class="tab-item" id="tab-completed-btn" onclick="switchTab('completed')">
+      <button class="tab-pill" id="tab-completed-btn" onclick="switchTab('completed')">
         <i class="ph-bold ph-check-circle"></i> Completed History
-        <span class="tab-count" id="badge-completed-count">0</span>
+        <span class="tab-badge" id="badge-completed-count">0</span>
       </button>
 
-      <button class="tab-item" id="tab-profile-btn" onclick="switchTab('profile')">
+      <button class="tab-pill" id="tab-profile-btn" onclick="switchTab('profile')">
         <i class="ph-bold ph-user-circle"></i> My Profile & Stats
       </button>
     </div>
@@ -843,8 +1409,8 @@
     <section class="trips-list" id="tripsListContainer">
       <div class="empty-box">
         <i class="ph-bold ph-spinner ph-spin"></i>
-        <h3>Loading your assigned trips...</h3>
-        <p>Please wait a moment.</p>
+        <h3>Loading assigned trips...</h3>
+        <p>Please wait a moment while we retrieve your dispatches.</p>
       </div>
     </section>
 
@@ -853,29 +1419,29 @@
       <div class="profile-card">
         
         <!-- Driver Hero -->
-        <div class="profile-hero">
-          <div class="profile-avatar" id="profAvatar">DP</div>
-          <div class="profile-title-group">
+        <div class="profile-hero-row">
+          <div class="profile-avatar-large" id="profAvatar">DP</div>
+          <div class="profile-title-col">
             <h2 id="profName">Driver Partner</h2>
-            <div class="profile-meta-row">
-              <span class="profile-id-pill" id="profId">ID: DRV-0000</span>
-              <span class="profile-verified-badge"><i class="ph-bold ph-seal-check"></i> Verified Partner</span>
+            <div class="profile-meta-chips">
+              <span class="profile-id-chip" id="profId">ID: DRV-0000</span>
+              <span class="profile-verified-badge"><i class="ph-bold ph-seal-check"></i> Verified Driver</span>
               <span style="font-size: 0.78rem; color: var(--text-muted);"><i class="ph-bold ph-calendar"></i> Member Since: <span id="profJoinDate">Nov 2026</span></span>
             </div>
           </div>
         </div>
 
         <!-- Career Performance Overview -->
-        <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 8px; letter-spacing: 0.05em;">
+        <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 10px; letter-spacing: 0.05em;">
           <i class="ph-bold ph-chart-line-up" style="color:var(--green);"></i> Career Performance & Trips Overview
         </div>
         <div class="profile-stats-grid">
           <div class="pstat-box">
             <div class="pstat-num" id="profTotalTrips">0</div>
-            <div class="pstat-lbl">Total Trips</div>
+            <div class="pstat-lbl">Total Assigned</div>
           </div>
           <div class="pstat-box">
-            <div class="pstat-num" style="color: var(--emerald);" id="profCompletedTrips">0</div>
+            <div class="pstat-num" style="color: var(--emerald-dark);" id="profCompletedTrips">0</div>
             <div class="pstat-lbl">Completed</div>
           </div>
           <div class="pstat-box">
@@ -893,67 +1459,67 @@
         </div>
 
         <!-- Official KYC & Document Details -->
-        <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 8px; letter-spacing: 0.05em;">
+        <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 10px; letter-spacing: 0.05em;">
           <i class="ph-bold ph-identification-card" style="color:var(--green);"></i> Driver Identity & KYC Verification
         </div>
-        <div class="profile-details-grid">
-          <div class="pdetail-item">
-            <i class="ph-bold ph-envelope pdetail-icon"></i>
+        <div class="profile-info-grid">
+          <div class="pinfo-item">
+            <i class="ph-bold ph-envelope pinfo-icon"></i>
             <div>
-              <div class="pdetail-lbl">Email Address</div>
-              <div class="pdetail-val" id="profEmail">driver@rhinovoyage.com</div>
+              <div class="pinfo-label">Email Address</div>
+              <div class="pinfo-val" id="profEmail">driver@rhinovoyage.com</div>
             </div>
           </div>
 
-          <div class="pdetail-item">
-            <i class="ph-bold ph-phone pdetail-icon"></i>
+          <div class="pinfo-item">
+            <i class="ph-bold ph-phone pinfo-icon"></i>
             <div>
-              <div class="pdetail-lbl">Contact / WhatsApp Phone</div>
-              <div class="pdetail-val" id="profPhone">+91 ...</div>
+              <div class="pinfo-label">Contact / WhatsApp Phone</div>
+              <div class="pinfo-val" id="profPhone">+91 ...</div>
             </div>
           </div>
 
-          <div class="pdetail-item">
-            <i class="ph-bold ph-identification-badge pdetail-icon"></i>
+          <div class="pinfo-item">
+            <i class="ph-bold ph-identification-badge pinfo-icon"></i>
             <div>
-              <div class="pdetail-lbl">Aadhar Card Number</div>
-              <div class="pdetail-val" id="profAadhar">XXXX-XXXX-XXXX</div>
+              <div class="pinfo-label">Aadhar Card Number</div>
+              <div class="pinfo-val" id="profAadhar">XXXX-XXXX-XXXX</div>
               <div id="profAadharDoc"></div>
             </div>
           </div>
 
-          <div class="pdetail-item">
-            <i class="ph-bold ph-steering-wheel pdetail-icon"></i>
+          <div class="pinfo-item">
+            <i class="ph-bold ph-steering-wheel pinfo-icon"></i>
             <div>
-              <div class="pdetail-lbl">Driving License Number</div>
-              <div class="pdetail-val" id="profLicense">AS-XX-XXXX-XXXXXXX</div>
+              <div class="pinfo-label">Driving License Number</div>
+              <div class="pinfo-val" id="profLicense">AS-XX-XXXX-XXXXXXX</div>
               <div id="profLicenseDoc"></div>
             </div>
           </div>
 
-          <div class="pdetail-item">
-            <i class="ph-bold ph-shield-check pdetail-icon" style="color: var(--emerald);"></i>
+          <div class="pinfo-item">
+            <i class="ph-bold ph-shield-check pinfo-icon" style="color: var(--emerald-dark);"></i>
             <div>
-              <div class="pdetail-lbl">Verification Status</div>
-              <div class="pdetail-val" style="color: var(--emerald);" id="profStatus">Active & Approved</div>
+              <div class="pinfo-label">Verification Status</div>
+              <div class="pinfo-val" style="color: var(--emerald-dark);" id="profStatus">Active & Approved</div>
             </div>
           </div>
 
-          <div class="pdetail-item">
-            <i class="ph-bold ph-map-pin pdetail-icon"></i>
+          <div class="pinfo-item">
+            <i class="ph-bold ph-map-pin pinfo-icon"></i>
             <div>
-              <div class="pdetail-lbl">Operating Region</div>
-              <div class="pdetail-val">Guwahati / Northeast India</div>
+              <div class="pinfo-label">Operating Region</div>
+              <div class="pinfo-val">Guwahati / Northeast India</div>
             </div>
           </div>
         </div>
 
         <!-- Account Controls Footer -->
         <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <button onclick="syncDriverProfile()" class="btn-large" style="background:#F1F5F9; color:var(--text); border:1px solid var(--border); font-size:0.85rem; padding:8px 16px;">
+          <button onclick="syncDriverProfile()" class="btn-driver-touch" style="background:#F1F5F9; color:var(--text); border:1px solid var(--border); font-size:0.85rem; padding:10px 18px;">
             <i class="ph-bold ph-arrows-clockwise"></i> Refresh Profile Data
           </button>
-          <button onclick="handleLogout()" class="btn-large" style="background:var(--rose-pale); color:var(--rose); border:1px solid #FECACA; font-size:0.85rem; padding:8px 16px;">
+          <button onclick="handleLogout()" class="btn-driver-touch" style="background:var(--rose-pale); color:var(--rose); border:1px solid #FECDD3; font-size:0.85rem; padding:10px 18px;">
             <i class="ph-bold ph-sign-out"></i> Log Out of Portal
           </button>
         </div>
@@ -963,7 +1529,47 @@
 
   </main>
 
-  <!-- JAVASCRIPT ENGINE -->
+  <!-- ==========================================================================
+       MOBILE BOTTOM APP NAVIGATION (App-like thumb navigation for smartphones)
+       ========================================================================== -->
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-nav-inner">
+      <button class="m-nav-item active" id="m-tab-new" onclick="switchTab('new')">
+        <div class="m-nav-icon-wrap">
+          <i class="ph-bold ph-bell-ringing"></i>
+          <span class="m-nav-badge" id="m-badge-new" style="display:none;">0</span>
+        </div>
+        <span class="m-nav-label">New Trips</span>
+      </button>
+
+      <button class="m-nav-item" id="m-tab-active" onclick="switchTab('active')">
+        <div class="m-nav-icon-wrap">
+          <i class="ph-bold ph-steering-wheel"></i>
+          <span class="m-nav-badge" id="m-badge-active" style="display:none;">0</span>
+        </div>
+        <span class="m-nav-label">On Road</span>
+      </button>
+
+      <button class="m-nav-item" id="m-tab-completed" onclick="switchTab('completed')">
+        <div class="m-nav-icon-wrap">
+          <i class="ph-bold ph-check-circle"></i>
+          <span class="m-nav-badge" id="m-badge-completed" style="display:none;">0</span>
+        </div>
+        <span class="m-nav-label">History</span>
+      </button>
+
+      <button class="m-nav-item" id="m-tab-profile" onclick="switchTab('profile')">
+        <div class="m-nav-icon-wrap">
+          <i class="ph-bold ph-user-circle"></i>
+        </div>
+        <span class="m-nav-label">Profile</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       JAVASCRIPT APPLICATION ENGINE
+       ========================================================================== -->
   <script>
     // 1. AUTHENTICATION GUARD
     const token = localStorage.getItem('token');
@@ -975,7 +1581,25 @@
     }
 
     if (user && user.name) {
-      document.getElementById('topDriverName').innerText = user.name;
+      const shortName = user.name.split(' ')[0] || user.name;
+      const elTopName = document.getElementById('topDriverName');
+      if (elTopName) elTopName.innerText = shortName;
+
+      const initials = user.name.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'DP';
+      const elTopAvatar = document.getElementById('topAvatar');
+      if (elTopAvatar) elTopAvatar.innerText = initials;
+
+      const elHeroGreeting = document.getElementById('heroGreetingName');
+      if (elHeroGreeting) elHeroGreeting.innerText = `Welcome back, ${shortName}! 👋`;
+    }
+
+    // Set formatted date in hero banner
+    const elCurrentDate = document.getElementById('heroCurrentDate');
+    if (elCurrentDate) {
+      const today = new Date();
+      elCurrentDate.innerText = today.toLocaleDateString('en-US', {
+        weekday: 'long', month: 'short', day: 'numeric', year: 'numeric'
+      });
     }
 
     const getApi = () => (typeof window.getRhinoApiUrl === 'function') 
@@ -1017,11 +1641,24 @@
             <i class="ph-bold ph-warning-circle" style="color: var(--rose);"></i>
             <h3>Unable to Load Trips</h3>
             <p>${err.message}</p>
-            <button onclick="loadDriverTrips()" class="btn-large btn-accept" style="margin: 1rem auto 0; max-width: 200px;">
+            <button onclick="loadDriverTrips()" class="btn-driver-touch btn-touch-accept" style="margin: 1.25rem auto 0; max-width: 200px;">
               <i class="ph-bold ph-arrow-clockwise"></i> Try Again
             </button>
           </div>
         `;
+      }
+    }
+
+    // Quick Refresh Portal Button
+    async function refreshPortal() {
+      const icon = document.getElementById('refreshPortalIcon');
+      if (icon) icon.classList.add('ph-spin');
+      try {
+        await loadDriverTrips();
+      } finally {
+        setTimeout(() => {
+          if (icon) icon.classList.remove('ph-spin');
+        }, 500);
       }
     }
 
@@ -1056,9 +1693,18 @@
       document.getElementById('sumPendingAmount').innerText = `₹${pendingTotal.toLocaleString('en-IN')}`;
       document.getElementById('sumTripsCount').innerText = `${completedCount} Trips`;
 
-      document.getElementById('badge-new-count').innerText = newCount;
-      document.getElementById('badge-active-count').innerText = activeCount;
-      document.getElementById('badge-completed-count').innerText = completedCount;
+      // Update Desktop Tab counts
+      const elBNew = document.getElementById('badge-new-count');
+      if (elBNew) elBNew.innerText = newCount;
+      const elBAct = document.getElementById('badge-active-count');
+      if (elBAct) elBAct.innerText = activeCount;
+      const elBComp = document.getElementById('badge-completed-count');
+      if (elBComp) elBComp.innerText = completedCount;
+
+      // Update Mobile Nav Badges
+      updateMobileBadge('m-badge-new', newCount);
+      updateMobileBadge('m-badge-active', activeCount);
+      updateMobileBadge('m-badge-completed', completedCount);
 
       // Auto-switch to active if no new trips
       if (newCount === 0 && activeCount > 0 && currentTab === 'new') {
@@ -1066,7 +1712,18 @@
       }
     }
 
-    // 4. RENDER TRIPS LIST
+    function updateMobileBadge(badgeId, count) {
+      const el = document.getElementById(badgeId);
+      if (!el) return;
+      if (count > 0) {
+        el.innerText = count;
+        el.style.display = 'block';
+      } else {
+        el.style.display = 'none';
+      }
+    }
+
+    // 4. RENDER TRIPS LIST (WITH SEQUENTIAL 1, 2, 3 NUMBERING FOR COMPLETED HISTORY)
     function renderTrips() {
       const container = document.getElementById('tripsListContainer');
 
@@ -1095,22 +1752,42 @@
 
       container.innerHTML = '';
 
-      filtered.forEach(trip => {
+      // If viewing Completed History, render a summary header
+      if (currentTab === 'completed') {
+        const summaryCard = document.createElement('div');
+        summaryCard.className = 'completed-history-header';
+        summaryCard.innerHTML = `
+          <div>
+            <div class="completed-header-title">
+              <i class="ph-bold ph-check-circle"></i> Completed Journeys Log
+            </div>
+            <div class="completed-header-subtitle">
+              All finished journeys are shown in sequential order (1, 2, 3...)
+            </div>
+          </div>
+          <div class="completed-total-chip">
+            <i class="ph-bold ph-trophy"></i> Total: ${filtered.length} Trips
+          </div>
+        `;
+        container.appendChild(summaryCard);
+      }
+
+      filtered.forEach((trip, index) => {
         const card = document.createElement('div');
         const st = trip.status || 'Approved';
 
         let borderClass = 'border-new';
-        let statusBadge = '<span class="status-pill st-new">New Dispatch</span>';
+        let statusBadge = '<span class="status-pill st-new"><i class="ph-bold ph-sparkle"></i> New Dispatch</span>';
 
         if (st === 'Accepted') {
           borderClass = 'border-active';
-          statusBadge = '<span class="status-pill st-accepted">Trip Accepted</span>';
+          statusBadge = '<span class="status-pill st-accepted"><i class="ph-bold ph-check"></i> Accepted</span>';
         } else if (st === 'In Progress') {
           borderClass = 'border-active';
-          statusBadge = '<span class="status-pill st-progress">On Road / In Progress</span>';
+          statusBadge = '<span class="status-pill st-progress"><i class="ph-bold ph-navigation-arrow"></i> On Road</span>';
         } else if (st === 'Completed') {
           borderClass = 'border-completed';
-          statusBadge = '<span class="status-pill st-completed">Journey Completed</span>';
+          statusBadge = '<span class="status-pill st-completed"><i class="ph-bold ph-check-circle"></i> Completed</span>';
         }
 
         card.className = `trip-card ${borderClass}`;
@@ -1122,7 +1799,6 @@
         const pickupTime = trip.pickupTime || 'Morning';
 
         // 2-Hour Contact Rule:
-        // Checked server-side and client-side
         const canContact = !!trip.canViewContact && !!trip.phone;
         let contactHtml = '';
 
@@ -1132,17 +1808,17 @@
           const waUrl = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(`Hello ${trip.name || 'Passenger'}, I am your RhinoVoyage driver partner for your trip to ${trip.dropLocation || 'destination'}.`)}`;
 
           contactHtml = `
-            <div class="contact-container unlocked">
-              <div class="contact-header" style="color: var(--emerald);">
+            <div class="contact-box unlocked">
+              <div class="contact-top-row" style="color: var(--emerald-dark);">
                 <i class="ph-bold ph-lock-open"></i> Passenger Contact Unlocked
               </div>
-              <div class="contact-unlocked-row">
-                <span class="phone-text"><i class="ph-bold ph-phone"></i> +91 ${cleanPhone}</span>
-                <div class="contact-buttons">
-                  <a href="${waUrl}" target="_blank" class="btn-contact-wa">
+              <div class="contact-actions-row">
+                <span class="contact-phone-display"><i class="ph-bold ph-phone"></i> +91 ${cleanPhone}</span>
+                <div class="contact-buttons-group">
+                  <a href="${waUrl}" target="_blank" class="btn-wa-touch">
                     <i class="ph-bold ph-whatsapp-logo"></i> WhatsApp
                   </a>
-                  <a href="tel:+91${cleanPhone}" class="btn-contact-call">
+                  <a href="tel:+91${cleanPhone}" class="btn-call-touch">
                     <i class="ph-bold ph-phone-call"></i> Call
                   </a>
                 </div>
@@ -1151,12 +1827,12 @@
           `;
         } else {
           contactHtml = `
-            <div class="contact-container">
-              <div class="contact-header" style="color: var(--amber);">
+            <div class="contact-box">
+              <div class="contact-top-row" style="color: var(--amber);">
                 <i class="ph-bold ph-lock-key"></i> Passenger Contact Protected
               </div>
-              <div class="contact-locked-msg">
-                🔒 Passenger phone number and WhatsApp button will unlock automatically <strong>2 hours before pickup time</strong>.
+              <div class="contact-locked-text">
+                🔒 Passenger mobile number and WhatsApp button will unlock automatically <strong>2 hours before pickup time</strong>.
               </div>
             </div>
           `;
@@ -1170,31 +1846,31 @@
 
         if (driverPay > 0) {
           payoutHtml = `
-            <div class="driver-payout-box" style="flex-direction:column; align-items:flex-start; gap:8px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:8px;">
-                <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span class="payout-val">₹${driverPay.toLocaleString('en-IN')}</span>
-                  <span class="payout-badge ${isPaid ? 'payout-paid' : 'payout-pending'}">
+            <div class="driver-payout-panel">
+              <div class="payout-main-row">
+                <span class="payout-tag-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
+                <div class="payout-val-badge">
+                  <span class="payout-number">₹${driverPay.toLocaleString('en-IN')}</span>
+                  <span class="payout-status-pill ${isPaid ? 'paid' : 'pending'}">
                     ${isPaid ? '✓ Paid to You' : 'Pending Admin Release'}
                   </span>
                 </div>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:6px;">
-                <span style="font-size:0.75rem; font-weight:700; color:var(--text-sub);">
-                  <i class="ph-bold ${payMode === 'Cash' ? 'ph-money' : 'ph-credit-card'}"></i> Payout Mode: ${payMode === 'Cash' ? 'Offline (Cash)' : 'Online (UPI/Bank Transfer)'}
-                </span>
-                <span style="font-size:0.75rem; color:var(--text-muted);">Set & verified by Admin</span>
+              <div class="payout-meta-row">
+                <span><i class="ph-bold ${payMode === 'Cash' ? 'ph-money' : 'ph-credit-card'}"></i> Payout Mode: <strong>${payMode === 'Cash' ? 'Offline (Cash)' : 'Online (UPI/Bank Transfer)'}</strong></span>
+                <span>Set & verified by Admin</span>
               </div>
             </div>
           `;
         } else {
           payoutHtml = `
-            <div class="driver-payout-box">
-              <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
-              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">
-                ${st === 'Completed' ? 'Admin will verify journey & set your payment' : 'Will be set by Admin upon journey completion'}
-              </span>
+            <div class="driver-payout-panel">
+              <div class="payout-main-row">
+                <span class="payout-tag-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">
+                  ${st === 'Completed' ? 'Admin will verify journey & set your payment' : 'Will be set by Admin upon journey completion'}
+                </span>
+              </div>
             </div>
           `;
         }
@@ -1203,79 +1879,108 @@
         let actionButtonsHtml = '';
         if (st === 'Approved') {
           actionButtonsHtml = `
-            <div class="action-btn-row dual">
-              <button class="btn-large btn-accept" onclick="acceptTrip('${trip.id}')">
+            <div class="action-row dual">
+              <button class="btn-driver-touch btn-touch-accept" onclick="acceptTrip('${trip.id}')">
                 <i class="ph-bold ph-check"></i> Accept Trip
               </button>
-              <button class="btn-large btn-reject" onclick="rejectTrip('${trip.id}')">
+              <button class="btn-driver-touch btn-touch-decline" onclick="rejectTrip('${trip.id}')">
                 <i class="ph-bold ph-x"></i> Decline
               </button>
             </div>
           `;
         } else if (st === 'Accepted') {
           actionButtonsHtml = `
-            <div class="action-btn-row">
-              <button class="btn-large btn-start" onclick="startTrip('${trip.id}')">
+            <div class="action-row">
+              <button class="btn-driver-touch btn-touch-start" onclick="startTrip('${trip.id}')">
                 <i class="ph-bold ph-navigation-arrow"></i> Tap to Start Journey
               </button>
             </div>
           `;
         } else if (st === 'In Progress') {
           actionButtonsHtml = `
-            <div class="action-btn-row">
-              <button class="btn-large btn-complete" onclick="completeTrip('${trip.id}')">
+            <div class="action-row">
+              <button class="btn-driver-touch btn-touch-complete" onclick="completeTrip('${trip.id}')">
                 <i class="ph-bold ph-check-circle"></i> 🏁 Tap to Complete Trip
               </button>
             </div>
           `;
         } else if (st === 'Completed') {
           actionButtonsHtml = `
-            <div style="text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--emerald); padding: 12px; background: var(--emerald-pale); border-radius: var(--radius-sm); border: 1px solid #BBF7D0;">
-              <i class="ph-bold ph-check-circle"></i> Journey Finished! Admin will verify and credit your driver payout.
+            <div class="completed-notice-banner">
+              <i class="ph-bold ph-seal-check" style="font-size: 1.15rem;"></i>
+              <span>Trip #${index + 1} Finished Successfully. Admin payout verified.</span>
+            </div>
+          `;
+        }
+
+        // Card Top Header:
+        // When in completed history, show prominent "Trip #1", "Trip #2", "Trip #3"...
+        let cardTopHtml = '';
+        if (currentTab === 'completed') {
+          cardTopHtml = `
+            <div class="card-top">
+              <div class="trip-seq-badge-group">
+                <div class="trip-seq-number">${index + 1}</div>
+                <div class="trip-seq-label-col">
+                  <div class="trip-seq-title">Trip #${index + 1}</div>
+                  <span class="trip-id-badge">#${refDisplay}</span>
+                </div>
+              </div>
+              ${statusBadge}
+            </div>
+          `;
+        } else {
+          cardTopHtml = `
+            <div class="card-top">
+              <span class="trip-id-badge">#${refDisplay}</span>
+              ${statusBadge}
             </div>
           `;
         }
 
         card.innerHTML = `
           <!-- Card Top Bar -->
-          <div class="card-top">
-            <span class="trip-id-badge">#${refDisplay}</span>
-            ${statusBadge}
-          </div>
+          ${cardTopHtml}
 
-          <!-- Route Box (Large, Unmistakable) -->
-          <div class="route-box">
-            <div class="route-row">
-              <span class="route-icon" style="color: var(--emerald);">📍</span>
-              <div class="route-content">
-                <div class="route-label">Pickup Location</div>
-                <div class="route-place">${trip.pickupLocation || 'Guwahati Airport / Hotel'}</div>
-                <div class="route-time">${pickupDateFormatted} at ${pickupTime}</div>
+          <!-- Visual Route Timeline (Uber / Google Maps style) -->
+          <div class="route-timeline-card">
+            <div class="route-point">
+              <div class="point-dot pickup"><i class="ph-bold ph-map-pin"></i></div>
+              <div class="point-info">
+                <div class="point-tag">Pickup Location</div>
+                <div class="point-name">${trip.pickupLocation || 'Guwahati Airport / Hotel'}</div>
+                <div class="point-meta"><i class="ph-bold ph-calendar"></i> ${pickupDateFormatted} • <i class="ph-bold ph-clock"></i> ${pickupTime}</div>
               </div>
             </div>
 
-            <div class="route-row">
-              <span class="route-icon" style="color: var(--rose);">🏁</span>
-              <div class="route-content">
-                <div class="route-label">Destination / Drop</div>
-                <div class="route-place">${trip.dropLocation || trip.packageName || 'Destination'}</div>
-                ${trip.returnDate ? `<div style="font-size:0.78rem; color:var(--text-muted); font-weight:600; margin-top:2px;">Return Date: ${trip.returnDate}</div>` : ''}
+            <div class="route-point">
+              <div class="point-dot drop"><i class="ph-bold ph-flag"></i></div>
+              <div class="point-info">
+                <div class="point-tag">Destination / Drop</div>
+                <div class="point-name">${trip.dropLocation || trip.packageName || 'Destination'}</div>
+                ${trip.returnDate ? `<div style="font-size:0.78rem; color:var(--text-muted); font-weight:600; margin-top:2px;"><i class="ph-bold ph-arrow-u-down-left"></i> Return Date: ${trip.returnDate}</div>` : ''}
               </div>
             </div>
           </div>
 
-          <!-- Passenger & Vehicle Info -->
-          <div class="details-row">
-            <div class="detail-card">
-              <div class="detail-label">Passenger</div>
-              <div class="detail-val"><i class="ph-bold ph-user"></i> ${trip.name || 'Traveler'}</div>
-              ${trip.travelers ? `<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px;">${trip.travelers} Travelers</div>` : ''}
+          <!-- Passenger & Vehicle Info Grid -->
+          <div class="details-grid">
+            <div class="detail-item">
+              <div class="detail-icon-circle"><i class="ph-bold ph-user"></i></div>
+              <div class="detail-text-col">
+                <div class="detail-label">Passenger</div>
+                <div class="detail-val">${trip.name || 'Traveler'}</div>
+                ${trip.travelers ? `<div style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">${trip.travelers} Travelers</div>` : ''}
+              </div>
             </div>
 
-            <div class="detail-card">
-              <div class="detail-label">Vehicle to Drive</div>
-              <div class="detail-val"><i class="ph-bold ph-car"></i> ${trip.carModel || trip.vehicle || 'Standard Vehicle'}</div>
-              ${trip.carNumber ? `<div style="font-size:0.76rem; color:var(--text-muted); font-family:monospace; margin-top:2px;">Plate: ${trip.carNumber}</div>` : ''}
+            <div class="detail-item">
+              <div class="detail-icon-circle"><i class="ph-bold ph-car"></i></div>
+              <div class="detail-text-col">
+                <div class="detail-label">Vehicle to Drive</div>
+                <div class="detail-val">${trip.carModel || trip.vehicle || 'Standard Vehicle'}</div>
+                ${trip.carNumber ? `<div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:700;">Plate: ${trip.carNumber}</div>` : ''}
+              </div>
             </div>
           </div>
 
@@ -1320,80 +2025,7 @@
 
     async function rejectTrip(tripId) {
       const reason = prompt('Are you sure you want to decline this trip? Please tell us why (optional):');
-      if (reason === null) return; // User pressed cancel on prompt
-
-      try {
-        const apiBase = getApi();
-        const response = await fetch(`${apiBase}/bookings/${tripId}/driver-status`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ status: 'Declined', driverNotes: reason })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Failed to decline trip.');
-
-        alert('Trip declined. The dispatch desk has been informed.');
-        loadDriverTrips();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    async function startTrip(tripId) {
-      if (!confirm('Start this journey now?')) return;
-      try {
-        const apiBase = getApi();
-        const response = await fetch(`${apiBase}/bookings/${tripId}/driver-status`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ status: 'In Progress' })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Failed to start trip.');
-
-        alert('Journey Started! Drive safely.');
-        loadDriverTrips();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    // 5. DRIVER ACTIONS (ACCEPT, REJECT, START, COMPLETE)
-    async function acceptTrip(tripId) {
-      if (!confirm('Accept this trip? You will be assigned to drive this journey.')) return;
-      try {
-        const apiBase = getApi();
-        const response = await fetch(`${apiBase}/bookings/${tripId}/driver-status`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ status: 'Accepted' })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Failed to accept trip.');
-
-        alert('Trip Accepted! Please be ready on time.');
-        switchTab('active');
-        loadDriverTrips();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
-
-    async function rejectTrip(tripId) {
-      const reason = prompt('Are you sure you want to decline this trip? Please tell us why (optional):');
-      if (reason === null) return; // User pressed cancel on prompt
+      if (reason === null) return; // User cancelled prompt
 
       try {
         const apiBase = getApi();
@@ -1463,12 +2095,19 @@
       }
     }
 
-    // 6. TAB SWITCHER (TRIPS & PROFILE)
+    // 6. SYNCHRONIZED TAB SWITCHER (DESKTOP & MOBILE BOTTOM NAV)
     function switchTab(tabName) {
       currentTab = tabName;
-      document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById(`tab-${tabName}-btn`);
-      if (activeBtn) activeBtn.classList.add('active');
+
+      // Update Desktop tabs
+      document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+      const activeDesktopBtn = document.getElementById(`tab-${tabName}-btn`);
+      if (activeDesktopBtn) activeDesktopBtn.classList.add('active');
+
+      // Update Mobile nav items
+      document.querySelectorAll('.m-nav-item').forEach(b => b.classList.remove('active'));
+      const activeMobileBtn = document.getElementById(`m-tab-${tabName}`);
+      if (activeMobileBtn) activeMobileBtn.classList.add('active');
 
       const tripsContainer = document.getElementById('tripsListContainer');
       const profileSection = document.getElementById('profileSection');
@@ -1477,10 +2116,12 @@
         if (tripsContainer) tripsContainer.style.display = 'none';
         if (profileSection) profileSection.style.display = 'block';
         populateDriverProfile();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        if (tripsContainer) tripsContainer.style.display = 'grid';
+        if (tripsContainer) tripsContainer.style.display = 'flex';
         if (profileSection) profileSection.style.display = 'none';
         renderTrips();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
 
