@@ -25,5 +25,14 @@
     "password": "$2a$10$W3/T2qxgv80KIjlk6wR6OOLFgrQXUcg0xpMbUA8oh278ft8DxteAS",
     "phone": "9864820229",
     "role": "user"
+  },
+  {
+    "id": "RV00000012",
+    "createdAt": "2026-11-26T10:00:00.000Z",
+    "name": "UNACADEMY Guwahati",
+    "email": "unacademyguwahati@gmail.com",
+    "password": "$2a$10$KhwOaff8crmaREX9XFQD4e4qIk3rumAKj5QTcGn8Bd8aexkIEPmC6",
+    "phone": "",
+    "role": "user"
   }
 ]

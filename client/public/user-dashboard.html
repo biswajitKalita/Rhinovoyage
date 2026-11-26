@@ -697,6 +697,12 @@
       const response = await fetch(`${apiBase}/bookings/my-bookings`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      if (response.status === 401) {
+        localStorage.clear();
+        alert('Your session has expired. Please sign in again.');
+        window.location.href = 'login.html';
+        return;
+      }
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Failed to fetch bookings.');
 
