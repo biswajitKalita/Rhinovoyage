@@ -95,6 +95,42 @@ exports.getUserBookings = async (req, res) => {
         });
       }
       bookings = await db.find('bookings', { driverId: req.user.id });
+
+      const now = Date.now();
+      const enriched = bookings.map(b => {
+        const { pickup, drop } = extractLocations(b.details, b.pickupLocation, b.dropLocation);
+
+        // Privacy rule: Driver can ONLY see contact number within 2 hours of pickup (or if in progress/completed)
+        let canViewContact = false;
+        try {
+          if (b.status === 'In Progress' || b.status === 'Completed') {
+            canViewContact = true;
+          } else if (b.pickupDate) {
+            const timeStr = b.pickupTime || '08:00 AM';
+            const pickupParsed = new Date(`${b.pickupDate} ${timeStr}`);
+            const diffHours = (pickupParsed.getTime() - now) / (1000 * 60 * 60);
+            if (!isNaN(diffHours) && diffHours <= 2) {
+              canViewContact = true;
+            }
+          }
+        } catch (e) {}
+
+        // Security rule: Driver NEVER sees customer total fare or company margins.
+        // Driver only sees driverPayment (their payout percentage/amount) set by admin.
+        const { invoice, totalAmount, subtotal, gstAmount, baseAmount, ...safeFields } = b;
+
+        return {
+          ...safeFields,
+          pickupLocation: pickup,
+          dropLocation: drop,
+          canViewContact,
+          phone: canViewContact ? (b.phone || '') : '',
+          driverPayment: Number(b.driverPayment || 0),
+          driverPayStatus: b.driverPayStatus || 'Pending'
+        };
+      }).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+      return res.status(200).json({ success: true, count: enriched.length, bookings: enriched });
     } else {
       bookings = await db.find('bookings', { userId: req.user.id });
     }
@@ -231,15 +267,15 @@ function createInvoiceObject(booking, custom = {}) {
   };
 }
 
-// @desc    Driver update trip status (e.g. Accept, Start)
+// @desc    Driver update trip status (Accept, Reject, Start, Complete)
 // @route   PUT /api/bookings/:id/driver-status
 // @access  Private (Assigned Driver or Admin)
 exports.driverUpdateTripStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, extraKms, driverNotes } = req.body;
 
-    const allowed = ['Accepted', 'In Progress', 'Completed'];
+    const allowed = ['Accepted', 'Rejected', 'Declined', 'In Progress', 'Completed'];
     if (!status || !allowed.includes(status)) {
       return res.status(400).json({ success: false, message: 'Invalid trip status update.' });
     }
@@ -253,21 +289,43 @@ exports.driverUpdateTripStatus = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Unauthorized: You are not assigned to this trip.' });
     }
 
-    const updateFields = { status };
+    const updateFields = {};
     if (status === 'Accepted') {
+      updateFields.status = 'Accepted';
+      updateFields.driverStatus = 'Accepted';
       updateFields.driverAcceptedAt = new Date().toISOString();
+    } else if (status === 'Rejected' || status === 'Declined') {
+      // Driver declined trip: unassign driver so admin can dispatch to another driver
+      updateFields.driverId = '';
+      updateFields.driverName = '';
+      updateFields.driverStatus = 'Declined';
+      updateFields.driverDeclinedAt = new Date().toISOString();
+      updateFields.driverDeclinedBy = req.user.name;
+      // Revert status to Approved so admin sees it needs assignment
+      updateFields.status = 'Approved';
     } else if (status === 'In Progress') {
+      updateFields.status = 'In Progress';
+      updateFields.driverStatus = 'In Progress';
       updateFields.tripStartedAt = new Date().toISOString();
+    } else if (status === 'Completed') {
+      updateFields.status = 'Completed';
+      updateFields.driverStatus = 'Completed';
+      updateFields.completedAt = new Date().toISOString();
+      if (extraKms) updateFields.extraKms = Number(extraKms);
+      if (driverNotes) updateFields.driverNotes = driverNotes;
+      // Note: Driver does NOT generate invoice! Admin verifies and generates invoice & driver payout.
     }
 
     await db.update('bookings', { id }, updateFields);
     const updatedBooking = { ...booking, ...updateFields };
 
-    syncBooking(updatedBooking, `driver_${status.toLowerCase().replace(/\s+/g, '_')}`).catch(err => console.error('Driver status sync error:', err));
+    syncBooking(updatedBooking, `driver_${status.toLowerCase()}`).catch(err => console.error('Driver status sync error:', err));
 
     res.status(200).json({
       success: true,
-      message: `Trip status updated to ${status} successfully.`,
+      message: status === 'Rejected' || status === 'Declined' 
+        ? 'Trip declined. The dispatch desk has been notified.' 
+        : `Trip status updated to ${status}.`,
       booking: updatedBooking
     });
   } catch (error) {
@@ -301,7 +359,9 @@ exports.completeBooking = async (req, res) => {
       completedAt,
       invoice: invoiceData,
       totalAmount: invoiceData.totalAmount,
-      invoiceNumber: invoiceData.invoiceNumber
+      invoiceNumber: invoiceData.invoiceNumber,
+      driverPayment: req.body.driverPayment ? Number(req.body.driverPayment) : (booking.driverPayment || 0),
+      driverPayStatus: req.body.driverPayStatus || booking.driverPayStatus || 'Pending'
     };
 
     await db.update('bookings', { id }, updateData);
@@ -320,6 +380,32 @@ exports.completeBooking = async (req, res) => {
   } catch (error) {
     console.error('Complete booking error:', error);
     res.status(500).json({ success: false, message: 'Server error completing booking.' });
+  }
+};
+
+// @desc    Admin set/update driver payout & status
+// @route   PUT /api/bookings/:id/driver-payout
+// @access  Private/Admin
+exports.adminSetDriverPayout = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { driverPayment, driverPayStatus } = req.body;
+
+    const booking = await db.findOne('bookings', { id });
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found.' });
+    }
+
+    const updateFields = {
+      driverPayment: Number(driverPayment || 0),
+      driverPayStatus: driverPayStatus || 'Pending',
+      driverPayoutUpdatedAt: new Date().toISOString()
+    };
+
+    await db.update('bookings', { id }, updateFields);
+    res.status(200).json({ success: true, message: 'Driver payout updated successfully.', booking: { ...booking, ...updateFields } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error updating driver payout.' });
   }
 };
 

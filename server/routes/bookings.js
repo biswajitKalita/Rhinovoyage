@@ -8,6 +8,7 @@ const {
   assignDriver,
   assignCar,
   completeBooking,
+  adminSetDriverPayout,
   driverUpdateTripStatus,
   getBookingInvoice
 } = require('../controllers/bookingController');
@@ -20,6 +21,7 @@ router.get('/my-bookings', protect, getUserBookings);
 router.get('/', protect, authorize('admin'), getAllBookings);
 router.put('/:id/status', protect, authorize('admin'), updateBookingStatus);
 router.put('/:id/driver-status', protect, driverUpdateTripStatus);
+router.put('/:id/driver-payout', protect, authorize('admin'), adminSetDriverPayout);
 router.put('/:id/complete', protect, completeBooking);
 router.get('/:id/invoice', optionalProtect, getBookingInvoice);
 router.put('/:id/assign-driver', protect, authorize('admin'), assignDriver);

@@ -1367,6 +1367,26 @@
             <input type="text" id="adm-notes" class="form-control-styled" placeholder="e.g. Guwahati Airport Pickup to Sivasagar Town">
           </div>
 
+          <div style="background: #FFF7ED; border: 1px solid #FFEDD5; border-radius: 10px; padding: 12px 14px; margin-top: 0.75rem;">
+            <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--orange-dark); margin-bottom: 8px;">
+              <i class="ph-bold ph-steering-wheel"></i> Driver Partner Payout / Commission
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="form-group-field">
+                <label>Driver Payout Amount (₹)</label>
+                <input type="number" id="adm-driver-payment" class="form-control-styled" min="0" value="0" placeholder="e.g. 2500">
+              </div>
+              <div class="form-group-field">
+                <label>Driver Payout Status</label>
+                <select id="adm-driver-pay-status" class="form-control-styled">
+                  <option value="Pending">Pending Payment</option>
+                  <option value="Paid">Paid to Driver</option>
+                </select>
+              </div>
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-sub); margin-top: 4px;">Driver can only view their payout amount, not the customer total.</p>
+          </div>
+
           <!-- Total Calculation Banner -->
           <div style="background: #F8FAFC; border: 1px solid var(--border-subtle); border-radius: 10px; padding: 12px 16px; margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub);">Calculated Total:</span>
@@ -2038,6 +2058,8 @@
       document.getElementById('adm-extra-charges').value = 0;
       document.getElementById('adm-toll-charges').value = 0;
       document.getElementById('adm-discount').value = 0;
+      document.getElementById('adm-driver-payment').value = booking.driverPayment || Math.round((booking.baseAmount || defaultBase) * 0.7);
+      document.getElementById('adm-driver-pay-status').value = booking.driverPayStatus || 'Pending';
       document.getElementById('adm-notes').value = booking.details ? `Completed trip: ${booking.details}` : 'Thank you for choosing RhinoVoyage!';
 
       recalcAdminInvoice();
@@ -2067,6 +2089,8 @@
       const tollCharges = Number(document.getElementById('adm-toll-charges').value || 0);
       const discount = Number(document.getElementById('adm-discount').value || 0);
       const paymentStatus = document.getElementById('adm-pay-status').value || 'Paid';
+      const driverPayment = Number(document.getElementById('adm-driver-payment').value || 0);
+      const driverPayStatus = document.getElementById('adm-driver-pay-status').value || 'Pending';
       const notes = document.getElementById('adm-notes').value || '';
 
       try {
@@ -2077,7 +2101,7 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ baseAmount, extraKmCharges, tollCharges, discount, paymentStatus, notes })
+          body: JSON.stringify({ baseAmount, extraKmCharges, tollCharges, discount, paymentStatus, driverPayment, driverPayStatus, notes })
         });
 
         const data = await response.json();
