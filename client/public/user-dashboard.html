@@ -18,6 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <!-- Phosphor Icons for premium, professional standard icons -->
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
+<link rel="stylesheet" href="./notifications.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -550,6 +551,7 @@
     </a>
     <div class="nav-user">
       <span id="nav-user-greeting">Welcome, Traveler</span>
+      <div id="rhino-notif-mount"></div>
       <button class="btn-logout" onclick="handleLogout()">
         <i class="ph ph-sign-out"></i> Log Out
       </button>
@@ -828,5 +830,6 @@
     fetchMyBookings();
   }
 </script>
+<script src="./notifications.js"></script>
 </body>
 </html>

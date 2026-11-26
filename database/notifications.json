@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "id": "notif_adm_welcome",
+    "createdAt": "2026-11-26T18:11:16.422Z",
+    "userId": null,
+    "forRole": "admin",
+    "title": "Operations Notification Center Ready 🛡️",
+    "message": "Real-time alert engine active. You will receive live pop-up notifications for all customer bookings, driver assignments, journey completions, and payouts.",
+    "type": "admin",
+    "link": "admin-dashboard.html",
+    "read": true,
+    "updatedAt": "2026-11-26T18:11:33.583Z"
+  },
+  {
+    "id": "notif_adm_dispatch",
+    "createdAt": "2026-11-26T16:11:16.422Z",
+    "userId": null,
+    "forRole": "admin",
+    "title": "Dispatch Desk & Fleet Active 🚗",
+    "message": "Verified drivers and vehicles are ready for dispatch. New traveler reservations will appear here with instant alerts.",
+    "type": "booking",
+    "link": "admin-dashboard.html",
+    "read": true
+  },
+  {
+    "id": "notif_drv_welcome",
+    "createdAt": "2026-11-26T18:11:16.444Z",
+    "userId": "drv1",
+    "forRole": "driver",
+    "title": "Driver Portal Alerts Active 🚗",
+    "message": "Welcome to RhinoVoyage Driver Portal! You will receive live notification pop-ups for new dispatches, customer contact unlock, and payout releases.",
+    "type": "driver",
+    "link": "driver-dashboard.html",
+    "read": false
+  },
+  {
+    "id": "notif_drv_kyc",
+    "createdAt": "2026-11-26T14:11:16.444Z",
+    "userId": "drv1",
+    "forRole": "driver",
+    "title": "Profile & Credentials Verified 🛡️",
+    "message": "Your driving partner KYC and vehicle eligibility are verified. Keep status On Duty to receive trips.",
+    "type": "admin",
+    "link": "driver-dashboard.html",
+    "read": true
+  },
+  {
+    "id": "notif_client_welcome",
+    "createdAt": "2026-11-26T18:11:16.449Z",
+    "userId": "cli1",
+    "forRole": "client",
+    "title": "Welcome to RhinoVoyage! 🦏",
+    "message": "Explore our luxury heritage tours, airport transfers, and car rentals. Your booking confirmations and trip alerts will appear right here.",
+    "type": "booking",
+    "link": "user-dashboard.html",
+    "read": false
+  }
+]

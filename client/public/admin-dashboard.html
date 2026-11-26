@@ -19,6 +19,7 @@
   
   <!-- Phosphor Icons: Ultra-clean, scalable vector icon library -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="./notifications.css">
 
   <style>
     *, *::before, *::after {
@@ -1058,6 +1059,9 @@
         <a href="index.html" target="_blank" class="btn-site-link">
           <i class="ph ph-arrow-square-out"></i> Live Site
         </a>
+
+        <!-- Notification Center -->
+        <div id="rhino-notif-mount"></div>
 
         <div class="user-profile-widget">
           <div class="user-avatar-circle" id="user-avatar-initials">RV</div>
@@ -3821,5 +3825,6 @@
     fetchAllBookings();
   </script>
 
+  <script src="./notifications.js"></script>
 </body>
 </html>

@@ -1,0 +1,528 @@
+/* ==========================================================================
+   RHINOVOYAGE LUXURY NOTIFICATION CENTER & TOAST SYSTEM (INDUSTRY STANDARD)
+   ========================================================================== */
+
+/* 1. Header Notification Bell Button */
+.rhino-notif-btn-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rhino-notif-btn {
+  background: #FFFFFF;
+  border: 1px solid var(--border, #E2E8F0);
+  color: var(--text-sub, #475569);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.rhino-notif-btn:hover, .rhino-notif-btn.active {
+  background: #F8FAFC;
+  color: #1B4332;
+  border-color: #CBD5E1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark header adaptation (e.g. Admin Dashboard) */
+.top-navbar .rhino-notif-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #F8FAFC;
+}
+.top-navbar .rhino-notif-btn:hover, .top-navbar .rhino-notif-btn.active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.rhino-notif-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #E11D48;
+  color: #FFFFFF;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(225, 29, 72, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.rhino-notif-badge.pulse {
+  animation: rhino-badge-pulse 2s infinite;
+}
+
+@keyframes rhino-badge-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.6); }
+  70% { box-shadow: 0 0 0 7px rgba(225, 29, 72, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+}
+
+/* 2. Notification Center Flyout Dropdown Panel */
+.rhino-notif-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 380px;
+  max-width: calc(100vw - 24px);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  z-index: 1000;
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+  transform-origin: top right;
+  animation: rhino-flyout-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rhino-notif-panel.open {
+  display: flex;
+}
+
+@keyframes rhino-flyout-in {
+  0% { opacity: 0; transform: scale(0.93) translateY(-10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Panel Backdrop for Mobile */
+.rhino-notif-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  display: none;
+}
+
+.rhino-notif-backdrop.open {
+  display: block;
+}
+
+/* Panel Header */
+.rhino-panel-head {
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid #F1F5F9;
+  background: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rhino-panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rhino-panel-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rhino-panel-count-pill {
+  font-size: 0.7rem;
+  font-weight: 800;
+  background: #ECFDF5;
+  color: #059669;
+  padding: 2px 7px;
+  border-radius: 99px;
+  border: 1px solid #A7F3D0;
+}
+
+.rhino-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rhino-btn-read-all {
+  background: transparent;
+  border: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1B4332;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.rhino-btn-read-all:hover {
+  background: #F1F5F9;
+  text-decoration: underline;
+}
+
+.rhino-btn-close-panel {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: #64748B;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+}
+
+.rhino-btn-close-panel:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+}
+
+/* Panel Tabs (All vs Unread) */
+.rhino-panel-tabs {
+  display: flex;
+  padding: 6px 1rem;
+  background: #F8FAFC;
+  border-bottom: 1px solid #F1F5F9;
+  gap: 6px;
+}
+
+.rhino-tab-filter {
+  background: transparent;
+  border: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #64748B;
+  padding: 4px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.rhino-tab-filter.active {
+  background: #FFFFFF;
+  color: #1B4332;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #E2E8F0;
+}
+
+/* Panel Body List */
+.rhino-notif-list {
+  max-height: 380px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 0;
+}
+
+.rhino-notif-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.rhino-notif-list::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+/* Notification Item */
+.rhino-notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid #F1F5F9;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s ease;
+  background: #FFFFFF;
+}
+
+.rhino-notif-item:hover {
+  background: #F8FAFC;
+}
+
+.rhino-notif-item.unread {
+  background: #F0FDF4;
+}
+
+.rhino-notif-item.unread:hover {
+  background: #E8F8EE;
+}
+
+.rhino-notif-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rhino-notif-icon-wrap.booking { background: #E0F2FE; color: #0284C7; }
+.rhino-notif-icon-wrap.driver { background: #ECFDF5; color: #059669; }
+.rhino-notif-icon-wrap.payment { background: #FEF3C7; color: #D97706; }
+.rhino-notif-icon-wrap.admin { background: #EDE9FE; color: #7C3AED; }
+.rhino-notif-icon-wrap.alert { background: #FFE4E6; color: #E11D48; }
+
+.rhino-notif-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.rhino-notif-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.rhino-notif-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.3;
+}
+
+.rhino-notif-time {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #94A3B8;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+.rhino-notif-msg {
+  font-size: 0.78rem;
+  color: #475569;
+  line-height: 1.4;
+  margin-top: 3px;
+  word-break: break-word;
+}
+
+.rhino-notif-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.rhino-notif-del {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  font-size: 0.85rem;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  padding: 2px;
+}
+
+.rhino-notif-item:hover .rhino-notif-del {
+  opacity: 1;
+}
+
+.rhino-notif-del:hover {
+  color: #E11D48;
+}
+
+/* Empty State inside panel */
+.rhino-notif-empty {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: #64748B;
+}
+
+.rhino-notif-empty i {
+  font-size: 2.4rem;
+  color: #CBD5E1;
+  margin-bottom: 0.5rem;
+}
+
+.rhino-notif-empty h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 2px;
+}
+
+.rhino-notif-empty p {
+  font-size: 0.78rem;
+  color: #94A3B8;
+}
+
+/* ==========================================================================
+   3. FLOATING POP-UP TOAST NOTIFICATIONS (AUTO-HIDE ANIMATION)
+   ========================================================================== */
+.rhino-toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 380px;
+  width: calc(100vw - 32px);
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .rhino-toast-container {
+    top: 14px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+}
+
+.rhino-toast {
+  pointer-events: auto;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  box-shadow: 0 14px 35px -8px rgba(15, 23, 42, 0.18), 0 4px 10px -2px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  animation: rhino-toast-slidein 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rhino-toast.hiding {
+  animation: rhino-toast-slideout 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes rhino-toast-slidein {
+  0% { transform: translateX(110%) scale(0.92); opacity: 0; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+@keyframes rhino-toast-slideout {
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(110%) scale(0.92); opacity: 0; }
+}
+
+@media (max-width: 600px) {
+  @keyframes rhino-toast-slidein {
+    0% { transform: translateY(-40px) scale(0.95); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  @keyframes rhino-toast-slideout {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-40px) scale(0.95); opacity: 0; }
+  }
+}
+
+.rhino-toast-body {
+  padding: 0.9rem 1rem 0.85rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.rhino-toast-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.rhino-toast-icon-circle.booking { background: #E0F2FE; color: #0284C7; }
+.rhino-toast-icon-circle.driver { background: #ECFDF5; color: #059669; }
+.rhino-toast-icon-circle.payment { background: #FEF3C7; color: #D97706; }
+.rhino-toast-icon-circle.alert { background: #FFE4E6; color: #E11D48; }
+
+.rhino-toast-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.rhino-toast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rhino-toast-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.25;
+}
+
+.rhino-toast-close {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.rhino-toast-close:hover {
+  color: #0F172A;
+}
+
+.rhino-toast-msg {
+  font-size: 0.78rem;
+  color: #475569;
+  line-height: 1.35;
+  margin-top: 3px;
+  word-break: break-word;
+}
+
+/* Progress countdown bar */
+.rhino-toast-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: #10B981;
+  width: 100%;
+  animation: rhino-toast-countdown 5s linear forwards;
+}
+
+.rhino-toast.payment .rhino-toast-progress-bar { background: #D97706; }
+.rhino-toast.alert .rhino-toast-progress-bar { background: #E11D48; }
+.rhino-toast.booking .rhino-toast-progress-bar { background: #0284C7; }
+
+@keyframes rhino-toast-countdown {
+  0% { width: 100%; }
+  100% { width: 0%; }
+}

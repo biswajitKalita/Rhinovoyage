@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const { syncBooking } = require('../utils/sheets');
+const { createNotification } = require('./notificationController');
 
 // Helper to extract pickup & drop locations if not directly passed
 function extractLocations(details, directPickup, directDrop) {
@@ -69,6 +70,28 @@ exports.createBooking = async (req, res) => {
 
     // Sync booking creation to Google Sheet
     syncBooking(newBooking, 'create').catch(err => console.error('Booking create sheet sync error:', err));
+
+    // Create notifications for Admin and User
+    try {
+      const ref = (newBooking.id || '').toUpperCase().substring(0, 8);
+      createNotification({
+        forRole: 'admin',
+        title: `New Booking Request #${ref}`,
+        message: `${newBooking.name} requested ${newBooking.serviceType} for ${newBooking.dropLocation || newBooking.packageName || 'a trip'} on ${newBooking.pickupDate}.`,
+        type: 'booking',
+        link: 'admin-dashboard.html'
+      }).catch(() => {});
+
+      if (req.user && req.user.id) {
+        createNotification({
+          userId: req.user.id,
+          title: `Booking Request Received #${ref}`,
+          message: `Your booking request for ${newBooking.dropLocation || newBooking.packageName || 'your trip'} on ${newBooking.pickupDate} is received.`,
+          type: 'booking',
+          link: 'user-dashboard.html'
+        }).catch(() => {});
+      }
+    } catch (e) {}
 
     res.status(201).json({
       success: true,
@@ -210,6 +233,36 @@ exports.updateBookingStatus = async (req, res) => {
     // Sync booking status update to Google Sheet
     syncBooking(updatedBooking, 'update_status').catch(err => console.error('Booking status update sheet sync error:', err));
 
+    // Send notification to customer
+    try {
+      const ref = (id || '').toUpperCase().substring(0, 8);
+      if (status === 'Approved' && exists.userId) {
+        createNotification({
+          userId: exists.userId,
+          title: `Trip Request Confirmed! 🎉 #${ref}`,
+          message: `Your journey for ${exists.dropLocation || exists.packageName || 'your trip'} on ${exists.pickupDate} has been confirmed.`,
+          type: 'booking',
+          link: 'user-dashboard.html'
+        }).catch(() => {});
+      } else if (status === 'Completed' && exists.userId) {
+        createNotification({
+          userId: exists.userId,
+          title: `Journey Completed #${ref}! 🏁`,
+          message: `Your journey on ${exists.pickupDate} is completed! Invoice #${updatedBooking.invoice ? updatedBooking.invoice.invoiceNumber : ref} is ready.`,
+          type: 'payment',
+          link: 'user-dashboard.html'
+        }).catch(() => {});
+      } else if (status === 'Cancelled' && exists.userId) {
+        createNotification({
+          userId: exists.userId,
+          title: `Booking Cancelled #${ref}`,
+          message: `Your booking for ${exists.pickupDate} has been cancelled.`,
+          type: 'booking',
+          link: 'user-dashboard.html'
+        }).catch(() => {});
+      }
+    } catch (e) {}
+
     res.status(200).json({
       success: true,
       message: `Booking status updated to ${status} successfully.`,
@@ -342,6 +395,76 @@ exports.driverUpdateTripStatus = async (req, res) => {
 
     syncBooking(updatedBooking, `driver_${status.toLowerCase()}`).catch(err => console.error('Driver status sync error:', err));
 
+    // Send notifications for Driver Action
+    try {
+      const ref = (id || '').toUpperCase().substring(0, 8);
+      const drvName = req.user.name || booking.driverName || 'Driver Partner';
+
+      if (status === 'Accepted') {
+        createNotification({
+          forRole: 'admin',
+          title: `Driver Accepted Trip #${ref}`,
+          message: `${drvName} accepted the journey for ${booking.dropLocation || 'destination'}.`,
+          type: 'driver',
+          link: 'admin-dashboard.html'
+        }).catch(() => {});
+
+        if (booking.userId) {
+          createNotification({
+            userId: booking.userId,
+            title: `Driver Assigned #${ref} 🚗`,
+            message: `Driver partner ${drvName} has accepted your trip.`,
+            type: 'driver',
+            link: 'user-dashboard.html'
+          }).catch(() => {});
+        }
+      } else if (status === 'In Progress') {
+        createNotification({
+          forRole: 'admin',
+          title: `Trip On Road #${ref}`,
+          message: `${drvName} started journey #${ref} to ${booking.dropLocation || 'destination'}.`,
+          type: 'driver',
+          link: 'admin-dashboard.html'
+        }).catch(() => {});
+
+        if (booking.userId) {
+          createNotification({
+            userId: booking.userId,
+            title: `Trip Started #${ref}! 🛣️`,
+            message: `Your driver partner ${drvName} is on the road. Enjoy your journey!`,
+            type: 'driver',
+            link: 'user-dashboard.html'
+          }).catch(() => {});
+        }
+      } else if (status === 'Completed') {
+        createNotification({
+          forRole: 'admin',
+          title: `Trip Completed #${ref} 🏁`,
+          message: `${drvName} completed trip #${ref}. Ready for admin payout verification.`,
+          type: 'driver',
+          link: 'admin-dashboard.html'
+        }).catch(() => {});
+
+        if (booking.userId) {
+          createNotification({
+            userId: booking.userId,
+            title: `Journey Completed #${ref}! 🏁`,
+            message: `Your journey is complete! Thank you for choosing RhinoVoyage.`,
+            type: 'payment',
+            link: 'user-dashboard.html'
+          }).catch(() => {});
+        }
+      } else if (status === 'Rejected' || status === 'Declined') {
+        createNotification({
+          forRole: 'admin',
+          title: `Driver Declined #${ref} ⚠️`,
+          message: `${drvName} declined trip #${ref}. Please reassign to another driver.`,
+          type: 'driver',
+          link: 'admin-dashboard.html'
+        }).catch(() => {});
+      }
+    } catch (e) {}
+
     res.status(200).json({
       success: true,
       message: status === 'Rejected' || status === 'Declined' 
@@ -470,6 +593,26 @@ exports.adminSetDriverPayout = async (req, res) => {
     if (driverPayTxn !== undefined) updateFields.driverPayTxn = driverPayTxn;
 
     await db.update('bookings', { id }, updateFields);
+
+    // Notify Driver if payout updated or marked paid
+    try {
+      if (booking.driverId) {
+        const ref = (id || '').toUpperCase().substring(0, 8);
+        const isPaid = (updateFields.driverPayStatus === 'Paid');
+        const payoutAmt = (updateFields.driverPayment !== undefined) ? updateFields.driverPayment : booking.driverPayment;
+        createNotification({
+          userId: booking.driverId,
+          forRole: 'driver',
+          title: isPaid ? `Driver Payout Released! 💰 #${ref}` : `Driver Payout Updated #${ref}`,
+          message: isPaid 
+            ? `Your payout of ₹${Number(payoutAmt || 0).toLocaleString('en-IN')} has been released via ${updateFields.driverPayMode || booking.driverPayMode || 'Online'}.`
+            : `Your driver payout for trip #${ref} is updated to ₹${Number(payoutAmt || 0).toLocaleString('en-IN')}.`,
+          type: 'payment',
+          link: 'driver-dashboard.html'
+        }).catch(() => {});
+      }
+    } catch (e) {}
+
     res.status(200).json({ success: true, message: 'Driver payout updated successfully.', booking: { ...booking, ...updateFields } });
   } catch (error) {
     console.error('Update driver payout error:', error);
@@ -673,6 +816,21 @@ exports.assignDriver = async (req, res) => {
 
     // Sync booking status/assignment update to Google Sheet
     syncBooking(updatedBooking, 'assign_driver').catch(err => console.error('Booking driver update sheet sync error:', err));
+
+    // Notify Driver of new assignment
+    try {
+      if (driverId) {
+        const ref = (id || '').toUpperCase().substring(0, 8);
+        createNotification({
+          userId: driverId,
+          forRole: 'driver',
+          title: `New Dispatch Assigned! 🚗 #${ref}`,
+          message: `You are assigned to drive ${booking.pickupLocation || 'Pickup'} to ${booking.dropLocation || 'Destination'} on ${booking.pickupDate}. Tap to accept.`,
+          type: 'driver',
+          link: 'driver-dashboard.html'
+        }).catch(() => {});
+      }
+    } catch (e) {}
 
     res.status(200).json({
       success: true,
