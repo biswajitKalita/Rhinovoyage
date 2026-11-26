@@ -74,6 +74,17 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/cars', require('./routes/cars'));
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    success: true,
+    status: 'healthy',
+    hasBrevoKey: !!(process.env.BREVO_API_KEY && process.env.BREVO_API_KEY.startsWith('xkeysib-')),
+    emailFrom: process.env.EMAIL_FROM || 'info@rhinovoyage.com',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Default base route
 app.get('/', (req, res) => {
   res.json({ success: true, message: 'RhinoVoyage API is running.' });

@@ -25,6 +25,34 @@ function extractLocations(details, directPickup, directDrop) {
   return { pickup, drop };
 }
 
+// Helper to resolve recipient email with multi-layer fallback (userEmail -> email -> userId -> phone match)
+async function resolveBookingEmail(booking) {
+  if (!booking) return '';
+  if (booking.userEmail && typeof booking.userEmail === 'string' && booking.userEmail.includes('@')) {
+    return booking.userEmail.toLowerCase().trim();
+  }
+  if (booking.email && typeof booking.email === 'string' && booking.email.includes('@')) {
+    return booking.email.toLowerCase().trim();
+  }
+  if (booking.userId && booking.userId !== 'guest') {
+    try {
+      const u = await db.findOne('users', { id: booking.userId });
+      if (u && u.email && u.email.includes('@')) return u.email.toLowerCase().trim();
+    } catch (e) {}
+  }
+  if (booking.phone) {
+    try {
+      const cleanPhone = String(booking.phone).replace(/[^0-9]/g, '');
+      if (cleanPhone.length >= 7) {
+        const allUsers = await db.find('users');
+        const match = allUsers.find(x => x.phone && String(x.phone).replace(/[^0-9]/g, '').includes(cleanPhone.slice(-10)));
+        if (match && match.email && match.email.includes('@')) return match.email.toLowerCase().trim();
+      }
+    } catch (e) {}
+  }
+  return '';
+}
+
 // @desc    Create Booking
 // @route   POST /api/bookings
 // @access  Public (guests can book, but authenticated users' bookings are linked to their account)
@@ -53,6 +81,8 @@ exports.createBooking = async (req, res) => {
 
     const { pickup, drop } = extractLocations(details, pickupLocation, dropLocation);
 
+    const resolvedEmail = await resolveBookingEmail({ userEmail: (email || (req.user ? req.user.email : '') || ''), email, phone, userId: req.user ? req.user.id : 'guest' });
+
     const bookingData = {
       serviceType,
       name,
@@ -65,7 +95,7 @@ exports.createBooking = async (req, res) => {
       pickupTime: pickupTime || '',
       travelers: travelers || '',
       packageName: packageName || '',
-      userEmail: (email || (req.user ? req.user.email : '') || '').toLowerCase().trim(),
+      userEmail: resolvedEmail,
       details: details || '',
       paymentMethod,
       status: 'Pending',
@@ -73,6 +103,7 @@ exports.createBooking = async (req, res) => {
     };
 
     const newBooking = await db.insert('bookings', bookingData);
+    newBooking.userEmail = resolvedEmail;
 
     // Sync booking creation to Google Sheet
     syncBooking(newBooking, 'create').catch(err => console.error('Booking create sheet sync error:', err));
@@ -243,7 +274,10 @@ exports.updateBookingStatus = async (req, res) => {
     syncBooking(updatedBooking, 'update_status').catch(err => console.error('Booking status update sheet sync error:', err));
 
     // Send transactional status email to customer (Approved, Completed with Invoice, Cancelled)
-    sendBookingStatusEmail(updatedBooking, status).catch(err => console.error('Booking status email error:', err));
+    resolveBookingEmail(updatedBooking).then(resolvedEmail => {
+      if (resolvedEmail) updatedBooking.userEmail = resolvedEmail;
+      return sendBookingStatusEmail(updatedBooking, status);
+    }).catch(err => console.error('Booking status email error:', err));
 
     // Send notification to customer
     try {
@@ -466,6 +500,12 @@ exports.driverUpdateTripStatus = async (req, res) => {
             link: 'user-dashboard.html'
           }).catch(() => {});
         }
+
+        // Send journey completed email with invoice details in real-time
+        resolveBookingEmail(updatedBooking).then(resolvedEmail => {
+          if (resolvedEmail) updatedBooking.userEmail = resolvedEmail;
+          return sendBookingStatusEmail(updatedBooking, 'Completed');
+        }).catch(err => console.error('Driver completed booking email error:', err));
       } else if (status === 'Rejected' || status === 'Declined') {
         createNotification({
           forRole: 'admin',
@@ -537,6 +577,12 @@ exports.completeBooking = async (req, res) => {
 
     // Sync to Google Sheet
     syncBooking(updatedBooking, 'complete_journey').catch(err => console.error('Complete booking sheet sync error:', err));
+
+    // Send journey completed email with itemized invoice in real-time
+    resolveBookingEmail(updatedBooking).then(resolvedEmail => {
+      if (resolvedEmail) updatedBooking.userEmail = resolvedEmail;
+      return sendBookingStatusEmail(updatedBooking, 'Completed');
+    }).catch(err => console.error('Admin complete booking status email error:', err));
 
     // If completed by driver, notify admin / driver confirmation
     res.status(200).json({
@@ -849,7 +895,10 @@ exports.assignDriver = async (req, res) => {
         }
 
         // Notify customer via email that chauffeur has been assigned
-        sendCustomerDriverAssignedEmail(updatedBooking, assignedDriver).catch(err => console.error('Customer driver assigned email error:', err));
+        resolveBookingEmail(updatedBooking).then(em => {
+          if (em) updatedBooking.userEmail = em;
+          return sendCustomerDriverAssignedEmail(updatedBooking, assignedDriver);
+        }).catch(err => console.error('Customer driver assigned email error:', err));
       }
     } catch (e) {}
 
