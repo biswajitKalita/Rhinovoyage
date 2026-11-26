@@ -1636,10 +1636,8 @@
           if (bookingSection) bookingSection.scrollIntoView({ behavior: 'smooth' });
         }, 500);
 
-        // Auto-submit after restore
-        setTimeout(() => {
-          submitBooking();
-        }, 1200);
+        // Do not auto-submit incomplete bookings; let user review and click submit
+        console.log('Restored pending booking details into form.');
       } catch (e) {
         console.error('Error restoring pending booking:', e);
       }
@@ -1763,43 +1761,51 @@
       const token = localStorage.getItem('token');
       const checkedServiceInput = document.querySelector('input[name="service_type"]:checked');
       const serviceType = checkedServiceInput ? checkedServiceInput.value : 'car_rental';
-      const name = document.getElementById('name').value;
-      const phone = document.getElementById('phone').value;
-      const pickupDate = document.getElementById('pickup_date').value;
-      const details = document.getElementById('details').value;
-      const vehicle = document.getElementById('vehicle_select').value;
+      const name = document.getElementById('name') ? document.getElementById('name').value.trim() : '';
+      const phone = document.getElementById('phone') ? document.getElementById('phone').value.trim() : '';
+      const pickupDate = document.getElementById('pickup_date') ? document.getElementById('pickup_date').value.trim() : '';
+      const details = document.getElementById('details') ? document.getElementById('details').value.trim() : '';
+      const vehicle = document.getElementById('vehicle_select') ? document.getElementById('vehicle_select').value : '';
 
       if (!token) {
-        // Save all raw form details in sessionStorage
-        const pickupLocation = document.getElementById('pickup_location') ? document.getElementById('pickup_location').value : '';
-        const dropLocation = document.getElementById('drop_location') ? document.getElementById('drop_location').value : '';
-        const returnDate = document.getElementById('return_date') ? document.getElementById('return_date').value : '';
-        const pickupTime = document.getElementById('pickup_time') ? document.getElementById('pickup_time').value : '';
-        const travelerCount = document.getElementById('traveler_count') ? document.getElementById('traveler_count').value : '';
-        const packageSelectVal = document.getElementById('package_select') ? document.getElementById('package_select').value : '';
-
-        const pendingBooking = {
-          serviceType,
-          name,
-          phone,
-          pickupDate,
-          vehicle,
-          rawDetails: details,
-          pickupLocation,
-          dropLocation,
-          returnDate,
-          pickupTime,
-          travelerCount,
-          packageSelectVal
-        };
-
-        sessionStorage.setItem('pending_booking', JSON.stringify(pendingBooking));
-        showAuthRequiredModal();
+        redirectToRealLoginPage('#booking');
         return;
       }
 
-      const pickupLocation = document.getElementById('pickup_location') ? document.getElementById('pickup_location').value : '';
-      const dropLocation = document.getElementById('drop_location') ? document.getElementById('drop_location').value : '';
+      // Helper for clean luxury toast feedback
+      const showToastFeedback = (msg, isError, inputId) => {
+        const toast = document.getElementById('toast');
+        if (toast) {
+          toast.innerText = (isError ? '⚠️ ' : '✅ ') + msg;
+          toast.style.background = isError ? '#C4511A' : 'var(--green)';
+          toast.style.display = 'block';
+          setTimeout(() => { toast.style.display = 'none'; }, 4500);
+        } else {
+          alert(msg);
+        }
+        if (inputId) {
+          const el = document.getElementById(inputId);
+          if (el) {
+            el.focus();
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      };
+
+      // Client-side validation: ensure required booking fields are filled
+      if (!name) return showToastFeedback('Please enter your full name.', true, 'name');
+      if (!phone) return showToastFeedback('Please enter your WhatsApp phone number.', true, 'phone');
+      if (!pickupDate) return showToastFeedback('Please select your trip pickup date.', true, 'pickup_date');
+      if (!vehicle) return showToastFeedback('Please select a preferred vehicle.', true, 'vehicle_select');
+
+      const pickupLocation = document.getElementById('pickup_location') ? document.getElementById('pickup_location').value.trim() : '';
+      const dropLocation = document.getElementById('drop_location') ? document.getElementById('drop_location').value.trim() : '';
+
+      if (serviceType === 'car_rental') {
+        if (!pickupLocation) return showToastFeedback('Please enter a pickup location.', true, 'pickup_location');
+        if (!dropLocation) return showToastFeedback('Please enter a destination / drop location.', true, 'drop_location');
+      }
+
       let finalDetails = details;
       if (serviceType === 'tour_package') {
         const packageSelect = document.getElementById('package_select');
@@ -1807,9 +1813,9 @@
         finalDetails = `Tour Package: ${selectedPkgText}. ${details}`;
       } else if (serviceType === 'car_rental' || serviceType === 'both') {
         if (serviceType === 'both') {
-          const returnDate = document.getElementById('return_date').value;
-          const pickupTime = document.getElementById('pickup_time').value;
-          const travelerCount = document.getElementById('traveler_count').value;
+          const returnDate = document.getElementById('return_date') ? document.getElementById('return_date').value : '';
+          const pickupTime = document.getElementById('pickup_time') ? document.getElementById('pickup_time').value : '';
+          const travelerCount = document.getElementById('traveler_count') ? document.getElementById('traveler_count').value : '';
           const routeInfo = (pickupLocation || dropLocation) ? `Route: From [${pickupLocation}] To [${dropLocation}]` : 'Route: Custom';
 
           finalDetails = `Custom Tour: ${pickupDate} to ${returnDate} | Start Time: ${pickupTime} | Travelers: ${travelerCount} | ${routeInfo}. Notes: ${details}`;
@@ -1831,6 +1837,12 @@
         headers['Authorization'] = `Bearer ${token}`;
       }
 
+      const submitBtn = document.querySelector('.btn-book');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending Request...';
+      }
+
       try {
         const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
         const response = await fetch(`${apiBase}/bookings`, {
@@ -1846,16 +1858,9 @@
         }
 
         // Show success toast
-        const toast = document.getElementById('toast');
-        toast.innerText = '✅ ' + (data.message || 'Booking request sent!');
-        toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 4500);
+        showToastFeedback(data.message || 'Booking request sent! We will confirm via WhatsApp within 30 minutes.', false);
 
-        // Clear form except name/phone if logged in
-        if (!localStorage.getItem('token')) {
-          document.getElementById('name').value = '';
-          document.getElementById('phone').value = '';
-        }
+        // Clear form fields
         document.getElementById('pickup_date').value = '';
         document.getElementById('details').value = '';
         const pLoc = document.getElementById('pickup_location');
@@ -1870,12 +1875,24 @@
         if (pTime) pTime.value = '';
         if (tCount) tCount.value = '1';
 
+        // Clear any leftover pending booking from session storage
+        sessionStorage.removeItem('pending_booking');
+
       } catch (error) {
-        alert('Error sending booking request: ' + error.message);
+        showToastFeedback(error.message, true);
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `
+            <svg viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+            Send Booking Request
+          `;
+        }
       }
     }
 
-    // Smooth appear animation on scroll
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)'; }
