@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Driver Partner Sign In — RhinoVoyage Operations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Driver Partner Portal — RhinoVoyage Operations</title>
 
   <!-- Favicons -->
   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
@@ -21,7 +21,7 @@
   <!-- Typography & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="./config.js"></script>
 
@@ -30,6 +30,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     :root {
@@ -55,10 +56,10 @@
       --text-sub: #475569;
       --text-muted: #94A3B8;
 
-      --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+      --shadow-card: 0 20px 45px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
       --radius-sm: 6px;
       --radius-md: 10px;
-      --radius-lg: 16px;
+      --radius-lg: 18px;
       --radius-pill: 9999px;
     }
 
@@ -71,7 +72,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1rem;
+      padding: 2.5rem 1rem;
       position: relative;
     }
 
@@ -84,15 +85,15 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 900px;
-      height: 380px;
-      background: radial-gradient(circle at 50% 0%, rgba(27, 67, 50, 0.12) 0%, transparent 70%);
+      height: 420px;
+      background: radial-gradient(circle at 50% 0%, rgba(27, 67, 50, 0.1) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
     .auth-wrapper {
       width: 100%;
-      max-width: 480px;
+      max-width: 550px;
       position: relative;
       z-index: 1;
     }
@@ -100,13 +101,18 @@
     /* Brand Header */
     .brand-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
     }
 
     .brand-logo-img {
-      height: 52px;
+      height: 48px;
       object-fit: contain;
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.75rem;
+      transition: transform 0.2s;
+    }
+
+    .brand-logo-img:hover {
+      transform: scale(1.03);
     }
 
     .portal-badge {
@@ -115,14 +121,14 @@
       gap: 6px;
       background: var(--green-pale);
       color: var(--green);
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       padding: 4px 12px;
       border-radius: var(--radius-pill);
       border: 1px solid rgba(27, 67, 50, 0.15);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.65rem;
     }
 
     .portal-badge::before {
@@ -135,16 +141,18 @@
 
     .portal-title {
       font-family: var(--font-serif);
-      font-size: 1.65rem;
+      font-size: 1.85rem;
       font-weight: 700;
       color: var(--green-dark);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
     }
 
     .portal-subtitle {
       font-size: 0.88rem;
       color: var(--text-sub);
       margin-top: 4px;
+      font-weight: 500;
     }
 
     /* Auth Card */
@@ -152,8 +160,14 @@
       background: var(--surface-white);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 2rem;
+      padding: 2.25rem;
       box-shadow: var(--shadow-card);
+    }
+
+    @media (max-width: 520px) {
+      .auth-card {
+        padding: 1.5rem 1.25rem;
+      }
     }
 
     /* Segmented Mode Tabs */
@@ -171,24 +185,24 @@
       background: transparent;
       border: none;
       font-family: var(--font-main);
-      font-size: 0.84rem;
-      font-weight: 600;
+      font-size: 0.86rem;
+      font-weight: 700;
       color: var(--text-sub);
-      padding: 0.6rem 0.75rem;
+      padding: 0.65rem 0.75rem;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .auth-tab-btn.active {
       background: var(--surface-white);
       color: var(--text-main);
-      font-weight: 700;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     }
 
     /* Form Styles */
@@ -200,11 +214,11 @@
       display: flex;
       flex-direction: column;
       gap: 1.15rem;
-      animation: fadeIn 0.2s ease-in-out;
+      animation: fadeIn 0.25s ease-in-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -212,20 +226,22 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
+      width: 100%;
     }
 
     .form-field-group label {
-      font-size: 0.78rem;
-      font-weight: 700;
+      font-size: 0.72rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       color: var(--text-sub);
     }
 
     .form-input {
+      width: 100%;
       font-family: var(--font-main);
-      font-size: 0.9rem;
-      padding: 0.75rem 0.9rem;
+      font-size: 0.92rem;
+      padding: 0.8rem 1rem;
       border: 1.5px solid var(--border-subtle);
       border-radius: var(--radius-md);
       background: #F8FAFC;
@@ -235,36 +251,134 @@
 
     .form-input:focus {
       outline: none;
-      background: white;
+      background: #FFFFFF;
       border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1);
+      box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.12);
     }
 
+    /* Responsive 2-Column Grid */
+    .form-grid-dual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+
+    @media (max-width: 520px) {
+      .form-grid-dual {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+    /* Custom Luxury File Upload Box (Prevents Overflow & Looks Enterprise) */
+    .file-upload-box {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.65rem 0.85rem;
+      border: 1.5px dashed #CBD5E1;
+      border-radius: var(--radius-md);
+      background: #F8FAFC;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 48px;
+      overflow: hidden;
+    }
+
+    .file-upload-box:hover {
+      background: #F0FDF4;
+      border-color: var(--green-light);
+    }
+
+    .file-upload-box.has-file {
+      border-style: solid;
+      border-color: #86EFAC;
+      background: #F0FDF4;
+    }
+
+    .file-upload-icon {
+      font-size: 1.35rem;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .file-upload-meta {
+      flex: 1;
+      min-width: 0;
+      line-height: 1.25;
+    }
+
+    .file-upload-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+
+    .file-upload-box.has-file .file-upload-name {
+      color: #15803D;
+    }
+
+    .file-upload-hint {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .file-upload-btn-pill {
+      font-size: 0.72rem;
+      font-weight: 800;
+      background: #E2E8F0;
+      color: var(--text-sub);
+      padding: 4px 9px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .file-upload-box.has-file .file-upload-btn-pill {
+      background: #DCFCE7;
+      color: #15803D;
+    }
+
+    /* Full-Width Bold Submit Button */
     .btn-auth-submit {
+      width: 100%;
+      min-height: 50px;
       background: var(--green);
       color: white;
       border: none;
       font-family: var(--font-main);
-      font-size: 0.92rem;
-      font-weight: 700;
-      padding: 0.85rem;
+      font-size: 0.96rem;
+      font-weight: 800;
+      padding: 0.85rem 1.25rem;
       border-radius: var(--radius-md);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin-top: 0.5rem;
+      margin-top: 0.65rem;
+      box-shadow: 0 4px 14px rgba(27, 67, 50, 0.28);
       transition: all 0.2s;
     }
 
     .btn-auth-submit:hover {
       background: var(--green-mid);
       transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(27, 67, 50, 0.35);
+    }
+
+    .btn-auth-submit:active {
+      transform: scale(0.99);
     }
 
     .btn-auth-submit:disabled {
-      opacity: 0.7;
+      opacity: 0.75;
       cursor: not-allowed;
       transform: none;
     }
@@ -311,7 +425,7 @@
     .portal-footer-links a {
       color: var(--green);
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -324,13 +438,14 @@
 
     .traveler-redirect-box {
       background: #F1F5F9;
+      border: 1px solid #E2E8F0;
       border-radius: var(--radius-md);
-      padding: 10px 14px;
-      font-size: 0.8rem;
+      padding: 12px 14px;
+      font-size: 0.82rem;
       color: var(--text-sub);
       text-align: center;
       margin-top: 1rem;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     .traveler-redirect-box a {
@@ -353,7 +468,7 @@
         <img src="./logo.png" alt="RhinoVoyage Logo" class="brand-logo-img">
       </a>
       <div>
-        <span class="portal-tag">Fleet Operations</span>
+        <span class="portal-badge">Fleet Operations</span>
       </div>
       <h1 class="portal-title">Driver Partner Portal</h1>
       <p class="portal-subtitle">Secure sign in for verified fleet drivers and partners.</p>
@@ -409,10 +524,10 @@
         <form onsubmit="event.preventDefault(); handleDriverApplySubmit();">
           <div class="form-field-group">
             <label for="drv-apply-name">Full Legal Name</label>
-            <input type="text" id="drv-apply-name" required class="form-input" placeholder="Driver Full Name">
+            <input type="text" id="drv-apply-name" required class="form-input" placeholder="e.g. Biswajit Kalita">
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-grid-dual">
             <div class="form-field-group">
               <label for="drv-apply-phone">WhatsApp Phone</label>
               <input type="tel" id="drv-apply-phone" required class="form-input" placeholder="10-digit mobile">
@@ -428,25 +543,45 @@
             <input type="password" id="drv-apply-password" required class="form-input" placeholder="At least 6 characters">
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-grid-dual">
             <div class="form-field-group">
               <label for="drv-apply-aadhar">Aadhar Number</label>
               <input type="text" id="drv-apply-aadhar" required class="form-input" placeholder="12-digit number" pattern="\d{12}">
             </div>
             <div class="form-field-group">
-              <label for="drv-apply-aadhar-file">Aadhar Photo</label>
-              <input type="file" id="drv-apply-aadhar-file" required accept="image/*" class="form-input" style="padding: 5px;">
+              <label>Aadhar Document Photo</label>
+              <!-- Hidden native file input -->
+              <input type="file" id="drv-apply-aadhar-file" required accept="image/*" style="display: none;" onchange="handleFileSelected(this, 'aadhar-filename', 'aadhar-upload-box')">
+              <!-- Custom Luxury Trigger Box -->
+              <div class="file-upload-box" id="aadhar-upload-box" onclick="document.getElementById('drv-apply-aadhar-file').click()">
+                <div class="file-upload-icon"><i class="ph-bold ph-upload-simple"></i></div>
+                <div class="file-upload-meta">
+                  <span class="file-upload-name" id="aadhar-filename">Upload Aadhar</span>
+                  <span class="file-upload-hint">JPG, PNG or PDF</span>
+                </div>
+                <span class="file-upload-btn-pill">Browse</span>
+              </div>
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-grid-dual">
             <div class="form-field-group">
               <label for="drv-apply-license">License Number</label>
-              <input type="text" id="drv-apply-license" required class="form-input" placeholder="Driving License No.">
+              <input type="text" id="drv-apply-license" required class="form-input" placeholder="e.g. AS-04-2026-XXXX">
             </div>
             <div class="form-field-group">
-              <label for="drv-apply-license-file">License Photo</label>
-              <input type="file" id="drv-apply-license-file" required accept="image/*" class="form-input" style="padding: 5px;">
+              <label>Driving License Photo</label>
+              <!-- Hidden native file input -->
+              <input type="file" id="drv-apply-license-file" required accept="image/*" style="display: none;" onchange="handleFileSelected(this, 'license-filename', 'license-upload-box')">
+              <!-- Custom Luxury Trigger Box -->
+              <div class="file-upload-box" id="license-upload-box" onclick="document.getElementById('drv-apply-license-file').click()">
+                <div class="file-upload-icon"><i class="ph-bold ph-upload-simple"></i></div>
+                <div class="file-upload-meta">
+                  <span class="file-upload-name" id="license-filename">Upload License</span>
+                  <span class="file-upload-hint">JPG, PNG or PDF</span>
+                </div>
+                <span class="file-upload-btn-pill">Browse</span>
+              </div>
             </div>
           </div>
 
@@ -507,6 +642,23 @@
         applyPane.classList.add('active');
         loginBtn.classList.remove('active');
         applyBtn.classList.add('active');
+      }
+    }
+
+    // Dynamic File Upload Label Handler
+    function handleFileSelected(input, labelId, boxId) {
+      const labelEl = document.getElementById(labelId);
+      const boxEl = document.getElementById(boxId);
+      if (!input.files || input.files.length === 0) return;
+
+      const file = input.files[0];
+      if (labelEl) {
+        labelEl.innerText = `✓ ${file.name}`;
+      }
+      if (boxEl) {
+        boxEl.classList.add('has-file');
+        const pill = boxEl.querySelector('.file-upload-btn-pill');
+        if (pill) pill.innerText = 'Change';
       }
     }
 
@@ -685,4 +837,3 @@
   </script>
 </body>
 </html>
-
