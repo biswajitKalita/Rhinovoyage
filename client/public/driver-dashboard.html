@@ -629,80 +629,137 @@
       margin-bottom: 0.35rem;
     }
 
-    /* Modal System for Trip Reporting */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(4px);
+    /* Driver Profile Card & Grid */
+    .profile-section {
+      margin-bottom: 2rem;
+    }
+    .profile-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    }
+    .profile-hero {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .profile-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-size: 1.6rem;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.25rem;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
+      box-shadow: 0 4px 12px rgba(27, 67, 50, 0.25);
     }
-    .modal-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
+    .profile-title-group h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
     }
-    .modal-card {
-      background: #FFFFFF;
-      border-radius: var(--radius-lg);
-      max-width: 500px;
-      width: 100%;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.1);
-      overflow: hidden;
-      transform: translateY(20px);
-      transition: transform 0.25s ease;
-    }
-    .modal-overlay.open .modal-card {
-      transform: translateY(0);
-    }
-    .modal-head {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border);
+    .profile-meta-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-    }
-    .modal-body {
-      padding: 1.5rem;
-    }
-    .modal-foot {
-      padding: 1rem 1.5rem;
-      border-top: 1px solid var(--border);
-      background: #F8FAFC;
-      display: flex;
-      justify-content: flex-end;
       gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
     }
-    .form-group {
-      margin-bottom: 1.25rem;
+    .profile-id-pill {
+      font-family: monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: #F1F5F9;
+      padding: 2px 8px;
+      border-radius: 6px;
+      color: var(--text-sub);
     }
-    .form-label {
-      display: block;
-      font-size: 0.8rem;
+    .profile-verified-badge {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--emerald);
+      background: var(--emerald-pale);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .profile-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .pstat-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+    }
+    .pstat-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+    .pstat-lbl {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .profile-details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .pdetail-item {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .pdetail-icon {
+      font-size: 1.35rem;
+      color: var(--green);
+      margin-top: 2px;
+    }
+    .pdetail-lbl {
+      font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--text-sub);
-      margin-bottom: 6px;
+      color: var(--text-muted);
     }
-    .form-input, .form-textarea {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      font-family: var(--font-main);
+    .pdetail-val {
       font-size: 0.95rem;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      outline: none;
-      transition: border-color 0.2s;
+      font-weight: 700;
+      color: var(--text);
+      word-break: break-all;
+      margin-top: 2px;
     }
-    .form-input:focus, .form-textarea:focus {
-      border-color: var(--green);
+    .pdoc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--blue);
+      text-decoration: underline;
+      margin-top: 4px;
     }
   </style>
 </head>
@@ -717,7 +774,7 @@
       </a>
 
       <div class="header-right">
-        <span class="driver-name-tag" id="topDriverName">Driver Partner</span>
+        <span class="driver-name-tag" id="topDriverName" onclick="switchTab('profile')" style="cursor:pointer;" title="View My Profile">Driver Partner</span>
         <button class="btn-logout" onclick="handleLogout()">
           <i class="ph-bold ph-sign-out"></i> Log Out
         </button>
@@ -776,6 +833,10 @@
         <i class="ph-bold ph-check-circle"></i> Completed History
         <span class="tab-count" id="badge-completed-count">0</span>
       </button>
+
+      <button class="tab-item" id="tab-profile-btn" onclick="switchTab('profile')">
+        <i class="ph-bold ph-user-circle"></i> My Profile & Stats
+      </button>
     </div>
 
     <!-- 3. TRIPS LIST CONTAINER -->
@@ -787,56 +848,120 @@
       </div>
     </section>
 
+    <!-- 4. DRIVER PROFILE SECTION -->
+    <section class="profile-section" id="profileSection" style="display: none;">
+      <div class="profile-card">
+        
+        <!-- Driver Hero -->
+        <div class="profile-hero">
+          <div class="profile-avatar" id="profAvatar">DP</div>
+          <div class="profile-title-group">
+            <h2 id="profName">Driver Partner</h2>
+            <div class="profile-meta-row">
+              <span class="profile-id-pill" id="profId">ID: DRV-0000</span>
+              <span class="profile-verified-badge"><i class="ph-bold ph-seal-check"></i> Verified Partner</span>
+              <span style="font-size: 0.78rem; color: var(--text-muted);"><i class="ph-bold ph-calendar"></i> Member Since: <span id="profJoinDate">Nov 2026</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Career Performance Overview -->
+        <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 8px; letter-spacing: 0.05em;">
+          <i class="ph-bold ph-chart-line-up" style="color:var(--green);"></i> Career Performance & Trips Overview
+        </div>
+        <div class="profile-stats-grid">
+          <div class="pstat-box">
+            <div class="pstat-num" id="profTotalTrips">0</div>
+            <div class="pstat-lbl">Total Trips</div>
+          </div>
+          <div class="pstat-box">
+            <div class="pstat-num" style="color: var(--emerald);" id="profCompletedTrips">0</div>
+            <div class="pstat-lbl">Completed</div>
+          </div>
+          <div class="pstat-box">
+            <div class="pstat-num" style="color: var(--blue);" id="profActiveTrips">0</div>
+            <div class="pstat-lbl">Active / On Road</div>
+          </div>
+          <div class="pstat-box">
+            <div class="pstat-num" style="color: var(--green);" id="profTotalEarnings">₹0</div>
+            <div class="pstat-lbl">Total Paid to You</div>
+          </div>
+          <div class="pstat-box">
+            <div class="pstat-num" style="color: var(--amber);" id="profPendingPayout">₹0</div>
+            <div class="pstat-lbl">Pending Release</div>
+          </div>
+        </div>
+
+        <!-- Official KYC & Document Details -->
+        <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--text-sub); margin-bottom: 8px; letter-spacing: 0.05em;">
+          <i class="ph-bold ph-identification-card" style="color:var(--green);"></i> Driver Identity & KYC Verification
+        </div>
+        <div class="profile-details-grid">
+          <div class="pdetail-item">
+            <i class="ph-bold ph-envelope pdetail-icon"></i>
+            <div>
+              <div class="pdetail-lbl">Email Address</div>
+              <div class="pdetail-val" id="profEmail">driver@rhinovoyage.com</div>
+            </div>
+          </div>
+
+          <div class="pdetail-item">
+            <i class="ph-bold ph-phone pdetail-icon"></i>
+            <div>
+              <div class="pdetail-lbl">Contact / WhatsApp Phone</div>
+              <div class="pdetail-val" id="profPhone">+91 ...</div>
+            </div>
+          </div>
+
+          <div class="pdetail-item">
+            <i class="ph-bold ph-identification-badge pdetail-icon"></i>
+            <div>
+              <div class="pdetail-lbl">Aadhar Card Number</div>
+              <div class="pdetail-val" id="profAadhar">XXXX-XXXX-XXXX</div>
+              <div id="profAadharDoc"></div>
+            </div>
+          </div>
+
+          <div class="pdetail-item">
+            <i class="ph-bold ph-steering-wheel pdetail-icon"></i>
+            <div>
+              <div class="pdetail-lbl">Driving License Number</div>
+              <div class="pdetail-val" id="profLicense">AS-XX-XXXX-XXXXXXX</div>
+              <div id="profLicenseDoc"></div>
+            </div>
+          </div>
+
+          <div class="pdetail-item">
+            <i class="ph-bold ph-shield-check pdetail-icon" style="color: var(--emerald);"></i>
+            <div>
+              <div class="pdetail-lbl">Verification Status</div>
+              <div class="pdetail-val" style="color: var(--emerald);" id="profStatus">Active & Approved</div>
+            </div>
+          </div>
+
+          <div class="pdetail-item">
+            <i class="ph-bold ph-map-pin pdetail-icon"></i>
+            <div>
+              <div class="pdetail-lbl">Operating Region</div>
+              <div class="pdetail-val">Guwahati / Northeast India</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Controls Footer -->
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <button onclick="syncDriverProfile()" class="btn-large" style="background:#F1F5F9; color:var(--text); border:1px solid var(--border); font-size:0.85rem; padding:8px 16px;">
+            <i class="ph-bold ph-arrows-clockwise"></i> Refresh Profile Data
+          </button>
+          <button onclick="handleLogout()" class="btn-large" style="background:var(--rose-pale); color:var(--rose); border:1px solid #FECACA; font-size:0.85rem; padding:8px 16px;">
+            <i class="ph-bold ph-sign-out"></i> Log Out of Portal
+          </button>
+        </div>
+
+      </div>
+    </section>
+
   </main>
-
-  <!-- COMPLETE JOURNEY & REPORT MODAL -->
-  <div class="modal-overlay" id="driverCompleteModal" onclick="if(event.target===this) closeDriverCompleteModal();">
-    <div class="modal-card">
-      <div class="modal-head">
-        <div>
-          <div style="font-size:1.1rem; font-weight:800; color:var(--text);"><i class="ph-bold ph-flag-checkered" style="color:var(--emerald);"></i> Complete Journey Report</div>
-          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;" id="modalTripRefSubtitle">Trip #RV...</div>
-        </div>
-        <button onclick="closeDriverCompleteModal()" style="background:none; border:none; font-size:1.25rem; cursor:pointer; color:var(--text-muted);">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label"><i class="ph-bold ph-gauge"></i> Additional Kilometers Driven (Extra KMs)</label>
-          <input type="number" id="repExtraKm" class="form-input" min="0" value="0" placeholder="0" oninput="recalcDriverReport()">
-          <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Enter extra km traveled beyond original itinerary (or leave 0 if none).</p>
-        </div>
-
-        <!-- Calculation preview box -->
-        <div style="background:#F8FAFC; border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; margin-bottom:1.25rem;">
-          <div style="font-size:0.72rem; font-weight:800; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px;">Driver Payout Calculation</div>
-          <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
-            <span style="color:var(--text-sub);">Base Trip Pay:</span>
-            <span style="font-weight:700;" id="repBasePay">₹0</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:6px;">
-            <span style="color:var(--text-sub);">Extra KM Compensation (<span id="repKmRateNote">@ ₹15/km</span>):</span>
-            <span style="font-weight:700; color:var(--green);" id="repExtraKmPay">+₹0</span>
-          </div>
-          <div style="border-top:1px dashed var(--border); padding-top:6px; display:flex; justify-content:space-between; font-size:0.95rem; font-weight:800;">
-            <span>Estimated Total Payout:</span>
-            <span style="color:var(--emerald);" id="repTotalPay">₹0</span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label"><i class="ph-bold ph-chat-text"></i> Driver Remarks & Journey Notes</label>
-          <textarea id="repRemarks" class="form-textarea" rows="3" placeholder="e.g. Extra sightseeing detour to Kamakhya temple; Toll ₹120 paid; Dropped safely at 6:30 PM."></textarea>
-          <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Admin will read this when releasing your payout.</p>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button type="button" class="btn-large" style="background:#F1F5F9; color:var(--text-sub); border:1px solid var(--border);" onclick="closeDriverCompleteModal()">Cancel</button>
-        <button type="button" class="btn-large btn-complete" id="btnSubmitCompleteReport" onclick="submitDriverCompleteReport()">
-          <i class="ph-bold ph-check-circle"></i> Confirm & Submit Report
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- JAVASCRIPT ENGINE -->
   <script>
@@ -883,6 +1008,7 @@
         allTrips.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
         calculateDriverEarnings();
+        populateDriverProfile();
         renderTrips();
 
       } catch (err) {
@@ -1036,32 +1162,15 @@
           `;
         }
 
-        // Driver Payout View (Driver ONLY sees their own pay, never customer fare)
+        // Driver Payout View (Driver ONLY sees their own pay set by Admin, never customer fare)
         let payoutHtml = '';
         const driverPay = Number(trip.driverPayment || 0);
-        const basePay = Number(trip.driverBasePayment || 0);
-        const extraKmPay = Number(trip.driverExtraKmPayment || 0);
-        const extraKms = Number(trip.extraKms || 0);
         const isPaid = (trip.driverPayStatus === 'Paid');
         const payMode = trip.driverPayMode || 'Online';
 
-        let breakdownText = '';
-        if (extraKms > 0 && extraKmPay > 0) {
-          breakdownText = `<div style="font-size:0.75rem; color:var(--text-sub); margin-top:3px;">(Base: ₹${basePay.toLocaleString('en-IN')} + ${extraKms} Extra KMs: ₹${extraKmPay.toLocaleString('en-IN')})</div>`;
-        }
-
-        let remarksHtml = '';
-        if (trip.driverNotes) {
-          remarksHtml = `
-            <div style="font-size:0.8rem; background:#F8FAFC; border:1px solid var(--border); padding:8px 10px; border-radius:6px; margin-top:6px; color:var(--text-sub); width:100%;">
-              <i class="ph-bold ph-chat-text" style="color:var(--green);"></i> <strong>Your Remarks:</strong> ${trip.driverNotes}
-            </div>
-          `;
-        }
-
         if (driverPay > 0) {
           payoutHtml = `
-            <div class="driver-payout-box" style="flex-direction:column; align-items:flex-start; gap:6px;">
+            <div class="driver-payout-box" style="flex-direction:column; align-items:flex-start; gap:8px;">
               <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:8px;">
                 <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
                 <div style="display: flex; align-items: center; gap: 8px;">
@@ -1072,24 +1181,20 @@
                 </div>
               </div>
               <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:6px;">
-                ${breakdownText}
                 <span style="font-size:0.75rem; font-weight:700; color:var(--text-sub);">
-                  <i class="ph-bold ${payMode === 'Cash' ? 'ph-money' : 'ph-credit-card'}"></i> Payout Mode: ${payMode === 'Cash' ? 'Offline (Cash)' : 'Online (UPI/Bank)'}
+                  <i class="ph-bold ${payMode === 'Cash' ? 'ph-money' : 'ph-credit-card'}"></i> Payout Mode: ${payMode === 'Cash' ? 'Offline (Cash)' : 'Online (UPI/Bank Transfer)'}
                 </span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Set & verified by Admin</span>
               </div>
-              ${remarksHtml}
             </div>
           `;
         } else {
           payoutHtml = `
-            <div class="driver-payout-box" style="flex-direction:column; align-items:flex-start; gap:6px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:8px;">
-                <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
-                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">
-                  ${st === 'Completed' ? 'Admin is calculating your payout percentage' : 'Will be updated upon journey completion'}
-                </span>
-              </div>
-              ${remarksHtml}
+            <div class="driver-payout-box">
+              <span class="payout-label"><i class="ph-bold ph-coins"></i> Your Driver Payout:</span>
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">
+                ${st === 'Completed' ? 'Admin will verify journey & set your payment' : 'Will be set by Admin upon journey completion'}
+              </span>
             </div>
           `;
         }
@@ -1118,20 +1223,15 @@
         } else if (st === 'In Progress') {
           actionButtonsHtml = `
             <div class="action-btn-row">
-              <button class="btn-large btn-complete" onclick="openCompleteTripModal('${trip.id}')">
+              <button class="btn-large btn-complete" onclick="completeTrip('${trip.id}')">
                 <i class="ph-bold ph-check-circle"></i> 🏁 Tap to Complete Trip
               </button>
             </div>
           `;
         } else if (st === 'Completed') {
           actionButtonsHtml = `
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <div style="text-align: center; font-size: 0.88rem; font-weight: 700; color: var(--emerald); padding: 8px; background: var(--emerald-pale); border-radius: var(--radius-sm);">
-                ✓ Trip Finished. Admin will verify details and credit your driver payout.
-              </div>
-              <button class="btn-large" style="background:#F8FAFC; color:var(--text); border:1.5px solid var(--border); font-size:0.84rem; padding:8px 12px;" onclick="openCompleteTripModal('${trip.id}', true)">
-                <i class="ph-bold ph-pencil-simple"></i> Share / Update Additional KMs or Remarks
-              </button>
+            <div style="text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--emerald); padding: 12px; background: var(--emerald-pale); border-radius: var(--radius-sm); border: 1px solid #BBF7D0;">
+              <i class="ph-bold ph-check-circle"></i> Journey Finished! Admin will verify and credit your driver payout.
             </div>
           `;
         }
@@ -1266,61 +1366,34 @@
       }
     }
 
-    // Journey Completion & Reporting Flow
-    let activeReportingTrip = null;
-    let isReportingUpdateOnly = false;
+    // 5. DRIVER ACTIONS (ACCEPT, REJECT, START, COMPLETE)
+    async function acceptTrip(tripId) {
+      if (!confirm('Accept this trip? You will be assigned to drive this journey.')) return;
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${tripId}/driver-status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: 'Accepted' })
+        });
 
-    function openCompleteTripModal(tripId, isUpdate = false) {
-      const trip = allTrips.find(t => t.id === tripId);
-      if (!trip) return;
-      activeReportingTrip = trip;
-      isReportingUpdateOnly = isUpdate;
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to accept trip.');
 
-      document.getElementById('modalTripRefSubtitle').innerText = `Trip #${(trip.id || '').toUpperCase().substring(0, 8)} • ${trip.pickupLocation || 'Pickup'} to ${trip.dropLocation || 'Destination'}`;
-      document.getElementById('repExtraKm').value = trip.extraKms || 0;
-      document.getElementById('repRemarks').value = trip.driverNotes || '';
-
-      const rate = Number(trip.driverExtraKmRate || 15);
-      document.getElementById('repKmRateNote').innerText = `@ ₹${rate}/km`;
-
-      const submitBtn = document.getElementById('btnSubmitCompleteReport');
-      if (isUpdate) {
-        submitBtn.innerHTML = '<i class="ph-bold ph-check"></i> Update Trip Remarks & KMs';
-      } else {
-        submitBtn.innerHTML = '<i class="ph-bold ph-check-circle"></i> 🏁 Confirm & Complete Trip';
+        alert('Trip Accepted! Please be ready on time.');
+        switchTab('active');
+        loadDriverTrips();
+      } catch (err) {
+        alert(err.message);
       }
-
-      recalcDriverReport();
-      document.getElementById('driverCompleteModal').classList.add('open');
     }
 
-    function closeDriverCompleteModal() {
-      document.getElementById('driverCompleteModal').classList.remove('open');
-      activeReportingTrip = null;
-    }
-
-    function recalcDriverReport() {
-      if (!activeReportingTrip) return;
-      const extraKm = Number(document.getElementById('repExtraKm').value || 0);
-      const rate = Number(activeReportingTrip.driverExtraKmRate || 15);
-      const base = Number(activeReportingTrip.driverBasePayment || activeReportingTrip.driverPayment || 0);
-      const extraKmPay = extraKm * rate;
-      const total = base + extraKmPay;
-
-      document.getElementById('repBasePay').innerText = `₹${base.toLocaleString('en-IN')}`;
-      document.getElementById('repExtraKmPay').innerText = `+₹${extraKmPay.toLocaleString('en-IN')}`;
-      document.getElementById('repTotalPay').innerText = `₹${total.toLocaleString('en-IN')}`;
-    }
-
-    async function submitDriverCompleteReport() {
-      if (!activeReportingTrip) return;
-      const tripId = activeReportingTrip.id;
-      const extraKms = Number(document.getElementById('repExtraKm').value || 0);
-      const driverNotes = document.getElementById('repRemarks').value.trim();
-
-      const submitBtn = document.getElementById('btnSubmitCompleteReport');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Submitting...';
+    async function rejectTrip(tripId) {
+      const reason = prompt('Are you sure you want to decline this trip? Please tell us why (optional):');
+      if (reason === null) return; // User pressed cancel on prompt
 
       try {
         const apiBase = getApi();
@@ -1330,34 +1403,198 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({
-            status: 'Completed',
-            extraKms,
-            driverNotes
-          })
+          body: JSON.stringify({ status: 'Declined', driverNotes: reason })
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Failed to submit report.');
+        if (!response.ok) throw new Error(data.message || 'Failed to decline trip.');
 
-        alert(isReportingUpdateOnly ? 'Trip remarks and extra kilometers updated successfully!' : 'Journey completed! Your report was sent to admin.');
-        closeDriverCompleteModal();
+        alert('Trip declined. The dispatch desk has been informed.');
+        loadDriverTrips();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function startTrip(tripId) {
+      if (!confirm('Start this journey now?')) return;
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${tripId}/driver-status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: 'In Progress' })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to start trip.');
+
+        alert('Journey Started! Drive safely.');
+        loadDriverTrips();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function completeTrip(tripId) {
+      if (!confirm('Are you sure you have completed this journey?')) return;
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${tripId}/driver-status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: 'Completed' })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to complete journey.');
+
+        alert('Journey marked as Completed! Admin will verify and process your driver payment.');
         switchTab('completed');
         await loadDriverTrips();
       } catch (err) {
         alert(err.message);
-      } finally {
-        submitBtn.disabled = false;
       }
     }
 
-    // 6. SIMPLE TAB SWITCHER
+    // 6. TAB SWITCHER (TRIPS & PROFILE)
     function switchTab(tabName) {
       currentTab = tabName;
       document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
       const activeBtn = document.getElementById(`tab-${tabName}-btn`);
       if (activeBtn) activeBtn.classList.add('active');
-      renderTrips();
+
+      const tripsContainer = document.getElementById('tripsListContainer');
+      const profileSection = document.getElementById('profileSection');
+
+      if (tabName === 'profile') {
+        if (tripsContainer) tripsContainer.style.display = 'none';
+        if (profileSection) profileSection.style.display = 'block';
+        populateDriverProfile();
+      } else {
+        if (tripsContainer) tripsContainer.style.display = 'grid';
+        if (profileSection) profileSection.style.display = 'none';
+        renderTrips();
+      }
+    }
+
+    // 7. DRIVER PROFILE & PERFORMANCE POPULATOR
+    function populateDriverProfile() {
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      const name = u.name || 'Driver Partner';
+      
+      // Initials for avatar
+      const initials = name.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'DP';
+      const elAvatar = document.getElementById('profAvatar');
+      if (elAvatar) elAvatar.innerText = initials;
+
+      const elName = document.getElementById('profName');
+      if (elName) elName.innerText = name;
+
+      const elId = document.getElementById('profId');
+      if (elId) elId.innerText = u.id ? `ID: ${u.id.toUpperCase().substring(0, 10)}` : 'ID: DRV-PARTNER';
+
+      const elJoinDate = document.getElementById('profJoinDate');
+      if (elJoinDate) {
+        if (u.createdAt) {
+          elJoinDate.innerText = new Date(u.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        } else {
+          elJoinDate.innerText = 'Nov 2026';
+        }
+      }
+
+      // Stats calculation
+      const totalTrips = allTrips.length;
+      let completedTrips = 0;
+      let activeTrips = 0;
+      let totalPaid = 0;
+      let pendingPayout = 0;
+
+      allTrips.forEach(t => {
+        const st = t.status || 'Approved';
+        const dPay = Number(t.driverPayment || 0);
+
+        if (st === 'Completed') {
+          completedTrips++;
+          if (t.driverPayStatus === 'Paid') {
+            totalPaid += dPay;
+          } else {
+            pendingPayout += dPay;
+          }
+        } else if (st === 'Accepted' || st === 'In Progress') {
+          activeTrips++;
+        }
+      });
+
+      const elTotalTrips = document.getElementById('profTotalTrips');
+      if (elTotalTrips) elTotalTrips.innerText = totalTrips;
+
+      const elCompleted = document.getElementById('profCompletedTrips');
+      if (elCompleted) elCompleted.innerText = completedTrips;
+
+      const elActive = document.getElementById('profActiveTrips');
+      if (elActive) elActive.innerText = activeTrips;
+
+      const elTotalEarnings = document.getElementById('profTotalEarnings');
+      if (elTotalEarnings) elTotalEarnings.innerText = `₹${totalPaid.toLocaleString('en-IN')}`;
+
+      const elPending = document.getElementById('profPendingPayout');
+      if (elPending) elPending.innerText = `₹${pendingPayout.toLocaleString('en-IN')}`;
+
+      // KYC Details
+      const elEmail = document.getElementById('profEmail');
+      if (elEmail) elEmail.innerText = u.email || 'N/A';
+
+      const elPhone = document.getElementById('profPhone');
+      if (elPhone) elPhone.innerText = u.phone ? `+91 ${u.phone.replace(/\D/g, '').slice(-10)}` : 'N/A';
+
+      const elAadhar = document.getElementById('profAadhar');
+      if (elAadhar) elAadhar.innerText = u.aadhar || 'Verified on file';
+
+      const elAadharDoc = document.getElementById('profAadharDoc');
+      if (elAadharDoc) {
+        elAadharDoc.innerHTML = u.aadharPhoto
+          ? `<a href="${u.aadharPhoto}" target="_blank" class="pdoc-link"><i class="ph-bold ph-file-text"></i> View Aadhar Document</a>`
+          : '<span style="font-size:0.75rem; color:var(--text-muted);">No document file uploaded</span>';
+      }
+
+      const elLicense = document.getElementById('profLicense');
+      if (elLicense) elLicense.innerText = u.license || 'Verified on file';
+
+      const elLicenseDoc = document.getElementById('profLicenseDoc');
+      if (elLicenseDoc) {
+        elLicenseDoc.innerHTML = u.licensePhoto
+          ? `<a href="${u.licensePhoto}" target="_blank" class="pdoc-link"><i class="ph-bold ph-file-text"></i> View Driving License</a>`
+          : '<span style="font-size:0.75rem; color:var(--text-muted);">No document file uploaded</span>';
+      }
+
+      const elStatus = document.getElementById('profStatus');
+      if (elStatus) elStatus.innerText = u.verificationStatus || 'Active & Approved';
+    }
+
+    async function syncDriverProfile() {
+      try {
+        const apiBase = getApi();
+        const res = await fetch(`${apiBase}/auth/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.user) {
+            localStorage.setItem('user', JSON.stringify(data.user));
+          }
+        }
+        populateDriverProfile();
+        alert('Driver profile and performance metrics refreshed!');
+      } catch (e) {
+        populateDriverProfile();
+      }
     }
 
     function handleLogout() {
