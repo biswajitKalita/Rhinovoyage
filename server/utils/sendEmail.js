@@ -437,7 +437,7 @@ async function sendAdminNewUserAlert(user) {
  */
 async function sendBookingReceivedEmail(booking) {
   const recipientEmail = booking.userEmail || booking.email;
-  if (!recipientEmail) return;
+  if (!recipientEmail) return { success: false, message: 'No recipient email' };
 
   const ref = (booking.id || '').toUpperCase().substring(0, 8);
   const customerName = booking.name || 'Valued Traveler';
@@ -497,6 +497,74 @@ async function sendBookingReceivedEmail(booking) {
   return sendBrevoEmail({
     to: recipientEmail,
     toName: customerName,
+    subject,
+    htmlContent: html
+  });
+}
+
+/**
+ * Send Admin New Booking Alert
+ */
+async function sendAdminNewBookingAlert(booking) {
+  const adminEmail = process.env.ADMIN_ALERT_EMAIL || 'rhinovoyage@gmail.com';
+  const ref = (booking.id || '').toUpperCase().substring(0, 8);
+  const customerName = booking.name || 'Traveler';
+  const subject = `🔔 New Booking Request #${ref} from ${customerName} — RhinoVoyage`;
+
+  const contentHtml = `
+    <h2 style="margin-top: 0; color: #0f382c; font-size: 22px; font-weight: 700;">New Journey Reservation #${ref}</h2>
+    <p style="color: #4a5568; font-size: 15px;">A new booking request has been submitted. Review journey details below:</p>
+    
+    <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
+      <div style="background: #0f382c; color: #ffffff; padding: 12px 20px; font-weight: 700; font-size: 14px;">
+        BOOKING DOSSIER &bull; REF #${ref}
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096; width: 40%;">Customer Name</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 700;">${customerName}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Customer Email</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.userEmail || booking.email || 'Not provided'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Customer Phone</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.phone || 'Not provided'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Pickup Schedule</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.pickupDate} &bull; ${booking.pickupTime || 'Morning'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Route</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.pickupLocation || 'Guwahati'} &rarr; ${booking.dropLocation || booking.packageName || 'Destination'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Vehicle / Service</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.vehicle} (${booking.serviceType})</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 20px; color: #718096;">Payment Method</td>
+          <td style="padding: 12px 20px; color: #0f382c; font-weight: 700;">${booking.paymentMethod || 'Flexible'}</td>
+        </tr>
+      </table>
+    </div>
+
+    <p style="color: #4a5568; font-size: 14px;"><strong>Action Required:</strong> Log in to the Admin Dashboard to assign an available chauffeur and confirm the reservation.</p>
+  `;
+
+  const html = wrapEmailHtml({
+    title: subject,
+    preheader: `New booking request #${ref} received from ${customerName}.`,
+    contentHtml,
+    actionUrl: 'https://rhinovoyage.com/admin-dashboard.html',
+    actionText: 'Assign Driver & Approve'
+  });
+
+  return sendBrevoEmail({
+    to: adminEmail,
+    toName: 'RhinoVoyage Operations',
     subject,
     htmlContent: html
   });
@@ -729,6 +797,7 @@ module.exports = {
   sendWelcomeEmail,
   sendAdminNewUserAlert,
   sendBookingReceivedEmail,
+  sendAdminNewBookingAlert,
   sendBookingStatusEmail,
   sendDriverTripDispatchEmail,
   sendCustomerDriverAssignedEmail

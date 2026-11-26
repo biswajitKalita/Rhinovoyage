@@ -3,6 +3,7 @@ const { syncBooking } = require('../utils/sheets');
 const { createNotification } = require('./notificationController');
 const { 
   sendBookingReceivedEmail, 
+  sendAdminNewBookingAlert,
   sendBookingStatusEmail, 
   sendDriverTripDispatchEmail, 
   sendCustomerDriverAssignedEmail 
@@ -108,8 +109,15 @@ exports.createBooking = async (req, res) => {
     // Sync booking creation to Google Sheet
     syncBooking(newBooking, 'create').catch(err => console.error('Booking create sheet sync error:', err));
 
-    // Send booking received confirmation email via Brevo
-    sendBookingReceivedEmail(newBooking).catch(err => console.error('Booking received email error:', err));
+    // Send booking received confirmation email via Brevo to customer & alert to admin in real-time
+    try {
+      if (newBooking.userEmail) {
+        await sendBookingReceivedEmail(newBooking);
+      }
+      await sendAdminNewBookingAlert(newBooking);
+    } catch (err) {
+      console.error('Booking real-time email dispatch notice:', err.message);
+    }
 
     // Create notifications for Admin and User
     try {
