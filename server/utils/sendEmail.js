@@ -173,40 +173,126 @@ async function sendBrevoEmail({ to, toName = '', subject, htmlContent, textConte
 }
 
 /**
- * 1. Send Welcome Email upon registration
+ * 1. Send Welcome Email upon registration with complete user details
  */
 async function sendWelcomeEmail(user) {
   if (!user || !user.email) return;
 
   const isDriver = user.role === 'driver';
   const userName = user.name || (isDriver ? 'Driver Partner' : 'Valued Traveler');
+  const userPhone = user.phone || 'Not specified';
+  const userRef = user.id ? user.id.toUpperCase() : `RV-${Math.floor(100000 + Math.random() * 900000)}`;
+  const regDate = new Date().toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+
   const subject = isDriver 
-    ? 'Welcome to the RhinoVoyage Fleet Partner Network! 🚗'
-    : 'Welcome to RhinoVoyage — Discover the Beauty of Northeast India 🌿';
+    ? 'Official Driver Partner Registration Details — RhinoVoyage 🚗'
+    : 'Welcome to RhinoVoyage — Your Account Registration Details 🌿';
+
+  const detailsTable = isDriver ? `
+    <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
+      <div style="background: #0f382c; color: #ffffff; padding: 12px 20px; font-weight: 700; font-size: 14px; letter-spacing: 0.5px;">
+        DRIVER PARTNER REGISTRATION DOSSIER
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096; width: 42%;">Full Legal Name</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${userName}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Registered Email</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${user.email}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">WhatsApp / Mobile</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${userPhone}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Driving License No.</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${user.license || 'Provided on File'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Aadhar Card No.</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${user.aadhar ? `${user.aadhar.substring(0, 4)} XXXX ${user.aadhar.substring(user.aadhar.length - 4)}` : 'Provided on File'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Partner Reference</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">#${userRef}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Registration Date</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${regDate}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 20px; color: #718096;">Verification Status</td>
+          <td style="padding: 12px 20px;">
+            <span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 12px; text-transform: uppercase;">
+              Pending Fleet Review
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  ` : `
+    <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
+      <div style="background: #0f382c; color: #ffffff; padding: 12px 20px; font-weight: 700; font-size: 14px; letter-spacing: 0.5px;">
+        TRAVELER MEMBERSHIP DETAILS
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096; width: 42%;">Member Name</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${userName}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Registered Email</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${user.email}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Contact Phone</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${userPhone}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Membership Tier</td>
+          <td style="padding: 12px 20px; color: #0f382c; font-weight: 700;">Valued Traveler &bull; VIP Member</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Member Reference ID</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">#${userRef}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 20px; color: #718096;">Joined On</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${regDate}</td>
+        </tr>
+      </table>
+    </div>
+  `;
 
   const contentHtml = isDriver ? `
     <h2 style="margin-top: 0; color: #0f382c; font-size: 22px; font-weight: 700;">Welcome to the RhinoVoyage Fleet Family, ${userName}!</h2>
-    <p style="color: #4a5568; font-size: 15px;">Thank you for registering as a professional driver partner. We are thrilled to partner with you to deliver world-class travel experiences across Assam, Meghalaya, and the Northeast.</p>
+    <p style="color: #4a5568; font-size: 15px;">Your driver partner registration has been recorded successfully. Below are the details of your registered profile:</p>
     
-    <div style="background: #f7faf8; border: 1px solid #d4dfdb; border-radius: 12px; padding: 20px; margin: 24px 0;">
-      <h3 style="margin-top: 0; font-size: 15px; color: #0f382c; text-transform: uppercase; letter-spacing: 0.5px;">Account Status</h3>
-      <p style="margin: 0; color: #2d3748; font-size: 14px;">
-        <strong>Verification Status:</strong> <span style="background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 4px; font-weight: 600;">Pending Verification</span><br>
-        <span style="font-size: 13px; color: #718096; display: block; margin-top: 6px;">Our fleet operations team will review your submitted Aadhar card and driving license within 24 hours. Once verified, you will immediately begin receiving trip assignments.</span>
-      </p>
+    ${detailsTable}
+
+    <div style="background: #f7faf8; border-left: 4px solid #0f382c; border-radius: 8px; padding: 16px 20px; margin: 20px 0; font-size: 14px; color: #2d3748;">
+      <strong>Next Steps for Dispatch:</strong> Our fleet operations team will review your submitted Aadhar card and driving license photos within 24 hours. Once verified, you will immediately begin receiving trip assignments across Assam and Northeast India.
     </div>
 
-    <p style="color: #4a5568; font-size: 14px;">You can log in to your dedicated Driver Partner Portal anytime to view your verification status, trip history, and earnings.</p>
+    <p style="color: #4a5568; font-size: 14px;">Sign in to your Driver Portal anytime to track approval status, active journeys, and trip payouts:</p>
   ` : `
     <h2 style="margin-top: 0; color: #0f382c; font-size: 22px; font-weight: 700;">Welcome to RhinoVoyage, ${userName}!</h2>
-    <p style="color: #4a5568; font-size: 15px;">Your gateway to serene landscapes, bespoke holiday tours, and premium chauffeured car rentals across Northeast India has officially opened.</p>
+    <p style="color: #4a5568; font-size: 15px;">Your account has been created successfully. Below are the details of your new traveler membership:</p>
     
+    ${detailsTable}
+
     <div style="background: #f7faf8; border: 1px solid #d4dfdb; border-radius: 12px; padding: 20px; margin: 24px 0;">
-      <h3 style="margin-top: 0; font-size: 15px; color: #0f382c; text-transform: uppercase; letter-spacing: 0.5px;">What You Can Do Next:</h3>
+      <h3 style="margin-top: 0; font-size: 15px; color: #0f382c; text-transform: uppercase; letter-spacing: 0.5px;">Your Traveler Privileges:</h3>
       <ul style="margin: 0; padding-left: 20px; color: #4a5568; font-size: 14px; line-height: 1.8;">
-        <li><strong>Explore Curated Packages:</strong> Kaziranga wildlife safaris, Meghalaya waterfalls, Tawang snowpeaks, and more.</li>
-        <li><strong>Book Luxury Fleets:</strong> Premium sedans, luxury SUVs (Innova Crysta, Fortuner), and group tempo travelers.</li>
-        <li><strong>Track Your Journeys:</strong> View live booking status, driver dispatch alerts, and digital tax invoices anytime.</li>
+        <li><strong>Bespoke Holiday Packages:</strong> Kaziranga wildlife safaris, Meghalaya waterfalls, Shillong, and Tawang tours.</li>
+        <li><strong>Premium Fleet Bookings:</strong> Executive Sedans, Innova Crysta, Fortuner, and Tempo Travelers.</li>
+        <li><strong>Live Updates & Invoices:</strong> Real-time booking status, driver dispatch alerts, and downloadable invoices.</li>
       </ul>
     </div>
 
@@ -219,7 +305,7 @@ async function sendWelcomeEmail(user) {
 
   const html = wrapEmailHtml({
     title: subject,
-    preheader: isDriver ? 'Your RhinoVoyage Driver Partner application has been received.' : 'Your luxury journey starts here.',
+    preheader: isDriver ? `Driver Partner registration received for ${userName}. Review credentials.` : `Your RhinoVoyage traveler account is ready. Details inside.`,
     contentHtml,
     actionUrl: dashboardUrl,
     actionText: isDriver ? 'Access Driver Portal' : 'Open My Dashboard'
@@ -228,6 +314,119 @@ async function sendWelcomeEmail(user) {
   return sendBrevoEmail({
     to: user.email,
     toName: userName,
+    subject,
+    htmlContent: html
+  });
+}
+
+/**
+ * 2. Send Admin Notification Email when someone joins the platform
+ */
+async function sendAdminNewUserAlert(user) {
+  if (!user) return;
+
+  const adminEmail = process.env.ADMIN_ALERT_EMAIL || 'rhinovoyage@gmail.com';
+  const isDriver = user.role === 'driver';
+  const userName = user.name || 'New Member';
+  const userPhone = user.phone || 'Not provided';
+  const userRole = isDriver ? 'Driver Partner' : 'Traveler';
+  const userRef = user.id ? user.id.toUpperCase() : `RV-${Math.floor(100000 + Math.random() * 900000)}`;
+  const regDate = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+  const subject = `🔔 New ${userRole} Registered: ${userName} — RhinoVoyage Platform`;
+
+  const detailsTable = isDriver ? `
+    <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
+      <div style="background: #0f382c; color: #ffffff; padding: 12px 20px; font-weight: 700; font-size: 14px;">
+        NEW DRIVER PARTNER APPLICATION
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096; width: 40%;">Name</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 700;">${userName}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Email Address</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${user.email}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">WhatsApp / Mobile</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${userPhone}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Driving License No.</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${user.license || 'Provided on File'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Aadhar Card No.</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${user.aadhar || 'Provided on File'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Documents Uploaded</td>
+          <td style="padding: 12px 20px; color: #166534; font-weight: 600;">Aadhar Card & Driving License Photos Uploaded</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Partner Reference</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">#${userRef}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 20px; color: #718096;">Registration Timestamp</td>
+          <td style="padding: 12px 20px; color: #2d3748;">${regDate} (IST)</td>
+        </tr>
+      </table>
+    </div>
+    <p style="color: #4a5568; font-size: 14px;"><strong>Action Required:</strong> Please log in to the Admin Operations Dashboard to verify documents and approve this driver partner.</p>
+  ` : `
+    <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
+      <div style="background: #0f382c; color: #ffffff; padding: 12px 20px; font-weight: 700; font-size: 14px;">
+        NEW TRAVELER REGISTRATION DOSSIER
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096; width: 40%;">Name</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 700;">${userName}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Email Address</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${user.email}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Contact Phone</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${userPhone}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Role</td>
+          <td style="padding: 12px 20px; color: #0f382c; font-weight: 700;">Traveler / Customer</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Member ID</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">#${userRef}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 20px; color: #718096;">Registration Timestamp</td>
+          <td style="padding: 12px 20px; color: #2d3748;">${regDate} (IST)</td>
+        </tr>
+      </table>
+    </div>
+  `;
+
+  const contentHtml = `
+    <h2 style="margin-top: 0; color: #0f382c; font-size: 22px; font-weight: 700;">New ${userRole} Registered!</h2>
+    <p style="color: #4a5568; font-size: 15px;">A new account was just created on the RhinoVoyage platform. Below are the submitted details:</p>
+    ${detailsTable}
+  `;
+
+  const html = wrapEmailHtml({
+    title: subject,
+    preheader: `New ${userRole} ${userName} registered on RhinoVoyage. Review details.`,
+    contentHtml,
+    actionUrl: 'https://rhinovoyage.com/admin-dashboard.html',
+    actionText: 'Open Admin Dashboard'
+  });
+
+  return sendBrevoEmail({
+    to: adminEmail,
+    toName: 'RhinoVoyage Operations',
     subject,
     htmlContent: html
   });
@@ -528,6 +727,7 @@ async function sendCustomerDriverAssignedEmail(booking, driver) {
 module.exports = {
   sendBrevoEmail,
   sendWelcomeEmail,
+  sendAdminNewUserAlert,
   sendBookingReceivedEmail,
   sendBookingStatusEmail,
   sendDriverTripDispatchEmail,

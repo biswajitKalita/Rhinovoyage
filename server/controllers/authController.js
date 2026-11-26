@@ -4,7 +4,7 @@ const db = require('../config/db');
 const { syncUserLog } = require('../utils/sheets');
 const { saveBase64Image } = require('../utils/upload');
 const { OAuth2Client } = require('google-auth-library');
-const { sendWelcomeEmail } = require('../utils/sendEmail');
+const { sendWelcomeEmail, sendAdminNewUserAlert } = require('../utils/sendEmail');
 
 const OLD_GOOGLE_CLIENT_ID = '948276512640-k0jviqs3neh01trevc0alctid7gg5qpk.apps.googleusercontent.com';
 const REAL_GOOGLE_CLIENT_ID = '594259583569-3pj03um6vqosf6qe9v44r64jj80gtq4b.apps.googleusercontent.com';
@@ -97,8 +97,11 @@ exports.register = async (req, res) => {
     // Sync user registration to Google Sheet
     syncUserLog(newUser, 'register').catch(err => console.error('Register sheet sync error:', err));
 
-    // Send Welcome Email via Brevo
+    // Send Welcome Email with full registration details via Brevo to user
     sendWelcomeEmail(newUser).catch(err => console.error('Welcome email error:', err));
+
+    // Send instant registration alert with full user details to Admin
+    sendAdminNewUserAlert(newUser).catch(err => console.error('Admin new user alert error:', err));
 
     sendTokenResponse(newUser, 201, res);
   } catch (error) {
@@ -211,6 +214,7 @@ exports.googleSignIn = async (req, res) => {
       };
       user = await db.insert('users', newUser);
       sendWelcomeEmail(user).catch(err => console.error('Google user welcome email error:', err));
+      sendAdminNewUserAlert(user).catch(err => console.error('Google user admin alert error:', err));
     }
 
     sendTokenResponse(user, 200, res);
