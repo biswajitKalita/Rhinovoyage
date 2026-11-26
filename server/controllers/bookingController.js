@@ -1,6 +1,12 @@
 const db = require('../config/db');
 const { syncBooking } = require('../utils/sheets');
 const { createNotification } = require('./notificationController');
+const { 
+  sendBookingReceivedEmail, 
+  sendBookingStatusEmail, 
+  sendDriverTripDispatchEmail, 
+  sendCustomerDriverAssignedEmail 
+} = require('../utils/sendEmail');
 
 // Helper to extract pickup & drop locations if not directly passed
 function extractLocations(details, directPickup, directDrop) {
@@ -70,6 +76,9 @@ exports.createBooking = async (req, res) => {
 
     // Sync booking creation to Google Sheet
     syncBooking(newBooking, 'create').catch(err => console.error('Booking create sheet sync error:', err));
+
+    // Send booking received confirmation email via Brevo
+    sendBookingReceivedEmail(newBooking).catch(err => console.error('Booking received email error:', err));
 
     // Create notifications for Admin and User
     try {
@@ -232,6 +241,9 @@ exports.updateBookingStatus = async (req, res) => {
 
     // Sync booking status update to Google Sheet
     syncBooking(updatedBooking, 'update_status').catch(err => console.error('Booking status update sheet sync error:', err));
+
+    // Send transactional status email to customer (Approved, Completed with Invoice, Cancelled)
+    sendBookingStatusEmail(updatedBooking, status).catch(err => console.error('Booking status email error:', err));
 
     // Send notification to customer
     try {
@@ -829,6 +841,15 @@ exports.assignDriver = async (req, res) => {
           type: 'driver',
           link: 'driver-dashboard.html'
         }).catch(() => {});
+
+        // Dispatch transactional email to driver
+        const assignedDriver = await db.findOne('users', { id: driverId });
+        if (assignedDriver && assignedDriver.email) {
+          sendDriverTripDispatchEmail(assignedDriver, updatedBooking).catch(err => console.error('Driver dispatch email error:', err));
+        }
+
+        // Notify customer via email that chauffeur has been assigned
+        sendCustomerDriverAssignedEmail(updatedBooking, assignedDriver).catch(err => console.error('Customer driver assigned email error:', err));
       }
     } catch (e) {}
 
