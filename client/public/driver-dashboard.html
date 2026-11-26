@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driver Partner Portal — RhinoVoyage Operations</title>
+
+  <!-- Favicons -->
   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -12,707 +17,1829 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Driver Partner Dashboard — RhinoVoyage</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --orange: #E8651A;
-    --orange-dark: #C4511A;
-    --orange-light: #F5874A;
-    --orange-pale: #FDF0E8;
-    --green: #1B4332;
-    --green-mid: #2D6A4F;
-    --green-dark: #0d1f16;
-    --cream: #FBF7F0;
-    --cream-dark: #F0E8D8;
-    --text-dark: #1A1209;
-    --text-mid: #4A3728;
-    --text-muted: #8A7060;
-    --white: #FFFFFF;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  }
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--cream);
-    color: var(--text-dark);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+  <!-- Typography & Vector Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="./config.js"></script>
 
-  /* Navigation Header */
-  nav {
-    background: var(--green-dark);
-    color: var(--white);
-    padding: 1rem 2rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
-  .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-  }
-  .logo img {
-    height: 40px;
-    object-fit: contain;
-  }
-  .nav-user {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  .nav-user span {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.85);
-  }
-  .btn-logout {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: var(--white);
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-  .btn-logout:hover {
-    border-color: var(--orange);
-    color: var(--orange-light);
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  /* Main Layout */
-  .dashboard-container {
-    max-width: 1200px;
-    width: 100%;
-    margin: 3rem auto;
-    padding: 0 2rem;
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    gap: 2.5rem;
-  }
-
-  /* Profile Card */
-  .profile-card {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: var(--shadow);
-    height: fit-content;
-    border: 1px solid var(--cream-dark);
-  }
-  .profile-avatar {
-    width: 70px;
-    height: 70px;
-    background: var(--orange-pale);
-    color: var(--orange-dark);
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 700;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    border: 2px solid var(--orange);
-  }
-  .profile-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 0.5rem;
-  }
-  .profile-role {
-    display: inline-block;
-    background: var(--green);
-    color: var(--white);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 3px 10px;
-    border-radius: 50px;
-    margin: 0 auto 1.5rem;
-    display: table;
-  }
-  .profile-detail {
-    font-size: 0.85rem;
-    color: var(--text-mid);
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-top: 1rem;
-    border-top: 1px solid var(--cream-dark);
-  }
-  .profile-detail strong {
-    color: var(--text-dark);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* Right Bookings Panel */
-  .bookings-panel {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 2.5rem;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--cream-dark);
-  }
-  .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--cream-dark);
-  }
-  .panel-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.7rem;
-    font-weight: 700;
-  }
-
-  /* Status Banner */
-  .status-banner {
-    padding: 1.25rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 0.92rem;
-    line-height: 1.5;
-  }
-  .status-banner-pending {
-    background: #FFF8E1;
-    color: #F57F17;
-    border: 1px solid #FFE082;
-  }
-  .status-banner-rejected {
-    background: #FFEBEE;
-    color: #C62828;
-    border: 1px solid #FFCDD2;
-  }
-  .status-banner-approved {
-    background: #E8F5E9;
-    color: #2E7D32;
-    border: 1px solid #A5D6A7;
-  }
-
-  /* Bookings */
-  .bookings-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--text-muted);
-  }
-  .empty-state-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-  .empty-state h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    color: var(--text-dark);
-    margin-bottom: 0.5rem;
-  }
-
-  .booking-card {
-    border: 1px solid var(--cream-dark);
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: grid;
-    grid-template-columns: 2fr 2fr 1fr 1fr;
-    align-items: center;
-    gap: 1.5rem;
-    transition: box-shadow 0.2s, border-color 0.2s;
-  }
-  .booking-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    border-color: rgba(232, 101, 26, 0.3);
-  }
-
-  .booking-main h4 {
-    font-size: 1.05rem;
-    color: var(--text-dark);
-    margin-bottom: 4px;
-    text-transform: capitalize;
-  }
-  .booking-main p {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-  }
-  .booking-date {
-    font-size: 0.88rem;
-    color: var(--text-mid);
-  }
-  .booking-date strong {
-    display: block;
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .booking-customer {
-    font-size: 0.88rem;
-    color: var(--text-dark);
-    font-weight: 600;
-  }
-  .booking-customer strong {
-    display: block;
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    font-weight: normal;
-    letter-spacing: 0.5px;
-  }
-
-  /* Badges */
-  .badge {
-    padding: 5px 12px;
-    border-radius: 50px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-align: center;
-    width: fit-content;
-  }
-  .badge-pending {
-    background: #FFF8E1;
-    color: #F57F17;
-    border: 1px solid #FFE082;
-  }
-  .badge-approved {
-    background: #E8F5E9;
-    color: #2E7D32;
-    border: 1px solid #A5D6A7;
-  }
-
-  /* Footer */
-  footer {
-    background: var(--green-dark);
-    color: rgba(255, 255, 255, 0.4);
-    padding: 1.5rem 2rem;
-    text-align: center;
-    font-size: 0.8rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    margin-top: auto;
-  }
-
-  @media (max-width: 960px) {
-    .dashboard-container {
-      grid-template-columns: 1fr;
+  <style>
+    /* ==========================================================================
+       RESET & EXECUTIVE COLOR SYSTEM
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-  }
-  @media (max-width: 768px) {
-    .booking-card {
-      grid-template-columns: 1fr;
+
+    :root {
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-serif: 'Playfair Display', Georgia, serif;
+
+      --bg-slate: #F8FAFC;
+      --surface-white: #FFFFFF;
+      --surface-card: #FFFFFF;
+      --border-subtle: #E2E8F0;
+      --border-focus: #CBD5E1;
+
+      --green-dark: #0D281E;
+      --green: #1B4332;
+      --green-mid: #2D6A4F;
+      --green-light: #52B788;
+      --green-pale: #EBF8F2;
+
+      --orange: #E8651A;
+      --orange-dark: #C4511A;
+      --orange-light: #F5874A;
+      --orange-pale: #FFF7ED;
+
+      --blue: #2563EB;
+      --blue-pale: #EFF6FF;
+
+      --emerald: #16A34A;
+      --emerald-pale: #F0FDF4;
+
+      --amber: #D97706;
+      --amber-pale: #FFFBEB;
+
+      --rose: #DC2626;
+      --rose-pale: #FEF2F2;
+
+      --text-main: #0F172A;
+      --text-sub: #475569;
+      --text-muted: #94A3B8;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-card: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.03);
+      --shadow-modal: 0 20px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-pill: 9999px;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       EXECUTIVE TOPBAR NAVIGATION
+       ========================================================================== */
+    .topbar {
+      background: var(--surface-white);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .topbar-container {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .topbar-logo {
+      height: 38px;
+      object-fit: contain;
+    }
+
+    .portal-tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--green-pale);
+      color: var(--green);
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(27, 67, 50, 0.15);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .portal-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
       gap: 1rem;
+    }
+
+    .btn-live-site {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-decoration: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: var(--surface-white);
+      transition: all 0.2s;
+    }
+
+    .btn-live-site:hover {
+      background: var(--bg-slate);
+      color: var(--text-main);
+      border-color: var(--border-focus);
+    }
+
+    .driver-profile-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.35rem 0.75rem 0.35rem 0.45rem;
+      background: #F1F5F9;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .driver-avatar-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .driver-profile-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .driver-profile-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .driver-profile-status {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--emerald);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-sub);
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: var(--rose-pale);
+      color: var(--rose);
+      border-color: rgba(220, 38, 38, 0.2);
+    }
+
+    /* ==========================================================================
+       MAIN VIEW CONTAINER
+       ========================================================================== */
+    .dashboard-container {
+      max-width: 1360px;
+      width: 100%;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+      flex: 1;
+    }
+
+    /* HERO WELCOME & VERIFICATION STATUS BANNER */
+    .driver-hero-banner {
+      background: linear-gradient(135deg, #0D281E 0%, #1B4332 100%);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      color: white;
+      margin-bottom: 1.75rem;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .driver-hero-banner::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232, 101, 26, 0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content h1 {
+      font-family: var(--font-serif);
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-content p {
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 650px;
+    }
+
+    .hero-badges-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+    }
+
+    .hero-badge-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: white;
+      backdrop-filter: blur(4px);
+    }
+
+    .hero-quick-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .hero-verification-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      text-align: right;
+    }
+
+    .hero-verif-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2px;
+    }
+
+    .hero-verif-val {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #86EFAC;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    /* ==========================================================================
+       METRIC KPI CARDS GRID
+       ========================================================================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -3px rgba(15, 23, 42, 0.08);
+    }
+
+    .kpi-info h4 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-sub);
+      margin-bottom: 0.35rem;
+    }
+
+    .kpi-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .kpi-subtext {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .kpi-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+
+    .kpi-icon-blue { background: var(--blue-pale); color: var(--blue); }
+    .kpi-icon-green { background: var(--emerald-pale); color: var(--emerald); }
+    .kpi-icon-amber { background: var(--amber-pale); color: var(--amber); }
+    .kpi-icon-orange { background: var(--orange-pale); color: var(--orange); }
+
+    /* ==========================================================================
+       SECTION TOOLBAR & FILTER TABS
+       ========================================================================== */
+    .panel-header-toolbar {
+      background: var(--surface-white);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .segmented-tabs {
+      display: flex;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      font-family: var(--font-main);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: var(--surface-white);
+      color: var(--text-main);
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tab-count {
+      font-size: 0.72rem;
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      background: #E2E8F0;
+      color: var(--text-sub);
+    }
+
+    .tab-btn.active .tab-count {
+      background: var(--green);
+      color: white;
+    }
+
+    .search-filter-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .search-input {
+      font-family: var(--font-main);
+      font-size: 0.84rem;
+      padding: 0.5rem 0.85rem 0.5rem 2.2rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      width: 260px;
+      background: #F8FAFC;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      background: white;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1);
+    }
+
+    .search-icon-pos {
+      position: absolute;
+      left: 10px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       TRIP CARDS LIST
+       ========================================================================== */
+    .trip-cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .trip-dossier-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trip-dossier-card:hover {
+      border-color: var(--border-focus);
+    }
+
+    .trip-dossier-card.status-active-border {
+      border-left: 4px solid var(--blue);
+    }
+    .trip-dossier-card.status-completed-border {
+      border-left: 4px solid var(--emerald);
+    }
+    .trip-dossier-card.status-pending-border {
+      border-left: 4px solid var(--amber);
+    }
+
+    /* Card Header */
+    .trip-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .trip-ref-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .trip-ref-id {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      background: #F1F5F9;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .service-type-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .service-car { background: var(--blue-pale); color: var(--blue); }
+    .service-tour { background: var(--orange-pale); color: var(--orange-dark); }
+
+    .status-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .status-pending { background: var(--amber-pale); color: var(--amber); }
+    .status-pending::before { background: var(--amber); }
+
+    .status-accepted { background: var(--blue-pale); color: var(--blue); }
+    .status-accepted::before { background: var(--blue); }
+
+    .status-inprogress { background: #FAF5FF; color: #9333EA; }
+    .status-inprogress::before { background: #9333EA; }
+
+    .status-completed { background: var(--emerald-pale); color: var(--emerald); }
+    .status-completed::before { background: var(--emerald); }
+
+    .status-cancelled { background: var(--rose-pale); color: var(--rose); }
+    .status-cancelled::before { background: var(--rose); }
+
+    /* Card Main Body Grid */
+    .trip-body-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1.2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 900px) {
+      .trip-body-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    /* Col 1: Route Visualizer */
+    .route-visualizer-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .route-point {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .route-icon-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .pickup-icon-bg { background: #DCFCE7; color: var(--emerald); }
+    .drop-icon-bg { background: #FEE2E2; color: var(--rose); }
+
+    .route-details-text {
+      line-height: 1.25;
+    }
+
+    .route-type-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .route-address {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 2px;
+    }
+
+    .route-time-meta {
+      font-size: 0.76rem;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    /* Col 2: Customer & Vehicle */
+    .trip-entity-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .entity-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .entity-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .entity-val-primary {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .entity-val-secondary {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+
+    .comm-buttons-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-whatsapp-comm {
+      background: #25D366;
+      color: white;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-whatsapp-comm:hover {
+      background: #1EBE5D;
+    }
+
+    .btn-call-comm {
+      background: #F1F5F9;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s;
+    }
+
+    .btn-call-comm:hover {
+      background: #E2E8F0;
+    }
+
+    /* Col 3: Financial & Fare */
+    .trip-fare-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .fare-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .fare-total-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      margin-top: 8px;
+      border-top: 1px dashed var(--border-subtle);
+    }
+
+    .fare-total-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .pay-status-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      display: inline-block;
+      margin-top: 6px;
       text-align: center;
     }
-    .badge {
-      margin: 0 auto;
+
+    .pay-paid { background: #DCFCE7; color: var(--emerald); }
+    .pay-pending { background: #FEF3C7; color: var(--amber); }
+
+    /* Card Footer Action Bar */
+    .trip-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
-  }
-  @media (max-width: 575px) {
-    .dashboard-container {
-      padding: 0 1rem;
-      margin: 1.5rem auto;
+
+    .trip-created-meta {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .bookings-panel {
-      padding: 1.5rem 1rem;
+
+    .driver-actions-cluster {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
     }
-    .profile-card {
-      padding: 1.5rem 1rem;
+
+    .btn-action-primary {
+      background: var(--green);
+      color: white;
+      border: none;
+      font-family: var(--font-main);
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
     }
-    .panel-title {
-      font-size: 1.45rem;
+
+    .btn-action-primary:hover {
+      background: var(--green-mid);
+      transform: translateY(-1px);
     }
-  }
-</style>
-<script src="./config.js"></script>
+
+    .btn-action-blue {
+      background: var(--blue);
+      color: white;
+      border: none;
+      font-family: var(--font-main);
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-action-blue:hover {
+      background: #1D4ED8;
+      transform: translateY(-1px);
+    }
+
+    .btn-action-complete {
+      background: var(--emerald);
+      color: white;
+      border: none;
+      font-family: var(--font-main);
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-action-complete:hover {
+      background: #15803D;
+      transform: translateY(-1px);
+    }
+
+    .btn-action-secondary {
+      background: var(--surface-white);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      font-family: var(--font-main);
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-action-secondary:hover {
+      background: var(--bg-slate);
+      border-color: var(--border-focus);
+    }
+
+    /* Empty state */
+    .empty-trips-box {
+      background: white;
+      border: 1px dashed var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 4rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-trips-box i {
+      font-size: 3rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .empty-trips-box h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    /* ==========================================================================
+       MODAL: COMPLETE TRIP & GENERATE INVOICE
+       ========================================================================== */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface-white);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: var(--shadow-modal);
+      overflow: hidden;
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlideUp {
+      from { transform: translateY(20px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-head {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #F8FAFC;
+    }
+
+    .modal-head h3 {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: var(--green-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      padding: 4px;
+    }
+
+    .modal-close-btn:hover {
+      background: #E2E8F0;
+      color: var(--text-main);
+    }
+
+    .modal-form-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .modal-trip-summary {
+      background: var(--green-pale);
+      border: 1px solid rgba(27, 67, 50, 0.15);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      font-size: 0.84rem;
+      color: var(--green-dark);
+      line-height: 1.4;
+    }
+
+    .form-group-driver {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group-driver label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-sub);
+    }
+
+    .form-ctrl {
+      font-family: var(--font-main);
+      font-size: 0.88rem;
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--surface-white);
+      transition: all 0.2s;
+    }
+
+    .form-ctrl:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1);
+    }
+
+    .modal-calc-banner {
+      background: #F8FAFC;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .modal-calc-label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+
+    .modal-calc-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .modal-foot {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+      background: #F8FAFC;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAVIGATION -->
-<nav>
-  <div class="nav-inner">
-    <a href="index.html" class="logo">
-      <img src="./logo.png" alt="RhinoVoyage Logo">
-    </a>
-    <div class="nav-user">
-      <span id="nav-user-greeting">Welcome, Driver Partner</span>
-      <button class="btn-logout" onclick="handleLogout()">Log Out</button>
-    </div>
-  </div>
-</nav>
+  <!-- EXECUTIVE TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-container">
+      <a href="index.html" class="topbar-brand">
+        <img src="./logo.png" alt="RhinoVoyage Logo" class="topbar-logo">
+        <span class="portal-tag">Driver Portal</span>
+      </a>
 
-<!-- DASHBOARD GRID -->
-<div class="dashboard-container">
-  
-  <!-- LEFT: Driver Profile -->
-  <div class="profile-card">
-    <div class="profile-avatar" id="prof-initial">D</div>
-    <div class="profile-name" id="prof-name">Driver Name</div>
-    <div class="profile-role" style="background: var(--orange);">Driver Partner</div>
-    
-    <div class="profile-detail">
-      <strong>Email Address</strong>
-      <span id="prof-email">email@example.com</span>
-    </div>
-    <div class="profile-detail">
-      <strong>WhatsApp Number</strong>
-      <span id="prof-phone">+91 XXXXX XXXXX</span>
-    </div>
-    <div class="profile-detail">
-      <strong>Aadhar Card Number</strong>
-      <span id="prof-aadhar">N/A</span>
-    </div>
-    <div class="profile-detail">
-      <strong>Driving License</strong>
-      <span id="prof-license">N/A</span>
-    </div>
-  </div>
+      <div class="topbar-actions">
+        <a href="index.html" class="btn-live-site" target="_blank">
+          <i class="ph-bold ph-arrow-square-out"></i> Live Site
+        </a>
 
-  <!-- RIGHT: Trip logs and Verification Status -->
-  <div class="bookings-panel">
-    
-    <!-- Verification Status Banner -->
-    <div id="statusBanner" class="status-banner status-banner-pending">
-      <div>
-        <strong>Status: Pending Verification</strong><br>
-        Your profile details and driving credentials are under review. Once verified by the administration, you will be assigned trip bookings.
+        <div class="driver-profile-pill" id="driverNavProfile">
+          <div class="driver-avatar-circle" id="navDriverAvatar">D</div>
+          <div class="driver-profile-meta">
+            <span class="driver-profile-name" id="navDriverName">Driver Partner</span>
+            <span class="driver-profile-status" id="navDriverStatus"><i class="ph-bold ph-shield-check"></i> Verified</span>
+          </div>
+        </div>
+
+        <button class="btn-logout" onclick="handleDriverLogout()">
+          <i class="ph-bold ph-sign-out"></i> Log Out
+        </button>
       </div>
     </div>
+  </header>
 
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="dashboard-container">
 
-    <div class="panel-header">
-      <h2 class="panel-title">Assigned Trips</h2>
-    </div>
+    <!-- HERO PROFILE & OPERATIONS STATUS BANNER -->
+    <section class="driver-hero-banner">
+      <div class="hero-content">
+        <h1 id="heroDriverGreeting">Welcome Back, Driver Partner</h1>
+        <p id="heroDriverSub">Manage your dispatched trips, view customer routes, record trip completions, and track your payment collections in real time.</p>
+        
+        <div class="hero-badges-group">
+          <div class="hero-badge-item">
+            <i class="ph-bold ph-identification-card"></i> <span id="heroDriverId">ID: Loading...</span>
+          </div>
+          <div class="hero-badge-item">
+            <i class="ph-bold ph-whatsapp-logo"></i> <span id="heroDriverPhone">Phone: Loading...</span>
+          </div>
+          <div class="hero-badge-item">
+            <i class="ph-bold ph-car"></i> <span id="heroDriverVehicle">Fleet: Available</span>
+          </div>
+        </div>
+      </div>
 
-    <div class="bookings-list" id="bookingsList">
-      <div style="text-align: center; padding: 3rem;">Checking verification status...</div>
+      <div class="hero-quick-actions">
+        <div class="hero-verification-card">
+          <div class="hero-verif-label">Verification Status</div>
+          <div class="hero-verif-val" id="heroVerificationBadge">
+            <i class="ph-bold ph-check-circle"></i> Active & Approved
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS KPI STATS CARDS -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>Total Assigned</h4>
+          <div class="kpi-number" id="kpi-total-trips">0</div>
+          <div class="kpi-subtext">Lifetime Dispatches</div>
+        </div>
+        <div class="kpi-icon-wrap kpi-icon-blue">
+          <i class="ph-bold ph-calendar-check"></i>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>Active / On Road</h4>
+          <div class="kpi-number" id="kpi-active-trips">0</div>
+          <div class="kpi-subtext">Accepted or In Progress</div>
+        </div>
+        <div class="kpi-icon-wrap kpi-icon-amber">
+          <i class="ph-bold ph-steering-wheel"></i>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>Completed Journeys</h4>
+          <div class="kpi-number" id="kpi-completed-trips">0</div>
+          <div class="kpi-subtext">Invoices Generated</div>
+        </div>
+        <div class="kpi-icon-wrap kpi-icon-green">
+          <i class="ph-bold ph-flag-checkered"></i>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>Total Fare Handled</h4>
+          <div class="kpi-number" id="kpi-total-earnings">₹0</div>
+          <div class="kpi-subtext" id="kpi-earnings-sub">Collected vs Settled</div>
+        </div>
+        <div class="kpi-icon-wrap kpi-icon-orange">
+          <i class="ph-bold ph-wallet"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL TOOLBAR WITH SEGMENTED TABS & SEARCH -->
+    <section class="panel-header-toolbar">
+      <div class="segmented-tabs">
+        <button class="tab-btn active" id="tab-all-btn" onclick="switchFilterTab('all')">
+          <i class="ph-bold ph-list-dashes"></i> All Trips
+          <span class="tab-count" id="badge-all-count">0</span>
+        </button>
+        <button class="tab-btn" id="tab-action-btn" onclick="switchFilterTab('action')">
+          <i class="ph-bold ph-bell-ringing"></i> Action Needed
+          <span class="tab-count" id="badge-action-count">0</span>
+        </button>
+        <button class="tab-btn" id="tab-active-btn" onclick="switchFilterTab('active')">
+          <i class="ph-bold ph-navigation-arrow"></i> In Progress
+          <span class="tab-count" id="badge-active-count">0</span>
+        </button>
+        <button class="tab-btn" id="tab-completed-btn" onclick="switchFilterTab('completed')">
+          <i class="ph-bold ph-check-circle"></i> Completed
+          <span class="tab-count" id="badge-completed-count">0</span>
+        </button>
+      </div>
+
+      <div class="search-filter-box">
+        <i class="ph-bold ph-magnifying-glass search-icon-pos"></i>
+        <input type="text" id="tripSearchInput" class="search-input" placeholder="Search by Client, City, or ID..." oninput="handleTripSearch()">
+      </div>
+    </section>
+
+    <!-- TRIP CARDS LIST -->
+    <section class="trip-cards-container" id="tripCardsList">
+      <div class="empty-trips-box">
+        <i class="ph-bold ph-spinner ph-spin"></i>
+        <h3>Synchronizing Dispatched Trips...</h3>
+        <p>Connecting to RhinoVoyage operations dispatch system.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       MODAL: COMPLETE JOURNEY & GENERATE INVOICE
+       ========================================================================== -->
+  <div class="modal-backdrop" id="completeTripModal" onclick="if(event.target===this) closeCompleteTripModal();">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3><i class="ph-bold ph-flag-checkered"></i> Complete Journey & Invoice</h3>
+        <button class="modal-close-btn" onclick="closeCompleteTripModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); submitCompleteTripForm();">
+        <div class="modal-form-body">
+          <div class="modal-trip-summary" id="modalTripSummary">
+            Loading trip summary...
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group-driver">
+              <label>Extra Kilometers</label>
+              <input type="number" id="compExtraKm" min="0" value="0" class="form-ctrl" placeholder="0" oninput="recalcTripModalTotal()">
+            </div>
+            <div class="form-group-driver">
+              <label>Extra KM Rate (₹/km)</label>
+              <input type="number" id="compExtraKmRate" min="0" value="15" class="form-ctrl" placeholder="15" oninput="recalcTripModalTotal()">
+            </div>
+          </div>
+
+          <div class="form-group-driver">
+            <label>State Permits / Tolls / Parking Charges (₹)</label>
+            <input type="number" id="compTolls" min="0" value="0" class="form-ctrl" placeholder="0" oninput="recalcTripModalTotal()">
+          </div>
+
+          <div class="form-group-driver">
+            <label>Payment Collection Status</label>
+            <select id="compPayStatus" class="form-ctrl">
+              <option value="Paid">Payment Collected in Full (Cash / UPI to Driver)</option>
+              <option value="Pending Settlement">Payment Pending (Direct RhinoVoyage Online Billing)</option>
+            </select>
+          </div>
+
+          <div class="form-group-driver">
+            <label>Driver Journey Remarks (Optional)</label>
+            <textarea id="compNotes" rows="2" class="form-ctrl" placeholder="Journey completed safely. All luggage accounted for."></textarea>
+          </div>
+
+          <div class="modal-calc-banner">
+            <span class="modal-calc-label">Final Trip Total:</span>
+            <span class="modal-calc-val" id="compCalcTotal">₹0</span>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <button type="button" class="btn-action-secondary" onclick="closeCompleteTripModal()">Cancel</button>
+          <button type="submit" class="btn-action-complete" id="compSubmitBtn">
+            <i class="ph-bold ph-check"></i> Complete & Generate Invoice
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
-</div>
+  <!-- SCRIPT ENGINE -->
+  <script>
+    // 1. AUTHENTICATION GUARD
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
 
-<!-- FOOTER -->
-<footer>
-  <p>© 2026 RhinoVoyage. All rights reserved. | Private Driver Partner Dashboard Session</p>
-</footer>
-
-<script>
-  // Session check
-  const token = localStorage.getItem('token');
-  let user = JSON.parse(localStorage.getItem('user') || 'null');
-
-  if (!token || !user || user.role !== 'driver') {
-    localStorage.clear();
-    window.location.href = 'login.html';
-  }
-
-  // Populate static fields
-  function updateProfileUI(u) {
-    document.getElementById('nav-user-greeting').innerText = `Welcome, ${u.name.split(' ')[0]}`;
-    document.getElementById('prof-initial').innerText = u.name[0].toUpperCase();
-    document.getElementById('prof-name').innerText = u.name;
-    document.getElementById('prof-email').innerText = u.email;
-    document.getElementById('prof-phone').innerText = u.phone;
-    document.getElementById('prof-aadhar').innerText = u.aadhar || 'N/A';
-    document.getElementById('prof-license').innerText = u.license || 'N/A';
-
-    const banner = document.getElementById('statusBanner');
-    const status = u.verificationStatus || 'Pending';
-
-    if (status === 'Approved') {
-      banner.className = 'status-banner status-banner-approved';
-      banner.innerHTML = `
-        <div style="font-size: 1.2rem; margin-right: 5px;">✅</div>
-        <div>
-          <strong>Verification Status: Approved</strong><br>
-          Your account is fully verified! You are active and ready to receive trip bookings.
-        </div>
-      `;
-    } else if (status === 'Rejected') {
-      banner.className = 'status-banner status-banner-rejected';
-      banner.innerHTML = `
-        <div style="font-size: 1.2rem; margin-right: 5px;">❌</div>
-        <div>
-          <strong>Verification Status: Rejected</strong><br>
-          Your verification was not approved. Please verify your submitted details or contact administrator support.
-        </div>
-      `;
-    } else {
-      banner.className = 'status-banner status-banner-pending';
-      banner.innerHTML = `
-        <div style="font-size: 1.2rem; margin-right: 5px;">⏳</div>
-        <div>
-          <strong>Verification Status: Pending</strong><br>
-          Your driving license and documents are under review. You will receive an alert once your profile is verified.
-        </div>
-      `;
+    if (!token || !user) {
+      localStorage.clear();
+      window.location.href = 'login.html?tab=driver';
+    } else if (user.role === 'admin') {
+      window.location.href = 'admin-dashboard.html';
+    } else if (user.role === 'user') {
+      window.location.href = 'user-dashboard.html';
     }
-  }
 
-  // Fetch fresh profile state to capture live approval status
-  async function fetchFreshProfile() {
-    try {
-      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
-      const response = await fetch(`${apiBase}/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+    // State Variables
+    let allDriverTrips = [];
+    let currentFilterTab = 'all';
+    let activeCompleteTripId = null;
+    let activeTripBaseFare = 0;
+
+    const getApi = () => (typeof window.getRhinoApiUrl === 'function') 
+      ? window.getRhinoApiUrl() 
+      : (window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api');
+
+    // 2. PROFILE POPULATION
+    function populateDriverProfile(userData) {
+      const u = userData || user;
+      const firstName = (u.name || 'Partner').split(' ')[0];
+      const initial = (u.name ? u.name[0] : 'D').toUpperCase();
+
+      document.getElementById('navDriverAvatar').innerText = initial;
+      document.getElementById('navDriverName').innerText = u.name || 'Driver Partner';
+      document.getElementById('heroDriverGreeting').innerText = `Welcome Back, ${firstName}!`;
+      document.getElementById('heroDriverId').innerText = `ID: ${u.id || 'RV-DRV'}`;
+      document.getElementById('heroDriverPhone').innerText = `Phone: ${u.phone || 'N/A'}`;
+
+      const isApproved = (u.verificationStatus === 'Approved');
+      const verifBadge = document.getElementById('heroVerificationBadge');
+      const navStatus = document.getElementById('navDriverStatus');
+
+      if (isApproved) {
+        verifBadge.innerHTML = `<i class="ph-bold ph-shield-check"></i> Verified Partner (Active)`;
+        verifBadge.style.color = '#86EFAC';
+        navStatus.innerHTML = `<i class="ph-bold ph-shield-check"></i> Verified`;
+        navStatus.style.color = 'var(--emerald)';
+      } else {
+        verifBadge.innerHTML = `<i class="ph-bold ph-clock"></i> Verification Under Review`;
+        verifBadge.style.color = '#FDE68A';
+        navStatus.innerHTML = `<i class="ph-bold ph-clock"></i> Pending`;
+        navStatus.style.color = 'var(--amber)';
+      }
+    }
+
+    // 3. FETCH TRIPS FROM CLOUD API
+    async function fetchDriverTrips() {
+      const container = document.getElementById('tripCardsList');
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/my-bookings`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) {
+          localStorage.clear();
+          alert('Driver session expired. Please sign in again.');
+          window.location.href = 'login.html?tab=driver';
+          return;
+        }
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to retrieve dispatched trips.');
+        }
+
+        allDriverTrips = Array.isArray(data.bookings) ? data.bookings : [];
+        allDriverTrips.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+        updateKPIs();
+        renderTripsList();
+      } catch (err) {
+        container.innerHTML = `
+          <div class="empty-trips-box">
+            <i class="ph-bold ph-warning-circle" style="color: var(--rose);"></i>
+            <h3>Unable to Load Trips</h3>
+            <p>${err.message}</p>
+            <button onclick="fetchDriverTrips()" class="btn-action-primary" style="margin-top: 1rem;">
+              <i class="ph-bold ph-arrow-clockwise"></i> Retry Connecting
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // 4. METRIC KPIS CALCULATOR
+    function updateKPIs() {
+      const total = allDriverTrips.length;
+      const active = allDriverTrips.filter(t => ['Approved', 'Accepted', 'In Progress'].includes(t.status)).length;
+      const completed = allDriverTrips.filter(t => t.status === 'Completed').length;
+      
+      let totalFare = 0;
+      let cashCollected = 0;
+
+      allDriverTrips.forEach(t => {
+        if (t.status === 'Completed') {
+          const amt = Number(t.totalAmount || (t.invoice && t.invoice.totalAmount) || 0);
+          totalFare += amt;
+          const payStat = t.paymentStatus || (t.invoice && t.invoice.paymentStatus);
+          if (payStat === 'Paid') {
+            cashCollected += amt;
+          }
         }
       });
-      const data = await response.json();
-      if (response.ok && data.success) {
-        user = data.user;
-        localStorage.setItem('user', JSON.stringify(user));
-      }
-    } catch (err) {
-      console.error('Error verifying credentials with server:', err);
-    }
-    updateProfileUI(user);
-    return user;
-  }
 
-  // Fetch bookings
-  async function fetchMyBookings() {
-    const listContainer = document.getElementById('bookingsList');
-    
-    // Unverified/rejected check
-    if (user.verificationStatus !== 'Approved') {
-      listContainer.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state-icon">🔒</div>
-          <h3>Trips Locked</h3>
-          <p style="font-size:0.88rem; color:var(--text-muted);">Your account must be approved by the administrator before you can view and receive assigned trips.</p>
-        </div>
-      `;
-      return;
+      document.getElementById('kpi-total-trips').innerText = total;
+      document.getElementById('kpi-active-trips').innerText = active;
+      document.getElementById('kpi-completed-trips').innerText = completed;
+      document.getElementById('kpi-total-earnings').innerText = `₹${totalFare.toLocaleString('en-IN')}`;
+      document.getElementById('kpi-earnings-sub').innerText = `₹${cashCollected.toLocaleString('en-IN')} Cash / UPI Collected`;
+
+      // Update badge counts
+      document.getElementById('badge-all-count').innerText = total;
+      document.getElementById('badge-action-count').innerText = allDriverTrips.filter(t => t.status === 'Approved').length;
+      document.getElementById('badge-active-count').innerText = allDriverTrips.filter(t => ['Accepted', 'In Progress'].includes(t.status)).length;
+      document.getElementById('badge-completed-count').innerText = completed;
     }
 
-    try {
-      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
-      const response = await fetch(`${apiBase}/bookings/my-bookings`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+    // 5. RENDER TRIPS LIST
+    function renderTripsList() {
+      const container = document.getElementById('tripCardsList');
+      const searchTerm = (document.getElementById('tripSearchInput').value || '').toLowerCase().trim();
+
+      let filtered = allDriverTrips.filter(t => {
+        const matchesSearch = !searchTerm || 
+          (t.id && t.id.toLowerCase().includes(searchTerm)) ||
+          (t.name && t.name.toLowerCase().includes(searchTerm)) ||
+          (t.pickupLocation && t.pickupLocation.toLowerCase().includes(searchTerm)) ||
+          (t.dropLocation && t.dropLocation.toLowerCase().includes(searchTerm)) ||
+          (t.vehicle && t.vehicle.toLowerCase().includes(searchTerm));
+
+        if (!matchesSearch) return false;
+
+        if (currentFilterTab === 'action') {
+          return t.status === 'Approved';
+        } else if (currentFilterTab === 'active') {
+          return ['Accepted', 'In Progress'].includes(t.status);
+        } else if (currentFilterTab === 'completed') {
+          return t.status === 'Completed';
         }
+        return true;
       });
 
-      if (response.status === 401) {
-        localStorage.clear();
-        alert('Your driver session has expired. Please sign in again.');
-        window.location.href = 'login.html';
-        return;
-      }
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch assigned bookings.');
-      }
-
-      listContainer.innerHTML = '';
-
-      if (data.bookings.length === 0) {
-        listContainer.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">🛣️</div>
-            <h3>No Trips Assigned</h3>
-            <p style="font-size:0.88rem; color:var(--text-muted);">You do not have any assigned passenger trips at this time. Check back later!</p>
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-trips-box">
+            <i class="ph-bold ph-calendar-blank"></i>
+            <h3>No Dispatched Trips Found</h3>
+            <p>${searchTerm ? 'No trips match your search criteria.' : 'When the administrator assigns new trips to your profile, they will appear here in real time.'}</p>
           </div>
         `;
         return;
       }
 
-      // Sort bookings by pickupDate descending
-      data.bookings.sort((a, b) => new Date(b.pickupDate) - new Date(a.pickupDate));
+      container.innerHTML = '';
 
-      data.bookings.forEach(b => {
+      filtered.forEach(trip => {
         const card = document.createElement('div');
-        card.className = 'booking-card';
+        const st = trip.status || 'Approved';
 
-        const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
-        const formattedDate = new Date(b.pickupDate).toLocaleDateString('en-US', {
-          weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-        });
+        let borderClass = 'status-pending-border';
+        let statusBadgeClass = 'status-pending';
+        let statusLabel = 'New Dispatch';
 
-        const statusClass = b.status.toLowerCase();
-        
-        let actionBtn = '';
-        if (b.status === 'Approved') {
-          actionBtn = `
-            <button onclick="openCompleteTripModal('${b.id}', '${b.vehicle.replace(/'/g, "\\'")}', '${b.name.replace(/'/g, "\\'")}', '${b.pickupDate}')" style="margin-top: 8px; background: var(--green); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-family: 'Nunito', sans-serif;">
-              🏁 Complete Journey
+        if (st === 'Accepted') {
+          borderClass = 'status-active-border';
+          statusBadgeClass = 'status-accepted';
+          statusLabel = 'Trip Accepted';
+        } else if (st === 'In Progress') {
+          borderClass = 'status-active-border';
+          statusBadgeClass = 'status-inprogress';
+          statusLabel = 'On Road / In Progress';
+        } else if (st === 'Completed') {
+          borderClass = 'status-completed-border';
+          statusBadgeClass = 'status-completed';
+          statusLabel = 'Journey Completed';
+        } else if (st === 'Cancelled') {
+          borderClass = '';
+          statusBadgeClass = 'status-cancelled';
+          statusLabel = 'Cancelled';
+        }
+
+        card.className = `trip-dossier-card ${borderClass}`;
+
+        const isTour = (trip.serviceType === 'tour_package');
+        const serviceBadge = isTour 
+          ? `<span class="service-type-badge service-tour"><i class="ph-bold ph-map-trifold"></i> Tour Package</span>`
+          : `<span class="service-type-badge service-car"><i class="ph-bold ph-car-profile"></i> Car Rental</span>`;
+
+        const refDisplay = (trip.id || 'N/A').toUpperCase().substring(0, 8);
+        const pickupDateFormatted = trip.pickupDate ? new Date(trip.pickupDate).toLocaleDateString('en-US', {
+          weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+        }) : 'TBD';
+
+        const pickupTime = trip.pickupTime || 'Morning';
+        const rawPhone = trip.phone || '';
+        const cleanPhone = rawPhone.replace(/\D/g, '');
+        const waUrl = `https://wa.me/91${cleanPhone.slice(-10)}?text=${encodeURIComponent(`Hello ${trip.name || 'Traveler'}, this is your RhinoVoyage Driver Partner. I am assigned for your trip to ${trip.dropLocation || 'destination'}.`)}`;
+
+        // Calculations & Payment
+        const invoiceAmt = trip.totalAmount || (trip.invoice && trip.invoice.totalAmount);
+        const fareDisplay = invoiceAmt ? `₹${Number(invoiceAmt).toLocaleString('en-IN')}` : (trip.estimatedFare ? `₹${Number(trip.estimatedFare).toLocaleString('en-IN')}` : 'To Be Billed');
+        const isPaid = (trip.paymentStatus === 'Paid' || (trip.invoice && trip.invoice.paymentStatus === 'Paid'));
+        const payPill = isPaid 
+          ? `<span class="pay-status-pill pay-paid"><i class="ph-bold ph-check"></i> Paid in Full</span>`
+          : `<span class="pay-status-pill pay-pending"><i class="ph-bold ph-hourglass"></i> Payment Pending</span>`;
+
+        // Driver Action Buttons
+        let actionCluster = '';
+        if (st === 'Approved') {
+          actionCluster = `
+            <button class="btn-action-primary" onclick="acceptTrip('${trip.id}')">
+              <i class="ph-bold ph-check"></i> Accept Trip
+            </button>
+            <button class="btn-action-complete" onclick="openCompleteTripModal('${trip.id}')">
+              <i class="ph-bold ph-flag-checkered"></i> Complete & Invoice
             </button>
           `;
-        } else if (b.status === 'Completed' && b.invoice) {
-          actionBtn = `
-            <a href="invoice.html?id=${b.id}" target="_blank" style="margin-top: 8px; background: var(--orange); color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; font-family: 'Nunito', sans-serif;">
-              📄 View Tax Invoice
+        } else if (st === 'Accepted') {
+          actionCluster = `
+            <button class="btn-action-blue" onclick="startTrip('${trip.id}')">
+              <i class="ph-bold ph-navigation-arrow"></i> Start Journey
+            </button>
+            <button class="btn-action-complete" onclick="openCompleteTripModal('${trip.id}')">
+              <i class="ph-bold ph-flag-checkered"></i> Complete & Invoice
+            </button>
+          `;
+        } else if (st === 'In Progress') {
+          actionCluster = `
+            <button class="btn-action-complete" onclick="openCompleteTripModal('${trip.id}')">
+              <i class="ph-bold ph-flag-checkered"></i> Complete Journey & Generate Invoice
+            </button>
+          `;
+        } else if (st === 'Completed') {
+          actionCluster = `
+            <a href="invoice.html?id=${trip.id}" target="_blank" class="btn-action-secondary">
+              <i class="ph-bold ph-file-text"></i> View Official Invoice
             </a>
           `;
         }
 
         card.innerHTML = `
-          <div class="booking-main">
-            <h4>${b.vehicle}</h4>
-            <p>${serviceLabel} · ${b.details || 'No additional details'}</p>
+          <!-- Header -->
+          <div class="trip-card-header">
+            <div class="trip-ref-group">
+              <span class="trip-ref-id"><i class="ph-bold ph-hash"></i> ${refDisplay}</span>
+              ${serviceBadge}
+              <span class="status-badge ${statusBadgeClass}">${statusLabel}</span>
+            </div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-sub);">
+              <i class="ph-bold ph-clock"></i> Pickup: ${pickupDateFormatted} at ${pickupTime}
+            </div>
           </div>
-          <div class="booking-date">
-            <strong>Pickup Date</strong>
-            ${formattedDate}
+
+          <!-- Body Grid -->
+          <div class="trip-body-grid">
+            <!-- Col 1: Route Visualizer -->
+            <div class="route-visualizer-box">
+              <div class="route-point">
+                <div class="route-icon-circle pickup-icon-bg">
+                  <i class="ph-bold ph-map-pin"></i>
+                </div>
+                <div class="route-details-text">
+                  <div class="route-type-label">Pickup Location</div>
+                  <div class="route-address">${trip.pickupLocation || 'Guwahati Airport / Hotel'}</div>
+                  <div class="route-time-meta"><i class="ph-bold ph-calendar"></i> ${pickupDateFormatted} (${pickupTime})</div>
+                </div>
+              </div>
+
+              <div class="route-point">
+                <div class="route-icon-circle drop-icon-bg">
+                  <i class="ph-bold ph-flag"></i>
+                </div>
+                <div class="route-details-text">
+                  <div class="route-type-label">Destination / Drop</div>
+                  <div class="route-address">${trip.dropLocation || trip.packageName || 'Sivasagar / Kaziranga'}</div>
+                  ${trip.returnDate ? `<div class="route-time-meta"><i class="ph-bold ph-arrows-clockwise"></i> Return: ${trip.returnDate}</div>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <!-- Col 2: Customer & Vehicle Allocated -->
+            <div class="trip-entity-box">
+              <div class="entity-item">
+                <div class="entity-label">Passenger / Client</div>
+                <div class="entity-val-primary">
+                  <i class="ph-bold ph-user"></i> ${trip.name || 'Traveler'}
+                </div>
+                <div class="entity-val-secondary">
+                  ${trip.travelers ? `<i class="ph-bold ph-users"></i> ${trip.travelers} Travelers` : ''} 
+                  ${trip.details ? `· ${trip.details}` : ''}
+                </div>
+                
+                <div class="comm-buttons-group">
+                  ${cleanPhone ? `
+                    <a href="${waUrl}" target="_blank" class="btn-whatsapp-comm">
+                      <i class="ph-bold ph-whatsapp-logo"></i> WhatsApp
+                    </a>
+                    <a href="tel:${rawPhone}" class="btn-call-comm">
+                      <i class="ph-bold ph-phone"></i> Call
+                    </a>
+                  ` : '<span style="font-size:0.75rem; color:var(--text-muted);">No phone provided</span>'}
+                </div>
+              </div>
+
+              <div class="entity-item" style="border-top: 1px dashed var(--border-subtle); padding-top: 8px;">
+                <div class="entity-label">Assigned Vehicle</div>
+                <div class="entity-val-primary" style="font-size: 0.88rem;">
+                  <i class="ph-bold ph-car-profile"></i> ${trip.carModel || trip.vehicle || 'Standard Fleet Vehicle'}
+                </div>
+                ${trip.carNumber ? `<div class="entity-val-secondary" style="font-family: monospace; font-weight: 700;">Plate: ${trip.carNumber}</div>` : ''}
+              </div>
+            </div>
+
+            <!-- Col 3: Financial & Fare Overview -->
+            <div class="trip-fare-box">
+              <div>
+                <div class="entity-label" style="margin-bottom: 6px;">Trip Financials</div>
+                <div class="fare-line">
+                  <span>Base Package:</span>
+                  <span>${fareDisplay}</span>
+                </div>
+                ${trip.extraKmCharges ? `
+                  <div class="fare-line">
+                    <span>Extra KMs:</span>
+                    <span>+₹${Number(trip.extraKmCharges).toLocaleString('en-IN')}</span>
+                  </div>
+                ` : ''}
+                ${trip.tollCharges ? `
+                  <div class="fare-line">
+                    <span>Tolls/Permits:</span>
+                    <span>+₹${Number(trip.tollCharges).toLocaleString('en-IN')}</span>
+                  </div>
+                ` : ''}
+              </div>
+
+              <div>
+                <div class="fare-total-line">
+                  <span style="font-size: 0.82rem; font-weight: 700;">Fare Total:</span>
+                  <span class="fare-total-val">${fareDisplay}</span>
+                </div>
+                ${payPill}
+              </div>
+            </div>
           </div>
-          <div class="booking-customer">
-            <strong>Passenger Details</strong>
-            ${b.name}<br>
-            <span style="font-size: 0.8rem; color: var(--orange-dark); font-weight: bold;">${b.phone}</span>
-          </div>
-          <div>
-            <div class="badge badge-${statusClass}">${b.status}</div>
-            ${actionBtn}
+
+          <!-- Footer Actions -->
+          <div class="trip-card-footer">
+            <div class="trip-created-meta">
+              <i class="ph-bold ph-calendar-plus"></i> Dispatched on ${new Date(trip.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </div>
+            <div class="driver-actions-cluster">
+              ${actionCluster}
+            </div>
           </div>
         `;
-        listContainer.appendChild(card);
-      });
 
-    } catch (err) {
-      listContainer.innerHTML = `
-        <div style="text-align:center; padding: 2rem; color: var(--orange-dark); font-weight: 700;">
-          Error loading assigned bookings: ${err.message}
-        </div>
+        container.appendChild(card);
+      });
+    }
+
+    // 6. DRIVER TRIP ACTIONS (ACCEPT & START)
+    async function acceptTrip(bookingId) {
+      if (!confirm('Accept this trip dispatch and confirm assignment?')) return;
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${bookingId}/driver-status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: 'Accepted' })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to accept trip.');
+
+        alert('Trip Accepted! You can now coordinate with the customer. 🚗');
+        fetchDriverTrips();
+      } catch (err) {
+        alert(`Error accepting trip: ${err.message}`);
+      }
+    }
+
+    async function startTrip(bookingId) {
+      if (!confirm('Start journey? Customer will be notified that the trip is in progress.')) return;
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${bookingId}/driver-status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: 'In Progress' })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to start trip.');
+
+        alert('Journey Started! Drive safe and follow Northeast travel guidelines. 🛣️');
+        fetchDriverTrips();
+      } catch (err) {
+        alert(`Error starting trip: ${err.message}`);
+      }
+    }
+
+    // 7. COMPLETE TRIP MODAL & INVOICE GENERATION
+    function openCompleteTripModal(bookingId) {
+      const trip = allDriverTrips.find(t => t.id === bookingId);
+      if (!trip) return;
+
+      activeCompleteTripId = bookingId;
+      activeTripBaseFare = Number(trip.totalAmount || trip.estimatedFare || 2500);
+
+      document.getElementById('modalTripSummary').innerHTML = `
+        <strong>Trip #${(trip.id || '').toUpperCase().substring(0, 8)}</strong> — ${trip.name || 'Client'}<br>
+        📍 <strong>Route:</strong> ${trip.pickupLocation || 'Pickup'} ➔ ${trip.dropLocation || trip.packageName || 'Destination'}<br>
+        🚗 <strong>Vehicle:</strong> ${trip.carModel || trip.vehicle || 'Assigned Vehicle'}
       `;
+
+      document.getElementById('compExtraKm').value = 0;
+      document.getElementById('compTolls').value = 0;
+      document.getElementById('compNotes').value = '';
+      recalcTripModalTotal();
+
+      document.getElementById('completeTripModal').classList.add('open');
     }
-  }
 
-
-
-  // Complete Trip Modal Functions
-  let activeCompleteBookingId = null;
-
-  function openCompleteTripModal(bookingId, vehicle, name, pickupDate) {
-    activeCompleteBookingId = bookingId;
-    document.getElementById('modalTripDetails').innerText = `${vehicle} with passenger ${name} (${pickupDate})`;
-    document.getElementById('completeTripModal').style.display = 'flex';
-  }
-
-  function closeCompleteTripModal() {
-    activeCompleteBookingId = null;
-    document.getElementById('completeTripModal').style.display = 'none';
-  }
-
-  async function handleCompleteTripSubmit(e) {
-    e.preventDefault();
-    if (!activeCompleteBookingId) return;
-
-    const extraKms = document.getElementById('compExtraKm').value || 0;
-    const tollCharges = document.getElementById('compTolls').value || 0;
-    const paymentStatus = document.getElementById('compPayStatus').value || 'Paid';
-    const notes = document.getElementById('compNotes').value || '';
-
-    try {
-      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
-      const response = await fetch(`${apiBase}/bookings/${activeCompleteBookingId}/complete`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          extraKms,
-          tollCharges,
-          paymentStatus,
-          notes
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to complete trip.');
-
-      alert('Trip marked as Completed! Invoice generated successfully. 🎉');
-      closeCompleteTripModal();
-      fetchMyBookings();
-    } catch (err) {
-      alert(`Error completing trip: ${err.message}`);
+    function closeCompleteTripModal() {
+      document.getElementById('completeTripModal').classList.remove('open');
+      activeCompleteTripId = null;
     }
-  }
 
-  function handleLogout() {
-    localStorage.clear();
-    window.location.href = 'login.html';
-  }
+    function recalcTripModalTotal() {
+      const extraKm = Number(document.getElementById('compExtraKm').value || 0);
+      const kmRate = Number(document.getElementById('compExtraKmRate').value || 15);
+      const tolls = Number(document.getElementById('compTolls').value || 0);
 
-  // Initial dashboard load pipeline
-  (async () => {
-    await fetchFreshProfile();
-    await fetchMyBookings();
-  })();
-</script>
+      const extraKmCost = extraKm * kmRate;
+      const total = activeTripBaseFare + extraKmCost + tolls;
 
-<!-- COMPLETE TRIP MODAL -->
-<div id="completeTripModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
-  <div style="background: white; border-radius: 16px; width: 100%; max-width: 480px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--green-dark);">🏁 Complete Journey</h3>
-      <button onclick="closeCompleteTripModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted);">&times;</button>
-    </div>
-    
-    <p id="modalTripDetails" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; background: var(--cream); padding: 8px 12px; border-radius: 6px;"></p>
+      document.getElementById('compCalcTotal').innerText = `₹${total.toLocaleString('en-IN')}`;
+    }
 
-    <form onsubmit="handleCompleteTripSubmit(event)">
-      <div style="margin-bottom: 1rem;">
-        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Extra Distance Traveled (KM above package)</label>
-        <input type="number" id="compExtraKm" min="0" placeholder="0" style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Nunito', sans-serif;">
-      </div>
+    async function submitCompleteTripForm() {
+      if (!activeCompleteTripId) return;
 
-      <div style="margin-bottom: 1rem;">
-        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">State Entry Permits / Tolls / Parking (₹)</label>
-        <input type="number" id="compTolls" min="0" placeholder="0" style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Nunito', sans-serif;">
-      </div>
+      const extraKms = Number(document.getElementById('compExtraKm').value || 0);
+      const kmRate = Number(document.getElementById('compExtraKmRate').value || 15);
+      const tollCharges = Number(document.getElementById('compTolls').value || 0);
+      const paymentStatus = document.getElementById('compPayStatus').value;
+      const notes = document.getElementById('compNotes').value;
+      const extraKmCharges = extraKms * kmRate;
 
-      <div style="margin-bottom: 1rem;">
-        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Payment Collection Status</label>
-        <select id="compPayStatus" style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Nunito', sans-serif;">
-          <option value="Paid">Payment Collected (Paid in Full)</option>
-          <option value="Unpaid">Payment Pending (To RhinoVoyage Online)</option>
-        </select>
-      </div>
+      const submitBtn = document.getElementById('compSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Generating Invoice...';
 
-      <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">Driver Completion Note (Optional)</label>
-        <textarea id="compNotes" rows="2" placeholder="Journey completed smoothly..." style="width: 100%; padding: 0.6rem; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Nunito', sans-serif; resize: vertical;"></textarea>
-      </div>
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/bookings/${activeCompleteTripId}/complete`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            extraKms,
+            extraKmCharges,
+            tollCharges,
+            paymentStatus,
+            notes
+          })
+        });
 
-      <div style="display: flex; gap: 10px; justify-content: flex-end;">
-        <button type="button" onclick="closeCompleteTripModal()" style="background: var(--cream); border: 1px solid var(--cream-dark); padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 700; cursor: pointer;">Cancel</button>
-        <button type="submit" style="background: var(--green); color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer;">Complete & Generate Invoice</button>
-      </div>
-    </form>
-  </div>
-</div>
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to complete journey.');
 
+        alert('Journey marked as Completed and Official Invoice generated! 🎉');
+        closeCompleteTripModal();
+        fetchDriverTrips();
+      } catch (err) {
+        alert(`Error completing trip: ${err.message}`);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="ph-bold ph-check"></i> Complete & Generate Invoice';
+      }
+    }
+
+    // 8. FILTER TABS & SEARCH CONTROLS
+    function switchFilterTab(tabName) {
+      currentFilterTab = tabName;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`tab-${tabName}-btn`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderTripsList();
+    }
+
+    function handleTripSearch() {
+      renderTripsList();
+    }
+
+    function handleDriverLogout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+
+    // 9. INITIAL LIFECYCLE
+    (async () => {
+      populateDriverProfile();
+      await fetchDriverTrips();
+    })();
+  </script>
 </body>
 </html>

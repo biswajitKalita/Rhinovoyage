@@ -231,6 +231,51 @@ function createInvoiceObject(booking, custom = {}) {
   };
 }
 
+// @desc    Driver update trip status (e.g. Accept, Start)
+// @route   PUT /api/bookings/:id/driver-status
+// @access  Private (Assigned Driver or Admin)
+exports.driverUpdateTripStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowed = ['Accepted', 'In Progress', 'Completed'];
+    if (!status || !allowed.includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid trip status update.' });
+    }
+
+    const booking = await db.findOne('bookings', { id });
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found.' });
+    }
+
+    if (req.user.role !== 'admin' && (req.user.role !== 'driver' || booking.driverId !== req.user.id)) {
+      return res.status(403).json({ success: false, message: 'Unauthorized: You are not assigned to this trip.' });
+    }
+
+    const updateFields = { status };
+    if (status === 'Accepted') {
+      updateFields.driverAcceptedAt = new Date().toISOString();
+    } else if (status === 'In Progress') {
+      updateFields.tripStartedAt = new Date().toISOString();
+    }
+
+    await db.update('bookings', { id }, updateFields);
+    const updatedBooking = { ...booking, ...updateFields };
+
+    syncBooking(updatedBooking, `driver_${status.toLowerCase().replace(/\s+/g, '_')}`).catch(err => console.error('Driver status sync error:', err));
+
+    res.status(200).json({
+      success: true,
+      message: `Trip status updated to ${status} successfully.`,
+      booking: updatedBooking
+    });
+  } catch (error) {
+    console.error('Driver update trip status error:', error);
+    res.status(500).json({ success: false, message: 'Server error updating trip status.' });
+  }
+};
+
 // @desc    Complete Booking Journey & Generate Invoice
 // @route   PUT /api/bookings/:id/complete
 // @access  Private (Admin or Assigned Driver)
