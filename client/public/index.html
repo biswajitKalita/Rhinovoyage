@@ -798,6 +798,10 @@
             <label for="phone">Phone Number</label>
             <input type="tel" id="phone" required placeholder="Enter WhatsApp number">
           </div>
+          <div class="form-group">
+            <label for="booking_email">Email Address</label>
+            <input type="email" id="booking_email" required placeholder="your.email@example.com">
+          </div>
         </div>
 
         <div class="form-row">
@@ -1588,8 +1592,10 @@
     if (navUser) {
       const nameInput = document.getElementById('name');
       const phoneInput = document.getElementById('phone');
-      if (nameInput) nameInput.value = navUser.name;
-      if (phoneInput) phoneInput.value = navUser.phone;
+      const emailInput = document.getElementById('booking_email');
+      if (nameInput && navUser.name) nameInput.value = navUser.name;
+      if (phoneInput && navUser.phone) phoneInput.value = navUser.phone;
+      if (emailInput && navUser.email) emailInput.value = navUser.email;
     } else {
       // Show login banner but keep submit button enabled so guests can trigger authentication modal
       const banner = document.getElementById('booking-login-banner');
@@ -1796,6 +1802,16 @@
       // Client-side validation: ensure required booking fields are filled
       if (!name) return showToastFeedback('Please enter your full name.', true, 'name');
       if (!phone) return showToastFeedback('Please enter your WhatsApp phone number.', true, 'phone');
+      
+      const emailInput = document.getElementById('booking_email');
+      let email = emailInput ? emailInput.value.trim() : '';
+      if (!email) {
+        try {
+          const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+          if (storedUser && storedUser.email) email = storedUser.email;
+        } catch (e) {}
+      }
+      if (!email) return showToastFeedback('Please enter your email address for trip updates.', true, 'booking_email');
       if (!pickupDate) return showToastFeedback('Please select your trip pickup date.', true, 'pickup_date');
       if (!vehicle) return showToastFeedback('Please select a preferred vehicle.', true, 'vehicle_select');
 
@@ -1833,6 +1849,7 @@
         serviceType,
         name,
         phone,
+        email,
         pickupDate,
         vehicle,
         pickupLocation,

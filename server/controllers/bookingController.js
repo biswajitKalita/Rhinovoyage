@@ -65,7 +65,7 @@ exports.createBooking = async (req, res) => {
       pickupTime: pickupTime || '',
       travelers: travelers || '',
       packageName: packageName || '',
-      userEmail: req.user ? req.user.email : (email || ''),
+      userEmail: (email || (req.user ? req.user.email : '') || '').toLowerCase().trim(),
       details: details || '',
       paymentMethod,
       status: 'Pending',
