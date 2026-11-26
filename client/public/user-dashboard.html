@@ -255,43 +255,6 @@
     font-family: 'Playfair Display', serif;
   }
 
-  /* Alerts / Notifications */
-  .notification-card {
-    background: var(--white);
-    border: 1px solid var(--orange-light);
-    border-left: 4px solid var(--orange);
-    border-radius: 8px;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
-  .notification-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .notification-content i {
-    color: var(--orange);
-    font-size: 1.25rem;
-  }
-  .notification-message {
-    font-size: 0.95rem;
-    color: var(--text-dark);
-    font-weight: 600;
-  }
-  .btn-dismiss {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.85rem;
-  }
-  .btn-dismiss:hover { color: var(--text-dark); }
 
   /* Bookings Header */
   .section-header {
@@ -678,10 +641,6 @@
       </div>
     </div>
 
-    <!-- Notifications -->
-    <div id="notificationsSection" style="display: none;">
-      <div id="notificationsList"></div>
-    </div>
 
     <div class="section-header">
       <h2>My Bookings</h2>
@@ -859,51 +818,8 @@
     }
   }
 
-  async function fetchNotifications() {
-    try {
-      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
-      const response = await fetch(`${apiBase}/notifications`, { headers: { 'Authorization': `Bearer ${token}` } });
-      const data = await response.json();
-      if (!response.ok) return;
-      
-      const unread = data.notifications.filter(n => !n.read);
-      const section = document.getElementById('notificationsSection');
-      const list = document.getElementById('notificationsList');
-      
-      if (unread.length === 0) return;
-      section.style.display = 'block';
-      
-      unread.forEach(n => {
-        const card = document.createElement('div');
-        card.className = 'notification-card';
-        card.innerHTML = `
-          <div class="notification-content">
-            <i class="ph ph-bell-ringing"></i>
-            <span class="notification-message">${n.message}</span>
-          </div>
-          <button class="btn-dismiss" onclick="dismissNotification('${n.id}')">Dismiss</button>
-        `;
-        list.appendChild(card);
-      });
-    } catch(e) {}
-  }
-
-  async function dismissNotification(id) {
-    try {
-      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
-      await fetch(`${apiBase}/notifications/${id}/read`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
-      location.reload();
-    } catch(e) {}
-  }
-
-  function handleLogout() {
-    localStorage.clear();
-    window.location.href = 'login.html';
-  }
-
   if (token && user) {
     fetchMyBookings();
-    fetchNotifications();
   }
 </script>
 </body>

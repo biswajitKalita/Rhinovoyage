@@ -168,33 +168,6 @@ exports.updateBookingStatus = async (req, res) => {
     // Sync booking status update to Google Sheet
     syncBooking(updatedBooking, 'update_status').catch(err => console.error('Booking status update sheet sync error:', err));
 
-    // Create notification if the booking belongs to an active user account
-    if (exists.userId && exists.userId !== 'guest') {
-      let notifyMessage = '';
-      const dateStr = new Date(exists.pickupDate).toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric'
-      });
-
-      if (status === 'Approved') {
-        notifyMessage = `Your trip request for ${exists.vehicle} on ${dateStr} has been confirmed! 🎉`;
-      } else if (status === 'Completed') {
-        const amt = updatedBooking.totalAmount ? `₹${Number(updatedBooking.totalAmount).toLocaleString('en-IN')}` : 'available';
-        notifyMessage = `Your journey for ${exists.vehicle} on ${dateStr} is completed! 🎉 Your invoice for ${amt} is ready to view and download. 🧾`;
-      } else if (status === 'Cancelled') {
-        notifyMessage = `Your trip request for ${exists.vehicle} on ${dateStr} has been cancelled. Please contact support. ⚠️`;
-      }
-
-      if (notifyMessage) {
-        await db.insert('notifications', {
-          userId: exists.userId,
-          message: notifyMessage,
-          read: false,
-          bookingId: id,
-          type: status === 'Completed' ? 'invoice' : 'status'
-        });
-      }
-    }
-
     res.status(200).json({
       success: true,
       message: `Booking status updated to ${status} successfully.`,
@@ -291,20 +264,6 @@ exports.completeBooking = async (req, res) => {
 
     // Sync to Google Sheet
     syncBooking(updatedBooking, 'complete_journey').catch(err => console.error('Complete booking sheet sync error:', err));
-
-    // Send notification to customer
-    if (booking.userId && booking.userId !== 'guest') {
-      const dateStr = new Date(booking.pickupDate).toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric'
-      });
-      await db.insert('notifications', {
-        userId: booking.userId,
-        message: `Your journey with ${booking.vehicle} on ${dateStr} is completed! 🎉 Invoice #${invoiceData.invoiceNumber} for ₹${invoiceData.totalAmount.toLocaleString('en-IN')} is ready. 🧾`,
-        read: false,
-        bookingId: id,
-        type: 'invoice'
-      });
-    }
 
     // If completed by driver, notify admin / driver confirmation
     res.status(200).json({
@@ -467,18 +426,6 @@ exports.assignDriver = async (req, res) => {
 
     // Sync booking status/assignment update to Google Sheet
     syncBooking(updatedBooking, 'assign_driver').catch(err => console.error('Booking driver update sheet sync error:', err));
-
-    // Create notification for the driver if one was assigned
-    if (driverId) {
-      const dateStr = new Date(booking.pickupDate).toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric'
-      });
-      await db.insert('notifications', {
-        userId: driverId,
-        message: `New trip assigned to you for ${booking.vehicle} on ${dateStr}. 🚗`,
-        read: false
-      });
-    }
 
     res.status(200).json({
       success: true,

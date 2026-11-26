@@ -407,15 +407,6 @@
       </div>
     </div>
 
-    <!-- Alerts / Notifications -->
-    <div id="notificationsSection" style="margin-bottom: 2rem; display: none;">
-      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem; color: var(--orange-dark); display: flex; align-items: center; gap: 8px;">
-        🔔 Alerts & Updates
-      </h3>
-      <div id="notificationsList" style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <!-- Alerts render dynamically -->
-      </div>
-    </div>
 
     <div class="panel-header">
       <h2 class="panel-title">Assigned Trips</h2>
@@ -610,72 +601,7 @@
     }
   }
 
-  // Fetch Notifications
-  async function fetchNotifications() {
-    const section = document.getElementById('notificationsSection');
-    const list = document.getElementById('notificationsList');
-    
-    try {
-      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
-      const response = await fetch(`${apiBase}/notifications`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await response.json();
-      
-      if (!response.ok) throw new Error(data.message || 'Failed to fetch notifications.');
-      
-      const unreadNotifications = data.notifications.filter(n => !n.read);
-      
-      if (unreadNotifications.length === 0) {
-        section.style.display = 'none';
-        return;
-      }
-      
-      section.style.display = 'block';
-      list.innerHTML = '';
-      
-      unreadNotifications.forEach(n => {
-        const card = document.createElement('div');
-        card.style.background = 'var(--orange-pale)';
-        card.style.border = '1px solid var(--orange-light)';
-        card.style.borderRadius = '12px';
-        card.style.padding = '0.9rem 1.25rem';
-        card.style.display = 'flex';
-        card.style.justifyContent = 'space-between';
-        card.style.alignItems = 'center';
-        card.style.gap = '1rem';
-        card.style.boxShadow = '0 2px 10px rgba(232, 101, 26, 0.04)';
-        
-        card.innerHTML = `
-          <p style="font-size: 0.88rem; color: var(--text-dark); font-weight: 600; line-height: 1.5;">${n.message}</p>
-          <button onclick="dismissNotification('${n.id}')" style="background: none; border: none; color: var(--orange-dark); font-weight: 700; cursor: pointer; font-size: 0.8rem; font-family: 'Nunito', sans-serif; white-space: nowrap; padding: 4px 8px; border-radius: 4px;">
-            Dismiss
-          </button>
-        `;
-        list.appendChild(card);
-      });
-    } catch (err) {
-      console.error('Error fetching notifications:', err);
-    }
-  }
 
-  async function dismissNotification(id) {
-    try {
-      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
-      const response = await fetch(`${apiBase}/notifications/${id}/read`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        fetchNotifications();
-      }
-    } catch (err) {
-      console.error('Error dismissing notification:', err);
-    }
-  }
 
   // Complete Trip Modal Functions
   let activeCompleteBookingId = null;
@@ -736,7 +662,6 @@
   (async () => {
     await fetchFreshProfile();
     await fetchMyBookings();
-    await fetchNotifications();
   })();
 </script>
 
