@@ -1325,7 +1325,7 @@
 
     if (!token || !user) {
       localStorage.clear();
-      window.location.href = 'login.html?tab=driver';
+      window.location.href = 'driver-login.html';
     } else if (user.role === 'admin') {
       window.location.href = 'admin-dashboard.html';
     } else if (user.role === 'user') {
@@ -1383,7 +1383,7 @@
         if (response.status === 401) {
           localStorage.clear();
           alert('Driver session expired. Please sign in again.');
-          window.location.href = 'login.html?tab=driver';
+          window.location.href = 'driver-login.html';
           return;
         }
 
@@ -1832,7 +1832,7 @@
 
     function handleDriverLogout() {
       localStorage.clear();
-      window.location.href = 'index.html';
+      window.location.href = 'driver-login.html';
     }
 
     // 9. INITIAL LIFECYCLE
