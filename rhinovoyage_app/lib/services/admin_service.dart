@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'api_config.dart';
 
 class AdminService {
-  static const String baseUrl = 'http://localhost:5000/api';
+  static const String baseUrl = ApiConfig.baseUrl;
 
   static Future<Map<String, String>> _getHeaders() async {
     final prefs = await SharedPreferences.getInstance();

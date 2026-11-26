@@ -490,10 +490,10 @@
         <thead>
           <tr>
             <th>Client Info</th>
-            <th>Service Details</th>
-            <th>Pickup Date</th>
-            <th>Method</th>
-            <th>Status</th>
+            <th>Service & Route</th>
+            <th>Trip Date</th>
+            <th>Status & Assignment</th>
+            <th>Amount & Method</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -623,10 +623,10 @@
         throw new Error(data.message || 'Failed to fetch bookings.');
       }
 
-      allBookings = data.bookings;
+      allBookings = Array.isArray(data.bookings) ? data.bookings : [];
       
-      // Sort bookings by creation date descending
-      allBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      // Sort bookings by creation date descending safely
+      allBookings.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
       
       updateMetrics();
       renderBookings(allBookings);
@@ -660,7 +660,7 @@
     const tbody = document.getElementById('bookingsTableBody');
     tbody.innerHTML = '';
 
-    if (bookingsList.length === 0) {
+    if (!bookingsList || bookingsList.length === 0) {
       tbody.innerHTML = `
         <tr>
           <td colspan="6" class="empty-row">No bookings match the filters.</td>
@@ -670,104 +670,171 @@
     }
 
     bookingsList.forEach(b => {
-      const tr = document.createElement('tr');
+      try {
+        const tr = document.createElement('tr');
 
-      const clientInfo = `
-        <div class="td-bold">${b.name}</div>
-        <div class="td-sub">${b.phone}</div>
-      `;
+        // Safe client info
+        const clientName = b.name || 'Guest User';
+        const clientPhone = b.phone || 'N/A';
+        const cleanPhone = clientPhone.replace(/\D/g, '');
+        const waLink = cleanPhone ? `https://wa.me/${cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone}?text=${encodeURIComponent('Hello ' + clientName + ', regarding your RhinoVoyage booking #' + (b.id || ''))}` : '';
+        const waBtn = waLink ? `<a href="${waLink}" target="_blank" title="Chat on WhatsApp" style="display:inline-flex; align-items:center; gap:2px; color:#25D366; text-decoration:none; font-weight:700; font-size:0.75rem; margin-left:4px;">💬 WhatsApp</a>` : '';
 
-      const serviceLabel = b.serviceType === 'car_rental' ? 'Car Rental' : b.serviceType === 'tour_package' ? 'Tour Package' : 'Custom Tour';
-      const invAmount = b.totalAmount || (b.invoice && b.invoice.totalAmount);
-      const invDisplay = invAmount ? `<span style="display:inline-block; margin-top:2px; font-weight:700; color:var(--green-mid); font-size:0.8rem;">₹${Number(invAmount).toLocaleString('en-IN')}</span>` : '';
-
-      const serviceDetails = `
-        <div class="td-bold">${b.vehicle}</div>
-        <div class="td-sub">${serviceLabel} · ${b.details || 'No spec requirements'}</div>
-        ${invDisplay}
-      `;
-
-      const pickupDate = new Date(b.pickupDate).toLocaleDateString('en-US', {
-        year: 'numeric', month: 'short', day: 'numeric'
-      });
-
-      const statusClass = b.status.toLowerCase();
-      const statusBadge = `<div class="badge badge-${statusClass}">${b.status}</div>`;
-
-      // Get verified drivers dropdown options
-      const approvedDrivers = allDrivers.filter(d => d.verificationStatus === 'Approved');
-      let approvedDriversOptions = `<option value="">-- Unassigned --</option>`;
-      approvedDrivers.forEach(d => {
-        const isSelected = b.driverId === d.id ? 'selected' : '';
-        approvedDriversOptions += `<option value="${d.id}" ${isSelected}>${d.name}</option>`;
-      });
-
-      const selectDisabled = (b.status === 'Cancelled' || b.status === 'Completed') ? 'disabled' : '';
-      const driverSelector = `
-        <div style="margin-top: 8px; display: flex; align-items: center; gap: 6px;">
-          <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Driver:</span>
-          <select class="filter-select" style="padding: 2px 6px; font-size: 0.78rem; border-radius: 4px; background: var(--cream);" ${selectDisabled} onchange="assignDriverToBooking('${b.id}', this.value)">
-            ${approvedDriversOptions}
-          </select>
-        </div>
-      `;
-
-      // Get booking's matching car category and filter cars
-      const targetCategory = getCarCategoryForVehicle(b.vehicle);
-      const matchingCars = allCars.filter(c => c.category === targetCategory);
-      let carOptions = `<option value="">-- No Car Assigned --</option>`;
-      matchingCars.forEach(c => {
-        const isSelected = b.carId === c.id ? 'selected' : '';
-        carOptions += `<option value="${c.id}" ${isSelected}>${c.modelName} (${c.plateNumber})</option>`;
-      });
-
-      const carSelector = `
-        <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px;">
-          <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Car (${targetCategory}):</span>
-          <select class="filter-select" style="padding: 2px 6px; font-size: 0.78rem; border-radius: 4px; background: var(--cream);" ${selectDisabled} onchange="assignCarToBooking('${b.id}', this.value)">
-            ${carOptions}
-          </select>
-        </div>
-      `;
-
-      // Define action buttons depending on current status
-      let actionButtons = '';
-      if (b.status === 'Pending') {
-        actionButtons = `
-          <button class="btn-action btn-approve" onclick="updateStatus('${b.id}', 'Approved')">Approve</button>
-          <button class="btn-action btn-cancel" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>
+        const clientInfo = `
+          <div class="td-bold">${clientName}</div>
+          <div class="td-sub" style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin-top:2px;">
+            <span>📞 ${clientPhone}</span>
+            ${waBtn}
+          </div>
+          <div style="font-size:0.68rem; color:var(--text-muted); font-family:monospace; margin-top:3px;">REF: #${b.id || 'N/A'}</div>
         `;
-      } else if (b.status === 'Approved') {
-        actionButtons = `
-          <button class="btn-action" onclick="openAdminCompleteModal('${b.id}')" style="background: #1B4332; color: white; border: 1px solid #1B4332;">Complete</button>
-          <button class="btn-action btn-cancel" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>
+
+        // Safe Service & Route
+        const serviceType = b.serviceType || 'car_rental';
+        const serviceLabel = serviceType === 'car_rental' ? 'Car Rental' : serviceType === 'tour_package' ? 'Tour Package' : (serviceType === 'both' ? 'Custom Tour' : 'Trip Booking');
+        const servicePill = `<span style="display:inline-block; font-size:0.65rem; font-weight:700; text-transform:uppercase; padding:2px 6px; border-radius:4px; background:#F0E8D8; color:#1B4332; margin-bottom:4px;">${serviceLabel}</span>`;
+
+        let pickupLoc = b.pickupLocation || '';
+        let dropLoc = b.dropLocation || '';
+        if (!pickupLoc || !dropLoc) {
+          const m = (b.details || '').match(/Route:\s*(?:From\s*\[(.*?)\]\s*To\s*\[(.*?)\]|From\s*(.*?)\s*To\s*(.*?)(?:\.|$))/i);
+          if (m) {
+            if (!pickupLoc) pickupLoc = (m[1] || m[3] || '').trim();
+            if (!dropLoc) dropLoc = (m[2] || m[4] || '').trim();
+          }
+        }
+
+        let routeDisplay = '';
+        if (pickupLoc || dropLoc) {
+          routeDisplay = `
+            <div style="margin-top:4px; font-size:0.75rem; display:flex; flex-direction:column; gap:2px; background:rgba(27,67,50,0.04); padding:4px 8px; border-radius:6px; border-left:2px solid var(--green);">
+              <span style="color:#1B4332; font-weight:600;">📍 From: ${pickupLoc || 'Pickup Location'}</span>
+              <span style="color:#C4511A; font-weight:600;">🏁 To: ${dropLoc || 'Destination'}</span>
+            </div>
+          `;
+        } else if (b.details) {
+          routeDisplay = `<div class="td-sub" style="margin-top:4px; font-size:0.75rem; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${b.details}">${b.details}</div>`;
+        }
+
+        const packageBadge = b.packageName ? `<div style="font-size:0.72rem; color:var(--text-mid); font-weight:600; margin-top:2px;">📦 ${b.packageName}</div>` : '';
+
+        const serviceDetails = `
+          ${servicePill}
+          <div class="td-bold">${b.vehicle || 'Standard Vehicle'}</div>
+          ${packageBadge}
+          ${routeDisplay}
         `;
-      } else if (b.status === 'Completed' && b.invoice) {
-        actionButtons = `
-          <a href="invoice.html?id=${b.id}" target="_blank" class="btn-action" style="background: #E8F5E9; color: #1B4332; border: 1px solid #A5D6A7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">📄 Invoice</a>
+
+        // Safe Date
+        let dateDisplay = 'N/A';
+        if (b.pickupDate) {
+          const d = new Date(b.pickupDate);
+          dateDisplay = isNaN(d.getTime()) ? b.pickupDate : d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        const timeDisplay = b.pickupTime ? `<div style="font-size:0.72rem; color:var(--text-muted); font-weight:600; margin-top:2px;">⏰ ${b.pickupTime}</div>` : '';
+
+        // Safe Status
+        const safeStatus = b.status || 'Pending';
+        const statusClass = safeStatus.toLowerCase();
+        const statusBadge = `<div class="badge badge-${statusClass}">${safeStatus}</div>`;
+
+        // Driver selector
+        const approvedDrivers = allDrivers.filter(d => (d.verificationStatus || '').toLowerCase() === 'approved');
+        let approvedDriversOptions = `<option value="">-- Unassigned --</option>`;
+        approvedDrivers.forEach(d => {
+          const dId = d.id || d._id;
+          const isSelected = b.driverId === dId ? 'selected' : '';
+          approvedDriversOptions += `<option value="${dId}" ${isSelected}>${d.name || 'Driver'}</option>`;
+        });
+
+        const selectDisabled = (safeStatus === 'Cancelled' || safeStatus === 'Completed') ? 'disabled' : '';
+        const driverSelector = `
+          <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Driver:</span>
+            <select class="filter-select" style="padding: 2px 6px; font-size: 0.75rem; border-radius: 4px; background: var(--cream);" ${selectDisabled} onchange="assignDriverToBooking('${b.id}', this.value)">
+              ${approvedDriversOptions}
+            </select>
+          </div>
         `;
-      } else if (b.status === 'Cancelled') {
-        actionButtons = `
-          <button class="btn-action btn-approve" onclick="updateStatus('${b.id}', 'Approved')">Re-Approve</button>
+
+        // Car selector
+        const targetCategory = getCarCategoryForVehicle(b.vehicle);
+        const matchingCars = allCars.filter(c => c.category === targetCategory);
+        let carOptions = `<option value="">-- No Car Assigned --</option>`;
+        (matchingCars.length > 0 ? matchingCars : allCars).forEach(c => {
+          const cId = c.id || c._id;
+          const isSelected = b.carId === cId ? 'selected' : '';
+          carOptions += `<option value="${cId}" ${isSelected}>${c.modelName} (${c.plateNumber})</option>`;
+        });
+
+        const carSelector = `
+          <div style="margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Car:</span>
+            <select class="filter-select" style="padding: 2px 6px; font-size: 0.75rem; border-radius: 4px; background: var(--cream);" ${selectDisabled} onchange="assignCarToBooking('${b.id}', this.value)">
+              ${carOptions}
+            </select>
+          </div>
         `;
+
+        // Amount & Method
+        const invAmount = b.totalAmount || (b.invoice && b.invoice.totalAmount);
+        const invDisplay = invAmount ? `<div style="font-weight:700; color:var(--green-mid); font-size:0.85rem;">₹${Number(invAmount).toLocaleString('en-IN')}</div>` : '<div style="font-size:0.75rem; color:var(--text-muted);">Fare Pending</div>';
+        const payMethod = `<div style="text-transform:uppercase; font-size:0.72rem; font-weight:600; color:var(--text-mid); margin-top:2px;">${b.paymentMethod || 'Flexible'}</div>`;
+        const invoiceLink = (safeStatus === 'Completed' && b.invoice) ? `<a href="invoice.html?id=${b.id}" target="_blank" style="display:inline-flex; align-items:center; gap:2px; font-size:0.75rem; font-weight:700; color:var(--green); text-decoration:underline; margin-top:4px;">📄 View Invoice</a>` : '';
+
+        // Action buttons
+        let actionButtons = `
+          <button class="btn-action" onclick="viewBookingDetails('${b.id}')" style="background:#FFF3E0; color:#C4511A; border:1px solid #FFE0B2; font-weight:700;">👁️ View</button>
+        `;
+
+        if (safeStatus === 'Pending') {
+          actionButtons += `
+            <button class="btn-action btn-approve" onclick="updateStatus('${b.id}', 'Approved')">Approve</button>
+            <button class="btn-action btn-cancel" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>
+          `;
+        } else if (safeStatus === 'Approved') {
+          actionButtons += `
+            <button class="btn-action" onclick="openAdminCompleteModal('${b.id}')" style="background: #1B4332; color: white; border: 1px solid #1B4332;">Complete</button>
+            <button class="btn-action btn-cancel" onclick="updateStatus('${b.id}', 'Cancelled')">Cancel</button>
+          `;
+        } else if (safeStatus === 'Completed') {
+          if (!b.invoice) {
+            actionButtons += `
+              <button class="btn-action" onclick="openAdminCompleteModal('${b.id}')" style="background: #1B4332; color: white;">Generate Invoice</button>
+            `;
+          }
+        } else if (safeStatus === 'Cancelled') {
+          actionButtons += `
+            <button class="btn-action btn-approve" onclick="updateStatus('${b.id}', 'Approved')">Re-Approve</button>
+          `;
+        }
+
+        actionButtons += `<button class="btn-action btn-delete" onclick="deleteBooking('${b.id}')">Delete</button>`;
+
+        tr.innerHTML = `
+          <td>${clientInfo}</td>
+          <td>${serviceDetails}</td>
+          <td>
+            <div class="td-bold">${dateDisplay}</div>
+            ${timeDisplay}
+          </td>
+          <td>
+            ${statusBadge}
+            ${driverSelector}
+            ${carSelector}
+          </td>
+          <td>
+            ${invDisplay}
+            ${payMethod}
+            ${invoiceLink}
+          </td>
+          <td><div class="action-buttons" style="flex-wrap: wrap;">${actionButtons}</div></td>
+        `;
+
+        tbody.appendChild(tr);
+      } catch (rowErr) {
+        console.error('Error rendering row for booking:', b, rowErr);
       }
-
-      actionButtons += `<button class="btn-action btn-delete" onclick="deleteBooking('${b.id}')">Delete</button>`;
-
-      tr.innerHTML = `
-        <td>${clientInfo}</td>
-        <td>${serviceDetails}</td>
-        <td class="td-bold">${pickupDate}</td>
-        <td style="text-transform: uppercase; font-size: 0.8rem; font-weight:700;">${b.paymentMethod}</td>
-        <td>
-          ${statusBadge}
-          ${driverSelector}
-          ${carSelector}
-        </td>
-        <td><div class="action-buttons">${actionButtons}</div></td>
-      `;
-
-      tbody.appendChild(tr);
     });
   }
 
@@ -835,16 +902,28 @@
 
   // Live filter function
   function filterBookings() {
-    const searchVal = document.getElementById('searchInput').value.toLowerCase();
+    const searchVal = (document.getElementById('searchInput').value || '').toLowerCase().trim();
     const statusVal = document.getElementById('filterStatus').value;
 
     const filtered = allBookings.filter(b => {
-      const matchesSearch = 
-        b.name.toLowerCase().includes(searchVal) ||
-        b.vehicle.toLowerCase().includes(searchVal) ||
-        b.phone.toLowerCase().includes(searchVal);
+      const name = (b.name || '').toLowerCase();
+      const vehicle = (b.vehicle || '').toLowerCase();
+      const phone = (b.phone || '').toLowerCase();
+      const id = (b.id || '').toLowerCase();
+      const pickup = (b.pickupLocation || '').toLowerCase();
+      const drop = (b.dropLocation || '').toLowerCase();
+      const details = (b.details || '').toLowerCase();
 
-      const matchesStatus = statusVal === 'All' || b.status === statusVal;
+      const matchesSearch = !searchVal || 
+        name.includes(searchVal) ||
+        vehicle.includes(searchVal) ||
+        phone.includes(searchVal) ||
+        id.includes(searchVal) ||
+        pickup.includes(searchVal) ||
+        drop.includes(searchVal) ||
+        details.includes(searchVal);
+
+      const matchesStatus = statusVal === 'All' || (b.status || 'Pending') === statusVal;
 
       return matchesSearch && matchesStatus;
     });
@@ -1738,7 +1817,126 @@
       alert(`Error completing trip: ${err.message}`);
     }
   }
+
+  // View Comprehensive Booking Details Modal
+  function viewBookingDetails(id) {
+    const booking = allBookings.find(b => b.id === id);
+    if (!booking) return;
+
+    const modal = document.getElementById('viewBookingDetailsModal');
+    if (!modal) return;
+
+    let pickupLoc = booking.pickupLocation || '';
+    let dropLoc = booking.dropLocation || '';
+    if (!pickupLoc || !dropLoc) {
+      const m = (booking.details || '').match(/Route:\s*(?:From\s*\[(.*?)\]\s*To\s*\[(.*?)\]|From\s*(.*?)\s*To\s*(.*?)(?:\.|$))/i);
+      if (m) {
+        if (!pickupLoc) pickupLoc = (m[1] || m[3] || '').trim();
+        if (!dropLoc) dropLoc = (m[2] || m[4] || '').trim();
+      }
+    }
+
+    const cleanPhone = (booking.phone || '').replace(/\D/g, '');
+    const waLink = cleanPhone ? `https://wa.me/${cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone}?text=${encodeURIComponent('Hello ' + (booking.name || 'Customer') + ', regarding your RhinoVoyage booking #' + booking.id)}` : '#';
+
+    let dateDisplay = 'N/A';
+    if (booking.pickupDate) {
+      const d = new Date(booking.pickupDate);
+      dateDisplay = isNaN(d.getTime()) ? booking.pickupDate : d.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    let createdDisplay = 'N/A';
+    if (booking.createdAt) {
+      const cd = new Date(booking.createdAt);
+      createdDisplay = isNaN(cd.getTime()) ? booking.createdAt : cd.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    const htmlContent = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid #EFEAE1; padding-bottom:1rem; margin-bottom:1.2rem;">
+        <div>
+          <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#C4511A; font-weight:700;">Trip Booking Dossier</span>
+          <h2 style="font-family:'Playfair Display', serif; font-size:1.6rem; color:#1B4332; margin:4px 0 0;">#${booking.id}</h2>
+          <span style="font-size:0.75rem; color:#888;">Submitted: ${createdDisplay}</span>
+        </div>
+        <button onclick="closeBookingDetailsModal()" style="background:none; border:none; font-size:1.8rem; cursor:pointer; color:#888;">&times;</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; margin-bottom:1.2rem;">
+        <div style="background:#FAF8F5; padding:1rem; border-radius:10px; border:1px solid #ECE5D8;">
+          <h4 style="color:#1B4332; font-size:0.82rem; text-transform:uppercase; margin-bottom:0.6rem; letter-spacing:0.5px;">👤 Customer Information</h4>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Name:</strong> ${booking.name || 'N/A'}</p>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>WhatsApp:</strong> ${booking.phone || 'N/A'}</p>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>User Account:</strong> ${booking.userId && booking.userId !== 'guest' ? booking.userId : 'Guest Booking'}</p>
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <a href="tel:${booking.phone}" class="btn-action btn-approve" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; padding:6px 12px;">📞 Call</a>
+            <a href="${waLink}" target="_blank" class="btn-action" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:#25D366; color:#FFF; padding:6px 12px;">💬 WhatsApp Chat</a>
+          </div>
+        </div>
+
+        <div style="background:#FAF8F5; padding:1rem; border-radius:10px; border:1px solid #ECE5D8;">
+          <h4 style="color:#1B4332; font-size:0.82rem; text-transform:uppercase; margin-bottom:0.6rem; letter-spacing:0.5px;">🚗 Trip & Vehicle Specs</h4>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Service:</strong> <span style="text-transform:capitalize;">${(booking.serviceType || 'car_rental').replace(/_/g, ' ')}</span></p>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Vehicle Category:</strong> ${booking.vehicle || 'Standard'}</p>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Pickup Date:</strong> ${dateDisplay} ${booking.pickupTime ? `at ${booking.pickupTime}` : ''}</p>
+          ${booking.returnDate ? `<p style="margin:4px 0; font-size:0.88rem;"><strong>Return Date:</strong> ${booking.returnDate}</p>` : ''}
+          ${booking.travelers ? `<p style="margin:4px 0; font-size:0.88rem;"><strong>Passengers / Travelers:</strong> ${booking.travelers}</p>` : ''}
+        </div>
+      </div>
+
+      <div style="background:#FAF8F5; padding:1rem; border-radius:10px; border:1px solid #ECE5D8; margin-bottom:1.2rem;">
+        <h4 style="color:#1B4332; font-size:0.82rem; text-transform:uppercase; margin-bottom:0.6rem; letter-spacing:0.5px;">🗺️ Route & Destinations</h4>
+        <div style="display:flex; flex-direction:column; gap:6px; font-size:0.92rem;">
+          <div style="color:#1B4332; font-weight:700;">📍 Pickup Location: <span style="font-weight:500; color:#222;">${pickupLoc || 'Specified upon driver dispatch'}</span></div>
+          <div style="color:#C4511A; font-weight:700;">🏁 Destination / Drop: <span style="font-weight:500; color:#222;">${dropLoc || 'Local tour / as per customer schedule'}</span></div>
+        </div>
+        ${booking.packageName ? `<div style="margin-top:8px; font-size:0.88rem; color:#1B4332;"><strong>Tour Package:</strong> ${booking.packageName}</div>` : ''}
+        ${booking.details ? `<div style="margin-top:10px; padding-top:10px; border-top:1px dashed #DCCDBA; font-size:0.84rem; color:#555;"><strong>Special Requirements / Notes:</strong> ${booking.details}</div>` : ''}
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; margin-bottom:1.2rem;">
+        <div style="background:#FAF8F5; padding:1rem; border-radius:10px; border:1px solid #ECE5D8;">
+          <h4 style="color:#1B4332; font-size:0.82rem; text-transform:uppercase; margin-bottom:0.6rem; letter-spacing:0.5px;">📋 Operational Status</h4>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Status:</strong> <span class="badge badge-${(booking.status || 'pending').toLowerCase()}">${booking.status || 'Pending'}</span></p>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Assigned Driver:</strong> ${booking.driverName ? `✅ ${booking.driverName}` : '❌ Not assigned'}</p>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Assigned Fleet:</strong> ${booking.carModel ? `✅ ${booking.carModel} (${booking.carNumber || ''})` : '❌ Not assigned'}</p>
+        </div>
+
+        <div style="background:#FAF8F5; padding:1rem; border-radius:10px; border:1px solid #ECE5D8;">
+          <h4 style="color:#1B4332; font-size:0.82rem; text-transform:uppercase; margin-bottom:0.6rem; letter-spacing:0.5px;">💳 Fare & Billing</h4>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Payment Method:</strong> <span style="text-transform:uppercase; font-weight:600;">${booking.paymentMethod || 'Flexible'}</span></p>
+          <p style="margin:4px 0; font-size:0.88rem;"><strong>Total Trip Fare:</strong> <span style="color:var(--green-mid); font-weight:700; font-size:1.15rem;">₹${Number(booking.totalAmount || (booking.invoice ? booking.invoice.totalAmount : 0) || 0).toLocaleString('en-IN')}</span></p>
+          ${booking.invoice ? `<a href="invoice.html?id=${booking.id}" target="_blank" class="btn-action btn-approve" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; margin-top:6px;">📄 View Printable Invoice</a>` : '<div style="font-size:0.78rem; color:#888; margin-top:4px;">Invoice generated upon trip completion</div>'}
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #EFEAE1; padding-top:1rem; flex-wrap:wrap; gap:8px;">
+        <button class="btn-action btn-delete" onclick="deleteBooking('${booking.id}'); closeBookingDetailsModal();">Delete Booking</button>
+        <div style="display:flex; gap:8px;">
+          ${booking.status === 'Pending' ? `<button class="btn-action btn-approve" onclick="updateStatus('${booking.id}', 'Approved'); closeBookingDetailsModal();">Approve</button>` : ''}
+          ${booking.status === 'Approved' ? `<button class="btn-action" style="background:#1B4332; color:#FFF;" onclick="closeBookingDetailsModal(); openAdminCompleteModal('${booking.id}');">Complete & Invoice</button>` : ''}
+          <button class="btn-action" onclick="closeBookingDetailsModal()" style="background:#E0E0E0; color:#333;">Close</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('bookingDetailsModalContent').innerHTML = htmlContent;
+    modal.style.display = 'flex';
+  }
+
+  function closeBookingDetailsModal() {
+    const modal = document.getElementById('viewBookingDetailsModal');
+    if (modal) modal.style.display = 'none';
+  }
 </script>
+
+<!-- VIEW BOOKING DETAILS MODAL -->
+<div id="viewBookingDetailsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 31, 22, 0.6); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+  <div style="background: var(--white); border-radius: 16px; width: 100%; max-width: 650px; padding: 2rem; box-shadow: var(--shadow); border: 1px solid var(--cream-dark); position: relative; max-height: 90vh; overflow-y: auto;">
+    <div id="bookingDetailsModalContent">
+      <!-- Injected dynamically by viewBookingDetails -->
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'api_config.dart';
 
 class BookingService {
-  static const String baseUrl = 'http://localhost:5000/api/bookings';
+  static const String baseUrl = '${ApiConfig.baseUrl}/bookings';
 
   // Create Booking
   static Future<Map<String, dynamic>> createBooking({

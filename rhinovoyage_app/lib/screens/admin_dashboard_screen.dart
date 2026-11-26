@@ -210,14 +210,21 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                 }
               }
 
+              final serviceTypeStr = b['serviceType'] == 'tour_package' 
+                  ? 'Tour Package' 
+                  : (b['serviceType'] == 'both' ? 'Custom Tour' : 'Car Rental');
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: _buildAdminBookingCard(
-                  id: b['id'],
+                  id: b['id'] ?? '',
                   clientName: b['name'] ?? 'Guest',
                   phone: b['phone'] ?? '',
                   vehicle: b['vehicle'] ?? 'Vehicle',
-                  serviceType: b['serviceType'] == 'tour_package' ? 'Tour Package' : 'Car Rental',
+                  serviceType: serviceTypeStr,
+                  pickupLocation: b['pickupLocation'] ?? '',
+                  dropLocation: b['dropLocation'] ?? '',
+                  details: b['details'] ?? '',
                   date: dateStr,
                   status: b['status'] ?? 'Pending',
                   statusColor: statusColor,
@@ -446,6 +453,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
     required String phone,
     required String vehicle,
     required String serviceType,
+    required String pickupLocation,
+    required String dropLocation,
+    required String details,
     required String date,
     required String status,
     required MaterialColor statusColor,
@@ -463,6 +473,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
@@ -478,9 +489,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(clientName, style: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.primaryGreen)),
+                      Row(
+                        children: [
+                          Flexible(child: Text(clientName, style: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.primaryGreen))),
+                          const SizedBox(width: 6),
+                          Text('#$id', style: GoogleFonts.nunito(fontSize: 11, color: Colors.grey.shade500, fontWeight: FontWeight.w600)),
+                        ],
+                      ),
                       Text(phone, style: GoogleFonts.nunito(fontSize: 13, color: Colors.grey.shade600)),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Text('$vehicle • $serviceType', style: GoogleFonts.nunito(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.primaryGreen)),
                     ],
                   ),
@@ -504,10 +521,54 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
               ],
             ),
           ),
+          if (pickupLocation.isNotEmpty || dropLocation.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9F7F3),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (pickupLocation.isNotEmpty)
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on, size: 14, color: Colors.green),
+                        const SizedBox(width: 4),
+                        Expanded(child: Text('From: $pickupLocation', style: GoogleFonts.nunito(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87))),
+                      ],
+                    ),
+                  if (dropLocation.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.flag, size: 14, color: Colors.deepOrange),
+                        const SizedBox(width: 4),
+                        Expanded(child: Text('To: $dropLocation', style: GoogleFonts.nunito(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87))),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          if (details.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
+              child: Text(
+                'Notes: $details',
+                style: GoogleFonts.nunito(fontSize: 11, fontStyle: FontStyle.italic, color: Colors.grey.shade600),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           if (assignedDriver != null)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              margin: const EdgeInsets.only(top: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.grey.shade50,
                 border: Border(top: BorderSide(color: Colors.grey.shade200), bottom: BorderSide(color: Colors.grey.shade200)),
@@ -526,6 +587,17 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> with Single
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 if (status == 'Pending') ...[
+                  TextButton(
+                    onPressed: () async {
+                      final result = await AdminService.updateBookingStatus(id, 'Cancelled');
+                      if (result['success']) {
+                        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Booking Cancelled'), backgroundColor: Colors.orange));
+                        _loadData();
+                      }
+                    },
+                    child: const Text('Cancel', style: TextStyle(color: Colors.red)),
+                  ),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () async {
                       final result = await AdminService.updateBookingStatus(id, 'Approved');

@@ -1,16 +1,50 @@
 const db = require('../config/db');
 const { syncBooking } = require('../utils/sheets');
 
+// Helper to extract pickup & drop locations if not directly passed
+function extractLocations(details, directPickup, directDrop) {
+  let pickup = directPickup || '';
+  let drop = directDrop || '';
+
+  if (!pickup || !drop) {
+    if (details && typeof details === 'string') {
+      const routeMatch = details.match(/Route:\s*(?:From\s*\[(.*?)\]\s*To\s*\[(.*?)\]|From\s*(.*?)\s*To\s*(.*?)(?:\.|$))/i);
+      if (routeMatch) {
+        if (!pickup) pickup = (routeMatch[1] || routeMatch[3] || '').trim();
+        if (!drop) drop = (routeMatch[2] || routeMatch[4] || '').trim();
+      }
+    }
+  }
+  return { pickup, drop };
+}
+
 // @desc    Create Booking
 // @route   POST /api/bookings
 // @access  Public (guests can book, but authenticated users' bookings are linked to their account)
 exports.createBooking = async (req, res) => {
   try {
-    const { serviceType, name, phone, pickupDate, vehicle, details, paymentMethod } = req.body;
+    const { 
+      serviceType, 
+      name, 
+      phone, 
+      pickupDate, 
+      vehicle, 
+      details, 
+      paymentMethod,
+      pickupLocation,
+      dropLocation,
+      returnDate,
+      pickupTime,
+      travelers,
+      packageName,
+      email
+    } = req.body;
 
     if (!serviceType || !name || !phone || !pickupDate || !vehicle || !paymentMethod) {
       return res.status(400).json({ success: false, message: 'Please provide all required booking fields.' });
     }
+
+    const { pickup, drop } = extractLocations(details, pickupLocation, dropLocation);
 
     const bookingData = {
       serviceType,
@@ -18,6 +52,13 @@ exports.createBooking = async (req, res) => {
       phone,
       pickupDate,
       vehicle,
+      pickupLocation: pickup,
+      dropLocation: drop,
+      returnDate: returnDate || '',
+      pickupTime: pickupTime || '',
+      travelers: travelers || '',
+      packageName: packageName || '',
+      userEmail: req.user ? req.user.email : (email || ''),
       details: details || '',
       paymentMethod,
       status: 'Pending',
@@ -45,6 +86,7 @@ exports.createBooking = async (req, res) => {
 // @access  Private
 exports.getUserBookings = async (req, res) => {
   try {
+    let bookings = [];
     if (req.user.role === 'driver') {
       if (req.user.verificationStatus !== 'Approved') {
         return res.status(403).json({
@@ -52,12 +94,18 @@ exports.getUserBookings = async (req, res) => {
           message: 'Your driver account has not been approved yet. Please wait for administrator verification.'
         });
       }
-      const bookings = await db.find('bookings', { driverId: req.user.id });
-      return res.status(200).json({ success: true, count: bookings.length, bookings });
+      bookings = await db.find('bookings', { driverId: req.user.id });
+    } else {
+      bookings = await db.find('bookings', { userId: req.user.id });
     }
 
-    const bookings = await db.find('bookings', { userId: req.user.id });
-    res.status(200).json({ success: true, count: bookings.length, bookings });
+    // Enrich and sort
+    const enriched = bookings.map(b => {
+      const { pickup, drop } = extractLocations(b.details, b.pickupLocation, b.dropLocation);
+      return { ...b, pickupLocation: pickup, dropLocation: drop };
+    }).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+    res.status(200).json({ success: true, count: enriched.length, bookings: enriched });
   } catch (error) {
     console.error('Get user bookings error:', error);
     res.status(500).json({ success: false, message: 'Server error retrieving bookings.' });
@@ -69,8 +117,17 @@ exports.getUserBookings = async (req, res) => {
 // @access  Private/Admin
 exports.getAllBookings = async (req, res) => {
   try {
-    const bookings = await db.find('bookings'); // empty query returns all
-    res.status(200).json({ success: true, count: bookings.length, bookings });
+    const rawBookings = await db.find('bookings'); // empty query returns all
+    const enriched = rawBookings.map(b => {
+      const { pickup, drop } = extractLocations(b.details, b.pickupLocation, b.dropLocation);
+      return {
+        ...b,
+        pickupLocation: pickup,
+        dropLocation: drop
+      };
+    }).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+    res.status(200).json({ success: true, count: enriched.length, bookings: enriched });
   } catch (error) {
     console.error('Get all bookings error:', error);
     res.status(500).json({ success: false, message: 'Server error retrieving all bookings.' });

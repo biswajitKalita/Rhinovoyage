@@ -489,7 +489,7 @@
   // Fetch fresh profile state to capture live approval status
   async function fetchFreshProfile() {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -524,7 +524,7 @@
     }
 
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings/my-bookings`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -616,7 +616,7 @@
     const list = document.getElementById('notificationsList');
     
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/notifications`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -661,7 +661,7 @@
 
   async function dismissNotification(id) {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/notifications/${id}/read`, {
         method: 'PUT',
         headers: {
@@ -701,7 +701,7 @@
     const notes = document.getElementById('compNotes').value || '';
 
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings/${activeCompleteBookingId}/complete`, {
         method: 'PUT',
         headers: {

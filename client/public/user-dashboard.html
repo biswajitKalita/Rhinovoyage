@@ -734,7 +734,7 @@
   async function fetchMyBookings() {
     const listContainer = document.getElementById('bookingsList');
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/bookings/my-bookings`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -861,7 +861,7 @@
 
   async function fetchNotifications() {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       const response = await fetch(`${apiBase}/notifications`, { headers: { 'Authorization': `Bearer ${token}` } });
       const data = await response.json();
       if (!response.ok) return;
@@ -890,7 +890,7 @@
 
   async function dismissNotification(id) {
     try {
-      const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api';
       await fetch(`${apiBase}/notifications/${id}/read`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
       location.reload();
     } catch(e) {}

@@ -142,6 +142,17 @@ class DatabaseManager {
     return `RV${String(maxNum + 1).padStart(8, '0')}`;
   }
 
+  _normalizeMongoQuery(query) {
+    if (!query) return {};
+    const normalized = { ...query };
+    if (normalized.id && mongoose.Types.ObjectId.isValid(normalized.id)) {
+      const objId = new mongoose.Types.ObjectId(normalized.id);
+      normalized.$or = [{ id: normalized.id }, { _id: objId }];
+      delete normalized.id;
+    }
+    return normalized;
+  }
+
   async insert(collection, doc) {
     let docId = doc.id;
     if (!docId) {
@@ -163,13 +174,13 @@ class DatabaseManager {
         const col = this.getCollection(collection);
         if (col) {
           await col.insertOne(newDoc);
-          return newDoc;
         }
       } catch (e) {
         console.warn('Mongo insert notice, using JSON fallback:', e.message);
       }
     }
 
+    // Always mirror to disk so local storage and fallback remain 100% in sync
     const data = this._readJson(collection);
     data.push(newDoc);
     this._writeJson(collection, data);
@@ -181,7 +192,8 @@ class DatabaseManager {
       try {
         const col = this.getCollection(collection);
         if (col) {
-          return await col.find(query).toArray();
+          const mQuery = this._normalizeMongoQuery(query);
+          return await col.find(mQuery).toArray();
         }
       } catch (e) {
         console.warn('Mongo find notice, using JSON fallback:', e.message);
@@ -191,7 +203,11 @@ class DatabaseManager {
     const data = this._readJson(collection);
     return data.filter(item => {
       for (let key in query) {
-        if (item[key] !== query[key]) return false;
+        if (key === 'id') {
+          if (item.id !== query.id && item._id !== query.id) return false;
+        } else if (item[key] !== query[key]) {
+          return false;
+        }
       }
       return true;
     });
@@ -202,7 +218,8 @@ class DatabaseManager {
       try {
         const col = this.getCollection(collection);
         if (col) {
-          return await col.findOne(query);
+          const mQuery = this._normalizeMongoQuery(query);
+          return await col.findOne(mQuery);
         }
       } catch (e) {
         console.warn('Mongo findOne notice, using JSON fallback:', e.message);
@@ -212,13 +229,18 @@ class DatabaseManager {
     const data = this._readJson(collection);
     return data.find(item => {
       for (let key in query) {
-        if (item[key] !== query[key]) return false;
+        if (key === 'id') {
+          if (item.id !== query.id && item._id !== query.id) return false;
+        } else if (item[key] !== query[key]) {
+          return false;
+        }
       }
       return true;
     }) || null;
   }
 
   async update(collection, query, updateData) {
+    let mongoModified = 0;
     if (this.isConnected) {
       try {
         const col = this.getCollection(collection);
@@ -229,20 +251,27 @@ class DatabaseManager {
               updatedAt: new Date().toISOString()
             }
           };
-          const result = await col.updateMany(query, updatePayload);
-          return result.modifiedCount;
+          const mQuery = this._normalizeMongoQuery(query);
+          const result = await col.updateMany(mQuery, updatePayload);
+          mongoModified = result.modifiedCount;
         }
       } catch (e) {
         console.warn('Mongo update notice, using JSON fallback:', e.message);
       }
     }
 
+    // Always mirror update to disk
     const data = this._readJson(collection);
     let updatedCount = 0;
     const updatedData = data.map(item => {
       let matches = true;
       for (let key in query) {
-        if (item[key] !== query[key]) {
+        if (key === 'id') {
+          if (item.id !== query.id && item._id !== query.id) {
+            matches = false;
+            break;
+          }
+        } else if (item[key] !== query[key]) {
           matches = false;
           break;
         }
@@ -257,28 +286,36 @@ class DatabaseManager {
     if (updatedCount > 0) {
       this._writeJson(collection, updatedData);
     }
-    return updatedCount;
+    return this.isConnected ? mongoModified : updatedCount;
   }
 
   async delete(collection, query) {
+    let mongoDeleted = 0;
     if (this.isConnected) {
       try {
         const col = this.getCollection(collection);
         if (col) {
-          const result = await col.deleteMany(query);
-          return result.deletedCount;
+          const mQuery = this._normalizeMongoQuery(query);
+          const result = await col.deleteMany(mQuery);
+          mongoDeleted = result.deletedCount;
         }
       } catch (e) {
         console.warn('Mongo delete notice, using JSON fallback:', e.message);
       }
     }
 
+    // Always mirror deletion to disk
     const data = this._readJson(collection);
     const initialLength = data.length;
     const filteredData = data.filter(item => {
       let matches = true;
       for (let key in query) {
-        if (item[key] !== query[key]) {
+        if (key === 'id') {
+          if (item.id !== query.id && item._id !== query.id) {
+            matches = false;
+            break;
+          }
+        } else if (item[key] !== query[key]) {
           matches = false;
           break;
         }
@@ -290,7 +327,7 @@ class DatabaseManager {
     if (deletedCount > 0) {
       this._writeJson(collection, filteredData);
     }
-    return deletedCount;
+    return this.isConnected ? mongoDeleted : deletedCount;
   }
 }
 

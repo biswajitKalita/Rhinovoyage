@@ -1807,17 +1807,17 @@
       }
 
       let finalDetails = details;
+      const packageSelect = document.getElementById('package_select');
+      const selectedPkgText = (serviceType === 'tour_package' && packageSelect && packageSelect.selectedIndex >= 0) ? packageSelect.options[packageSelect.selectedIndex].text : '';
+      const returnDate = document.getElementById('return_date') ? document.getElementById('return_date').value : '';
+      const pickupTime = document.getElementById('pickup_time') ? document.getElementById('pickup_time').value : '';
+      const travelerCount = document.getElementById('traveler_count') ? document.getElementById('traveler_count').value : '';
+
       if (serviceType === 'tour_package') {
-        const packageSelect = document.getElementById('package_select');
-        const selectedPkgText = packageSelect ? packageSelect.options[packageSelect.selectedIndex].text : '';
         finalDetails = `Tour Package: ${selectedPkgText}. ${details}`;
       } else if (serviceType === 'car_rental' || serviceType === 'both') {
         if (serviceType === 'both') {
-          const returnDate = document.getElementById('return_date') ? document.getElementById('return_date').value : '';
-          const pickupTime = document.getElementById('pickup_time') ? document.getElementById('pickup_time').value : '';
-          const travelerCount = document.getElementById('traveler_count') ? document.getElementById('traveler_count').value : '';
           const routeInfo = (pickupLocation || dropLocation) ? `Route: From [${pickupLocation}] To [${dropLocation}]` : 'Route: Custom';
-
           finalDetails = `Custom Tour: ${pickupDate} to ${returnDate} | Start Time: ${pickupTime} | Travelers: ${travelerCount} | ${routeInfo}. Notes: ${details}`;
         } else {
           if (pickupLocation || dropLocation) {
@@ -1829,7 +1829,19 @@
       const paymentMethod = 'flexible';
 
       const bookingPayload = {
-        serviceType, name, phone, pickupDate, vehicle, details: finalDetails, paymentMethod
+        serviceType,
+        name,
+        phone,
+        pickupDate,
+        vehicle,
+        pickupLocation,
+        dropLocation,
+        returnDate,
+        pickupTime,
+        travelers: travelerCount,
+        packageName: selectedPkgText,
+        details: finalDetails,
+        paymentMethod
       };
 
       const headers = { 'Content-Type': 'application/json' };
@@ -1844,7 +1856,9 @@
       }
 
       try {
-        const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+        const apiBase = (typeof window.getRhinoApiUrl === 'function')
+          ? window.getRhinoApiUrl()
+          : (window.API_BASE_URL || (window.location.hostname === 'localhost' && window.location.port === '5000' ? 'http://localhost:5000/api' : 'https://rhinovoyage.onrender.com/api'));
         const response = await fetch(`${apiBase}/bookings`, {
           method: 'POST',
           headers,
@@ -2000,7 +2014,9 @@
   <script>
     async function initGoogleSignIn() {
       try {
-        const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+        const apiBase = (typeof window.getRhinoApiUrl === 'function')
+          ? window.getRhinoApiUrl()
+          : (window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api');
         const response = await fetch(`${apiBase}/auth/google-client-id`);
         const data = await response.json();
         if (data.success && data.clientId) {
@@ -2023,7 +2039,9 @@
 
     async function handleGoogleCredentialResponse(response) {
       try {
-        const apiBase = window.API_BASE_URL || 'http://localhost:5000/api';
+        const apiBase = (typeof window.getRhinoApiUrl === 'function')
+          ? window.getRhinoApiUrl()
+          : (window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api');
         const res = await fetch(`${apiBase}/auth/google`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
