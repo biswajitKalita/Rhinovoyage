@@ -325,19 +325,23 @@
       gap: 15px;
     }
 
-    /* Auth Modal Styles */
+    /* ========================================================
+       PREMIUM AUTH REQUIRED MODAL (LUXURY FROSTED GLASS)
+    ======================================================== */
     .auth-modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(13, 31, 22, 0.75);
-      backdrop-filter: blur(8px);
+      background: rgba(10, 26, 18, 0.72);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
       z-index: 10000;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 1.25rem;
     }
 
     .auth-modal-backdrop.active {
@@ -346,127 +350,238 @@
     }
 
     .auth-modal-card {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 2.5rem;
-      max-width: 440px;
-      width: 90%;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%);
+      border-radius: 24px;
+      padding: 2.5rem 2.25rem 2.25rem;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 25px 70px -10px rgba(10, 26, 18, 0.45), 0 10px 30px -5px rgba(27, 67, 50, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      border: 1px solid rgba(27, 67, 50, 0.14);
       text-align: center;
-      transform: translateY(20px);
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: scale(0.92) translateY(20px);
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: relative;
+      overflow: hidden;
+    }
+
+    .auth-modal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1B4332 0%, #C8951A 50%, #1B4332 100%);
+    }
+
+    .auth-modal-card::after {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(200, 149, 26, 0.1) 0%, transparent 70%);
+      pointer-events: none;
     }
 
     .auth-modal-backdrop.active .auth-modal-card {
-      transform: translateY(0);
+      transform: scale(1) translateY(0);
     }
 
     .auth-modal-close {
       position: absolute;
-      top: 1rem;
+      top: 1.15rem;
       right: 1.25rem;
-      background: none;
-      border: none;
-      font-size: 1.75rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(27, 67, 50, 0.05);
+      border: 1px solid rgba(27, 67, 50, 0.08);
+      font-size: 1.25rem;
       cursor: pointer;
-      color: var(--text-muted);
-      transition: color 0.2s;
+      color: var(--text-mid);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       line-height: 1;
+      z-index: 2;
     }
 
     .auth-modal-close:hover {
-      color: var(--orange);
+      background: rgba(27, 67, 50, 0.12);
+      color: var(--green);
+      transform: scale(1.08);
     }
 
-    .auth-modal-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
+    .auth-modal-emblem {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.85rem;
+    }
+
+    .auth-modal-icon-badge {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(27, 67, 50, 0.08) 0%, rgba(200, 149, 26, 0.14) 100%);
+      border: 1.5px solid rgba(200, 149, 26, 0.35);
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(27, 67, 50, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+
+    .auth-modal-icon-badge svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--green);
+    }
+
+    .auth-modal-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FCD34D;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 4px 14px;
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    .auth-modal-pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #D97706;
       display: inline-block;
+      animation: pulseGlow 1.5s infinite alternate;
     }
 
     .auth-modal-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       color: var(--green);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.45rem;
       font-weight: 700;
+      letter-spacing: -0.01em;
     }
 
     .auth-modal-text {
-      font-size: 0.92rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
       color: var(--text-mid);
-      line-height: 1.5;
-      margin-bottom: 1.75rem;
+      line-height: 1.52;
+      margin-bottom: 1.6rem;
     }
 
     .auth-modal-actions {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.85rem;
     }
 
     .auth-modal-btn-primary {
-      background: var(--orange);
-      color: var(--white) !important;
-      padding: 0.8rem;
-      border-radius: 10px;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
+      color: #ffffff !important;
+      padding: 0.85rem 1.4rem;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
       font-weight: 700;
+      font-size: 0.94rem;
       text-decoration: none;
-      transition: all 0.2s;
-      border: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--green);
       cursor: pointer;
-      display: block;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(27, 67, 50, 0.25);
     }
 
     .auth-modal-btn-primary:hover {
-      background: var(--orange-dark);
-      transform: translateY(-1px);
+      background: var(--green-mid);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(27, 67, 50, 0.35);
     }
 
     .auth-modal-btn-secondary {
-      background: transparent;
-      border: 1.5px solid var(--orange);
-      color: var(--orange) !important;
-      padding: 0.8rem;
-      border-radius: 10px;
+      background: #ffffff;
+      border: 1.5px solid rgba(27, 67, 50, 0.25);
+      color: var(--green) !important;
+      padding: 0.85rem 1.4rem;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
       font-weight: 700;
+      font-size: 0.94rem;
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
-      display: block;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 
     .auth-modal-btn-secondary:hover {
-      background: var(--orange-pale);
-      color: var(--orange-dark) !important;
+      background: rgba(27, 67, 50, 0.04);
+      border-color: var(--green);
+      color: var(--green) !important;
+      transform: translateY(-2px);
     }
 
     .divider-container {
       display: flex;
       align-items: center;
       text-align: center;
-      margin: 10px 0 5px;
+      margin: 12px 0 6px;
     }
     .divider-container::before,
     .divider-container::after {
       content: '';
       flex: 1;
-      border-bottom: 1px solid var(--cream-dark);
+      border-bottom: 1px solid rgba(27, 67, 50, 0.12);
     }
     .divider-container:not(:empty)::before {
-      margin-right: .5em;
+      margin-right: .75em;
     }
     .divider-container:not(:empty)::after {
-      margin-left: .5em;
+      margin-left: .75em;
     }
     .divider-text {
-      font-size: 0.75rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.74rem;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .modal-google-wrapper {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+    }
+
+    .auth-modal-trust-footer {
+      margin-top: 1.25rem;
+      padding-top: 0.95rem;
+      border-top: 1px solid rgba(27, 67, 50, 0.08);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     @media (max-width: 768px) {
@@ -480,27 +595,23 @@
         gap: 8px !important;
       }
       .auth-modal-card {
-        padding: 1.75rem 1.25rem;
-        width: 92%;
-        border-radius: 16px;
-      }
-      .auth-modal-icon {
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
+        padding: 2rem 1.4rem 1.6rem;
+        width: 94%;
+        border-radius: 20px;
       }
       .auth-modal-title {
-        font-size: 1.3rem;
+        font-size: 1.35rem;
       }
       .auth-modal-text {
-        font-size: 0.85rem;
-        margin-bottom: 1.25rem;
+        font-size: 0.86rem;
+        margin-bottom: 1.35rem;
       }
       .auth-modal-btn-primary, .auth-modal-btn-secondary {
-        padding: 0.7rem;
+        padding: 0.75rem 1rem;
         font-size: 0.88rem;
       }
     }
-  </style>
+    </style>
 </head>
 
 <body>
@@ -2088,8 +2199,32 @@
       }, 1800);
     });
 
+    // Helper: Save current filled booking data into sessionStorage
+    function saveCurrentBookingData() {
+      const checkedServiceInput = document.querySelector('input[name="service_type"]:checked');
+      const serviceType = checkedServiceInput ? checkedServiceInput.value : 'car_rental';
+      const name = document.getElementById('name') ? document.getElementById('name').value : '';
+      const phone = document.getElementById('phone') ? document.getElementById('phone').value : '';
+      const pickupDate = document.getElementById('pickup_date') ? document.getElementById('pickup_date').value : '';
+      const details = document.getElementById('details') ? document.getElementById('details').value : '';
+      const vehicle = document.getElementById('vehicle_select') ? document.getElementById('vehicle_select').value : '';
+      const pickupLocation = document.getElementById('pickup_location') ? document.getElementById('pickup_location').value : '';
+      const dropLocation = document.getElementById('drop_location') ? document.getElementById('drop_location').value : '';
+      const returnDate = document.getElementById('return_date') ? document.getElementById('return_date').value : '';
+      const pickupTime = document.getElementById('pickup_time') ? document.getElementById('pickup_time').value : '';
+      const travelerCount = document.getElementById('traveler_count') ? document.getElementById('traveler_count').value : '';
+      const packageSelectVal = document.getElementById('package_select') ? document.getElementById('package_select').value : '';
+
+      const pendingBooking = {
+        serviceType, name, phone, pickupDate, vehicle, rawDetails: details,
+        pickupLocation, dropLocation, returnDate, pickupTime, travelerCount, packageSelectVal
+      };
+      sessionStorage.setItem('pending_booking', JSON.stringify(pendingBooking));
+    }
+
     // Auth Required Modal helper functions
     function showAuthRequiredModal() {
+      saveCurrentBookingData();
       const modal = document.getElementById('auth-required-modal');
       if (modal) {
         const currentRedirect = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
@@ -2100,6 +2235,11 @@
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+
+        // Re-render Google button inside modal if GSI is available
+        if (window.google && google.accounts && google.accounts.id) {
+          initGoogleSignIn();
+        }
       }
     }
 
@@ -2110,24 +2250,83 @@
         document.body.style.overflow = '';
       }
     }
+
+    // Escape key closes modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeAuthRequiredModal();
+    });
+
+    // Intercept clicks on Book Now buttons for unauthenticated guests
+    window.addEventListener('DOMContentLoaded', function() {
+      const bookBtn = document.querySelector('.btn-book');
+      if (bookBtn) {
+        bookBtn.addEventListener('click', function(e) {
+          const token = localStorage.getItem('token');
+          if (!token) {
+            e.preventDefault();
+            e.stopPropagation();
+            showAuthRequiredModal();
+          }
+        });
+      }
+
+      // Also attach to banner buttons if clicked
+      const bannerLogin = document.querySelector('.blb-btn-primary');
+      const bannerReg = document.querySelector('.blb-btn-secondary');
+      if (bannerLogin) {
+        bannerLogin.addEventListener('click', function(e) {
+          e.preventDefault();
+          showAuthRequiredModal();
+        });
+      }
+      if (bannerReg) {
+        bannerReg.addEventListener('click', function(e) {
+          e.preventDefault();
+          showAuthRequiredModal();
+        });
+      }
+    });
   </script>
 
   <!-- Auth Required Modal Backdrop and Card -->
-  <div id="auth-required-modal" class="auth-modal-backdrop">
-    <div class="auth-modal-card">
-      <button class="auth-modal-close" onclick="closeAuthRequiredModal()">&times;</button>
-      <span class="auth-modal-icon">🔒</span>
-      <h3 class="auth-modal-title">Authentication Required</h3>
-      <p class="auth-modal-text">You need to log in or register to submit a booking. We've saved your details! Once you
-        log in, your booking request will be automatically completed.</p>
-      <div class="auth-modal-actions">
-        <a id="modal-login-btn" href="login.html" class="auth-modal-btn-primary">Log In to Your Account</a>
-        <a id="modal-register-btn" href="login.html?tab=register" class="auth-modal-btn-secondary">Create a New
-          Account</a>
-        <div class="divider-container">
-          <span class="divider-text">OR</span>
+  <div id="auth-required-modal" class="auth-modal-backdrop" onclick="if(event.target === this) closeAuthRequiredModal();">
+    <div class="auth-modal-card" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+      <button class="auth-modal-close" onclick="closeAuthRequiredModal()" aria-label="Close modal">&times;</button>
+      
+      <div class="auth-modal-emblem">
+        <div class="auth-modal-icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
         </div>
-        <div id="google-btn-wrapper" style="display: flex; justify-content: center; width: 100%;"></div>
+      </div>
+      
+      <div class="auth-modal-pill">
+        <span class="auth-modal-pill-dot"></span> Trip Details Preserved
+      </div>
+      
+      <h3 id="auth-modal-title" class="auth-modal-title">Sign In to Complete Booking</h3>
+      <p class="auth-modal-text">You're just one step away! Log in or create an account to finalize your reservation and receive instant driver & itinerary updates on WhatsApp.</p>
+      
+      <div class="auth-modal-actions">
+        <a id="modal-login-btn" href="login.html" class="auth-modal-btn-primary">
+          <span>Log In to Your Account</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a id="modal-register-btn" href="login.html?tab=register" class="auth-modal-btn-secondary">
+          <span>New Traveler? Register Now</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+        </a>
+        <div class="divider-container">
+          <span class="divider-text">OR CONTINUE WITH</span>
+        </div>
+        <div id="google-btn-wrapper" class="modal-google-wrapper"></div>
+      </div>
+
+      <div class="auth-modal-trust-footer">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>256-Bit SSL Encrypted · Instant Auto-Submit Upon Login</span>
       </div>
     </div>
   </div>
