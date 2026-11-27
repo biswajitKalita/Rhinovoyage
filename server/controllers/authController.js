@@ -74,10 +74,12 @@ exports.register = async (req, res) => {
     const userRole = role === 'driver' ? 'driver' : 'user';
     const insertData = {
       name,
-      email: email.toLowerCase(),
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
       phone,
-      role: userRole
+      role: userRole,
+      welcomeEmailSent: false,
+      createdAt: new Date().toISOString()
     };
 
     if (userRole === 'driver') {
@@ -200,21 +202,25 @@ exports.googleSignIn = async (req, res) => {
     const payload = ticket.getPayload();
     const { email, name, picture } = payload;
 
-    let user = await db.findOne('users', { email: email.toLowerCase() });
+    const normalizedEmail = (email || '').toLowerCase().trim();
+    let user = await db.findOne('users', { email: normalizedEmail });
 
     if (!user) {
       // Create a new user automatically
       const newUser = {
         name,
-        email: email.toLowerCase(),
+        email: normalizedEmail,
         phone: '', // Google does not provide phone by default in sign in
         role: 'user',
         password: '', // No password for OAuth users
+        welcomeEmailSent: false,
         createdAt: new Date().toISOString()
       };
       user = await db.insert('users', newUser);
       sendWelcomeEmail(user).catch(err => console.error('Google user welcome email error:', err));
       sendAdminNewUserAlert(user).catch(err => console.error('Google user admin alert error:', err));
+    } else {
+      console.log(`[Google Auth] Existing user ${user.email} logged in. Welcome email skipped.`);
     }
 
     sendTokenResponse(user, 200, res);

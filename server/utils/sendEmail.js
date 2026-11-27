@@ -174,9 +174,56 @@ async function sendBrevoEmail({ to, toName = '', subject, htmlContent, textConte
 
 /**
  * 1. Send Welcome Email upon registration with complete user details
+ * SAFEGUARD: Welcome email is strictly for brand-new users registering for the first time.
+ * If user already exists in the database, is an old user, or already received a welcome mail,
+ * the email is automatically skipped. All booking emails continue to be sent to old and new users.
  */
 async function sendWelcomeEmail(user) {
-  if (!user || !user.email) return;
+  if (!user || !user.email) return { success: false, message: 'No recipient email' };
+
+  const normalizedEmail = user.email.toLowerCase().trim();
+
+  // 1. Safeguard: Check if user is an existing / old user in database
+  try {
+    const db = require('../config/db');
+    const existing = await db.findOne('users', { email: normalizedEmail });
+
+    if (existing) {
+      // Check if user already received welcome email
+      if (existing.welcomeEmailSent) {
+        console.log(`[Welcome Email Skipped] User ${normalizedEmail} has already received a welcome email. Skipping.`);
+        return { success: true, skipped: true, reason: 'welcome_already_sent' };
+      }
+
+      // Check account creation age: if created earlier (more than 10 minutes ago), user is an old user
+      if (existing.createdAt) {
+        const createdTime = new Date(existing.createdAt).getTime();
+        const tenMinutesAgo = Date.now() - (10 * 60 * 1000);
+        if (createdTime < tenMinutesAgo) {
+          console.log(`[Welcome Email Skipped] User ${normalizedEmail} is an existing old user (registered on ${existing.createdAt}). Skipping welcome email.`);
+          // Mark flag so we don't query repeatedly in future
+          await db.update('users', { email: normalizedEmail }, { welcomeEmailSent: true });
+          return { success: true, skipped: true, reason: 'old_user_by_date' };
+        }
+      }
+
+      // Check if user has prior bookings in database (old user)
+      const existingBookings = await db.find('bookings', {
+        $or: [
+          { userId: existing.id },
+          { userEmail: normalizedEmail },
+          { email: normalizedEmail }
+        ]
+      });
+      if (existingBookings && existingBookings.length > 0) {
+        console.log(`[Welcome Email Skipped] User ${normalizedEmail} has ${existingBookings.length} existing booking(s) in database (old user). Skipping welcome email.`);
+        await db.update('users', { email: normalizedEmail }, { welcomeEmailSent: true });
+        return { success: true, skipped: true, reason: 'old_user_with_bookings' };
+      }
+    }
+  } catch (checkErr) {
+    console.warn('[Welcome Email] Existing user verification notice:', checkErr.message);
+  }
 
   const isDriver = user.role === 'driver';
   const userName = user.name || (isDriver ? 'Driver Partner' : 'Valued Traveler');
@@ -311,12 +358,25 @@ async function sendWelcomeEmail(user) {
     actionText: isDriver ? 'Access Driver Portal' : 'Open My Dashboard'
   });
 
-  return sendBrevoEmail({
+  const result = await sendBrevoEmail({
     to: user.email,
     toName: userName,
     subject,
     htmlContent: html
   });
+
+  // Mark in database that welcome email has been delivered to this new user
+  try {
+    const db = require('../config/db');
+    await db.update('users', { email: normalizedEmail }, {
+      welcomeEmailSent: true,
+      welcomeEmailSentAt: new Date().toISOString()
+    });
+  } catch (updateErr) {
+    console.warn('[Welcome Email] Notice updating welcomeEmailSent flag:', updateErr.message);
+  }
+
+  return result;
 }
 
 /**
