@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const { saveBase64Image } = require('../utils/upload');
+const { syncCar } = require('../utils/sheets');
 
 // @desc    Get All Cars
 // @route   GET /api/cars
@@ -47,6 +48,9 @@ exports.addCar = async (req, res) => {
       entryDate: entryDate || new Date().toISOString().split('T')[0]
     });
 
+    // Sync new vehicle to Google Sheet (Fleet Vehicles section)
+    syncCar(newCar, 'Fleet Vehicle Added').catch(err => console.error('Car sheet sync error:', err));
+
     res.status(201).json({
       success: true,
       message: 'Car successfully registered in fleet.',
@@ -71,6 +75,9 @@ exports.deleteCar = async (req, res) => {
     }
 
     await db.delete('cars', { id });
+
+    // Sync vehicle deletion to Google Sheet (Fleet Vehicles section)
+    syncCar(exists, 'Fleet Vehicle Deleted').catch(err => console.error('Car delete sheet sync error:', err));
 
     res.status(200).json({ success: true, message: 'Car successfully deleted from fleet.' });
   } catch (error) {

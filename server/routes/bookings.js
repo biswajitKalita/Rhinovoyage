@@ -11,12 +11,14 @@ const {
   adminSetDriverPayout,
   adminSetFleetPayout,
   driverUpdateTripStatus,
-  getBookingInvoice
+  getBookingInvoice,
+  syncSheetsToGoogle
 } = require('../controllers/bookingController');
 const { protect, authorize, optionalProtect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+router.post('/sync-sheets', protect, authorize('admin'), syncSheetsToGoogle);
 router.post('/', optionalProtect, createBooking);
 router.get('/my-bookings', protect, getUserBookings);
 router.get('/', protect, authorize('admin'), getAllBookings);

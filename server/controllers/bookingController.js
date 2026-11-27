@@ -981,3 +981,28 @@ exports.assignCar = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error assigning car.' });
   }
 };
+
+// @desc    Trigger comprehensive database sync to Google Sheets
+// @route   POST /api/bookings/sync-sheets
+// @access  Private (Admin)
+exports.syncSheetsToGoogle = async (req, res) => {
+  try {
+    const { syncAllDataToSheet } = require('../utils/sheets');
+    const result = await syncAllDataToSheet();
+    if (result.success) {
+      res.status(200).json({
+        success: true,
+        message: 'Google Sheets synchronization completed successfully across all sections.',
+        counts: result.count
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Google Sheets synchronization encountered an issue: ' + (result.error || 'Unknown error')
+      });
+    }
+  } catch (error) {
+    console.error('Sync sheets controller error:', error);
+    res.status(500).json({ success: false, message: 'Server error during Google Sheets synchronization.' });
+  }
+};

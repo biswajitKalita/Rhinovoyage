@@ -1087,9 +1087,16 @@
         <p>Monitor trip requests, dispatch driver partners, and manage fleet inventory in real time.</p>
       </div>
 
-      <div class="system-status-indicator">
-        <span class="status-pulse-dot"></span>
-        <span>Cloud Sync Active (Render API)</span>
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <button id="btn-sync-sheets" onclick="handleSyncToSheets()" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #0F382C 0%, #1a5742 100%); color: #ffffff; border: 1px solid #d4af37; border-radius: 20px; padding: 0.45rem 1.05rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(15, 56, 44, 0.25);">
+          <i class="ph-bold ph-microsoft-excel-logo" style="font-size: 1.15rem; color: #d4af37;"></i>
+          <span id="btn-sync-sheets-text">Sync to Google Sheets</span>
+        </button>
+
+        <div class="system-status-indicator">
+          <span class="status-pulse-dot"></span>
+          <span>Cloud Sync Active (Render API)</span>
+        </div>
       </div>
     </div>
 
@@ -3819,6 +3826,44 @@
     function handleLogout() {
       localStorage.clear();
       window.location.href = 'login.html';
+    }
+
+    async function handleSyncToSheets() {
+      const btn = document.getElementById('btn-sync-sheets');
+      const textSpan = document.getElementById('btn-sync-sheets-text');
+      const origText = textSpan ? textSpan.innerText : 'Sync to Google Sheets';
+      const token = localStorage.getItem('token');
+
+      if (btn) btn.disabled = true;
+      if (textSpan) textSpan.innerText = 'Syncing Database to Sheets...';
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/bookings/sync-sheets`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to sync to Google Sheets.');
+        }
+
+        const counts = data.counts || {};
+        alert(`Google Sheets Synchronized Successfully! 🎉\n\n` +
+              `🚗 Bookings Synced: ${counts.bookings || 0}\n` +
+              `👨‍✈️ Drivers Synced: ${counts.drivers || 0}\n` +
+              `👥 Customers Synced: ${counts.customers || 0}\n` +
+              `🚙 Fleet Cars Synced: ${counts.cars || 0}\n\n` +
+              `All sections in your Google Sheet have been updated with complete details.`);
+      } catch (err) {
+        alert(`Google Sheet Sync Notice: ${err.message}`);
+      } finally {
+        if (btn) btn.disabled = false;
+        if (textSpan) textSpan.innerText = origText;
+      }
     }
 
     // Initialize data on load
