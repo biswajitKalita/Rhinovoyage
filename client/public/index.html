@@ -298,12 +298,14 @@
       visibility: hidden;
       transform: translateY(10px);
       transition: all 0.3s ease;
-      z-index: 1000;
+      z-index: 1020;
     }
-    .nav-profile:hover .nav-profile-dropdown {
+    .nav-profile:hover .nav-profile-dropdown,
+    .nav-profile.active .nav-profile-dropdown {
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
+      pointer-events: auto;
     }
     .nav-profile-dropdown a {
       display: block;
@@ -317,6 +319,12 @@
     .nav-profile-dropdown a:hover {
       background: var(--orange-pale);
       color: var(--orange);
+    }
+    
+    @media (min-width: 769px) {
+      .nav-drawer-only {
+        display: none !important;
+      }
     }
     
     .nav-right-actions {
@@ -381,15 +389,15 @@
       </a>
       <ul class="nav-links">
         <li><a href="login.html" id="nav-portal-link">Login / Join</a></li>
+        <li class="nav-drawer-only nav-auth-only" style="display: none;"><a href="#" id="nav-drawer-dashboard">Dashboard</a></li>
         <li><a href="#packages">Packages</a></li>
         <li><a href="#sivasagar">Sivasagar</a></li>
         <li><a href="#reviews">Reviews</a></li>
         <li><a href="#about">About Us</a></li>
+        <li class="nav-drawer-only nav-auth-only" style="display: none;"><a href="#" onclick="handleLogout()" id="nav-drawer-logout" style="color: #ff7675;">Log Out</a></li>
       </ul>
       
       <div class="nav-right-actions">
-        <a href="#booking" class="nav-cta" id="nav-cta">Book Now</a>
-        
         <!-- Profile Section (Hidden by default, shown when logged in) -->
         <div class="nav-profile" id="nav-profile">
           <div class="nav-profile-avatar" id="nav-profile-initial">?</div>
@@ -1571,15 +1579,36 @@
     const navUser = JSON.parse(localStorage.getItem('user') || 'null');
     const portalLink = document.getElementById('nav-portal-link');
     const navProfile = document.getElementById('nav-profile');
+    const drawerDashboard = document.getElementById('nav-drawer-dashboard');
+    const authOnlyItems = document.querySelectorAll('.nav-auth-only');
 
     if (navToken && navUser) {
       if (portalLink) portalLink.parentElement.style.display = 'none'; // Hide "Login / Join"
+      const dashUrl = navUser.role === 'admin' ? 'admin-dashboard.html' : (navUser.role === 'driver' ? 'driver-dashboard.html' : 'user-dashboard.html');
       if (navProfile) {
         navProfile.style.display = 'flex';
         document.getElementById('nav-profile-name').innerText = navUser.name.split(' ')[0];
         document.getElementById('nav-profile-initial').innerText = navUser.name.charAt(0).toUpperCase();
-        document.getElementById('nav-profile-dashboard').href = navUser.role === 'admin' ? 'admin-dashboard.html' : (navUser.role === 'driver' ? 'driver-dashboard.html' : 'user-dashboard.html');
+        document.getElementById('nav-profile-dashboard').href = dashUrl;
       }
+      if (drawerDashboard) {
+        drawerDashboard.href = dashUrl;
+      }
+      authOnlyItems.forEach(el => el.style.display = 'block');
+    } else {
+      authOnlyItems.forEach(el => el.style.display = 'none');
+    }
+
+    if (navProfile) {
+      navProfile.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return;
+        navProfile.classList.toggle('active');
+      });
+      document.addEventListener('click', (e) => {
+        if (!navProfile.contains(e.target)) {
+          navProfile.classList.remove('active');
+        }
+      });
     }
 
     window.handleLogout = function() {

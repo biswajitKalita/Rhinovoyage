@@ -90,6 +90,12 @@ nav.scrolled {
     color: var(--orange-light);
 }
 
+@media (min-width: 769px) {
+    .nav-drawer-only {
+        display: none !important;
+    }
+}
+
 /* Right Actions Container */
 .nav-right-actions {
     display: flex;
@@ -182,6 +188,8 @@ nav.scrolled {
     .nav-links.active li:nth-child(3) { transition-delay: 0.24s; }
     .nav-links.active li:nth-child(4) { transition-delay: 0.32s; }
     .nav-links.active li:nth-child(5) { transition-delay: 0.40s; }
+    .nav-links.active li:nth-child(6) { transition-delay: 0.48s; }
+    .nav-links.active li:nth-child(7) { transition-delay: 0.56s; }
 
     .nav-links a {
         font-size: 1.25rem;
