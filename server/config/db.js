@@ -35,16 +35,19 @@ class DatabaseManager {
   async connect() {
     const mongoUri = process.env.MONGO_URI;
     if (!mongoUri) {
+      this.lastMongoError = 'MONGO_URI is missing in environment';
       console.warn('MONGO_URI is missing in environment. Running on filesystem JSON database fallback.');
       this.isConnected = false;
       return;
     }
     try {
-      await mongoose.connect(mongoUri);
+      await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
       this.isConnected = true;
+      this.lastMongoError = null;
       console.log('MongoDB successfully connected.');
       await this._seedInitialData();
     } catch (error) {
+      this.lastMongoError = error.message;
       console.warn('MongoDB connection notice:', error.message, '— Running on filesystem JSON database fallback.');
       this.isConnected = false;
     }

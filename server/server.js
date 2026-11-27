@@ -88,8 +88,10 @@ app.get('/api/health', async (req, res) => {
     status: 'healthy',
     hasBrevoKey: !!(process.env.BREVO_API_KEY && process.env.BREVO_API_KEY.startsWith('xkeysib-')),
     emailFrom: process.env.EMAIL_FROM || 'info@rhinovoyage.com',
+    hasMongoUri: !!process.env.MONGO_URI,
     dbConnected: db.isConnected,
     dbMode: db.isConnected ? 'MongoDB Atlas' : 'Local JSON Fallback',
+    dbError: db.lastMongoError || null,
     bookingsCount: bCount,
     usersCount: uCount,
     timestamp: new Date().toISOString()
