@@ -380,12 +380,12 @@ async function sendWelcomeEmail(user) {
 }
 
 /**
- * 2. Send Admin Notification Email when someone joins the platform
+ * 2. Send Admin/Founder Notification Email when someone joins the platform
  */
 async function sendAdminNewUserAlert(user) {
   if (!user) return;
 
-  const adminEmail = process.env.ADMIN_ALERT_EMAIL || 'rhinovoyage@gmail.com';
+  const founderEmail = process.env.FOUNDER_EMAIL || process.env.ADMIN_ALERT_EMAIL || 'jogeswarkalita20@gmail.com';
   const isDriver = user.role === 'driver';
   const userName = user.name || 'New Member';
   const userPhone = user.phone || 'Not provided';
@@ -393,7 +393,10 @@ async function sendAdminNewUserAlert(user) {
   const userRef = user.id ? user.id.toUpperCase() : `RV-${Math.floor(100000 + Math.random() * 900000)}`;
   const regDate = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-  const subject = `🔔 New ${userRole} Registered: ${userName} — RhinoVoyage Platform`;
+  const cleanPhone = (userPhone || '').replace(/\D/g, '');
+  const waPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+
+  const subject = `🔔 NEW ${userRole.toUpperCase()} JOINED: ${userName} (${userPhone || 'Phone on file'}) — RhinoVoyage`;
 
   const detailsTable = isDriver ? `
     <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
@@ -435,7 +438,7 @@ async function sendAdminNewUserAlert(user) {
         </tr>
       </table>
     </div>
-    <p style="color: #4a5568; font-size: 14px;"><strong>Action Required:</strong> Please log in to the Admin Operations Dashboard to verify documents and approve this driver partner.</p>
+    <p style="color: #4a5568; font-size: 14px;"><strong>Action Required:</strong> Log in to the Admin Operations Dashboard to verify documents and approve this driver partner.</p>
   ` : `
     <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
       <div style="background: #0f382c; color: #ffffff; padding: 12px 20px; font-weight: 700; font-size: 14px;">
@@ -470,9 +473,26 @@ async function sendAdminNewUserAlert(user) {
     </div>
   `;
 
+  const actionButtons = cleanPhone ? `
+    <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; padding: 18px 20px; margin: 20px 0; text-align: center;">
+      <div style="font-size: 12.5px; font-weight: 700; color: #0f382c; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">
+        ⚡ Instant Founder Action: Contact Member
+      </div>
+      <div>
+        <a href="https://wa.me/${waPhone}?text=Hello%20${encodeURIComponent(userName)},%20welcome%20to%20RhinoVoyage!" style="background: #25D366; color: #ffffff; text-decoration: none; padding: 10px 22px; border-radius: 50px; font-weight: 700; font-size: 13.5px; display: inline-block; margin: 4px; box-shadow: 0 4px 12px rgba(37,211,102,0.25);">
+          💬 WhatsApp Member (${userPhone})
+        </a>
+        <a href="tel:${cleanPhone}" style="background: #0f382c; color: #ffffff; text-decoration: none; padding: 10px 22px; border-radius: 50px; font-weight: 700; font-size: 13.5px; display: inline-block; margin: 4px; box-shadow: 0 4px 12px rgba(15,56,44,0.25);">
+          📞 Call Member
+        </a>
+      </div>
+    </div>
+  ` : '';
+
   const contentHtml = `
     <h2 style="margin-top: 0; color: #0f382c; font-size: 22px; font-weight: 700;">New ${userRole} Registered!</h2>
     <p style="color: #4a5568; font-size: 15px;">A new account was just created on the RhinoVoyage platform. Below are the submitted details:</p>
+    ${actionButtons}
     ${detailsTable}
   `;
 
@@ -485,8 +505,8 @@ async function sendAdminNewUserAlert(user) {
   });
 
   return sendBrevoEmail({
-    to: adminEmail,
-    toName: 'RhinoVoyage Operations',
+    to: founderEmail,
+    toName: 'RhinoVoyage Founder',
     subject,
     htmlContent: html
   });
@@ -563,68 +583,214 @@ async function sendBookingReceivedEmail(booking) {
 }
 
 /**
- * Send Admin New Booking Alert
+ * Send Admin/Founder New Booking Alert (Urgent Lead Notification)
  */
 async function sendAdminNewBookingAlert(booking) {
-  const adminEmail = process.env.ADMIN_ALERT_EMAIL || 'rhinovoyage@gmail.com';
+  const founderEmail = process.env.FOUNDER_EMAIL || process.env.ADMIN_ALERT_EMAIL || 'jogeswarkalita20@gmail.com';
   const ref = (booking.id || '').toUpperCase().substring(0, 8);
   const customerName = booking.name || 'Traveler';
-  const subject = `🔔 New Booking Request #${ref} from ${customerName} — RhinoVoyage`;
+  const customerPhone = booking.phone || '';
+  const customerEmail = booking.userEmail || booking.email || 'Not provided';
+  const serviceType = booking.serviceType || 'Car Rental';
+  const vehicle = booking.vehicle || 'Standard Vehicle';
+  const packageName = booking.packageName || '';
+  const pickupSchedule = `${booking.pickupDate || 'Scheduled'} • ${booking.pickupTime || 'Morning'}`;
+  const route = `${booking.pickupLocation || 'Guwahati'} → ${booking.dropLocation || booking.packageName || 'Destination'}`;
+  const amount = booking.totalAmount ? `₹${booking.totalAmount}` : 'Flexible / Quoted on Request';
+  const notes = booking.details || 'None provided';
+  const alertTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+  const cleanPhone = (customerPhone || '').replace(/\D/g, '');
+  const waPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+
+  const subject = `🚨 URGENT LEAD: Booking #${ref} from ${customerName} (${customerPhone || 'Phone on file'})`;
 
   const contentHtml = `
-    <h2 style="margin-top: 0; color: #0f382c; font-size: 22px; font-weight: 700;">New Journey Reservation #${ref}</h2>
-    <p style="color: #4a5568; font-size: 15px;">A new booking request has been submitted. Review journey details below:</p>
-    
+    <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;">
+      <div style="color: #991b1b; font-size: 17px; font-weight: 800; letter-spacing: 0.5px;">
+        🔥 NEW CUSTOMER BOOKING LEAD #${ref}
+      </div>
+      <p style="color: #7f1d1d; font-size: 13.5px; margin: 6px 0 0 0;">
+        A customer has submitted a trip booking request on <strong>RhinoVoyage</strong>. Contact this lead immediately via WhatsApp or Phone to confirm and secure the booking!
+      </p>
+    </div>
+
+    <!-- Quick Action Bar -->
+    <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; text-align: center;">
+      <div style="font-size: 12.5px; font-weight: 700; color: #0f382c; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">
+        ⚡ Instant Founder Action: Contact Lead On Mobile
+      </div>
+      <div>
+        ${cleanPhone ? `
+          <a href="https://wa.me/${waPhone}?text=Hello%20${encodeURIComponent(customerName)},%20thank%20you%20for%20choosing%20RhinoVoyage!%20I%20am%20reaching%20out%20regarding%20your%20journey%20reservation%20%23${ref}%20(${encodeURIComponent(route)})." style="background: #25D366; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; font-size: 13.5px; display: inline-block; box-shadow: 0 4px 12px rgba(37,211,102,0.3); margin: 4px;">
+            💬 WhatsApp Lead (${customerPhone})
+          </a>
+          <a href="tel:${cleanPhone}" style="background: #0f382c; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; font-size: 13.5px; display: inline-block; box-shadow: 0 4px 12px rgba(15,56,44,0.3); margin: 4px;">
+            📞 Call Now (${customerPhone})
+          </a>
+        ` : ''}
+        <a href="https://rhinovoyage.com/admin-dashboard.html" style="background: #d4af37; color: #071d16; text-decoration: none; padding: 12px 24px; border-radius: 50px; font-weight: 800; font-size: 13.5px; display: inline-block; box-shadow: 0 4px 12px rgba(212,175,55,0.3); margin: 4px;">
+          🖥️ Open Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Booking Dossier -->
     <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
-      <div style="background: #0f382c; color: #ffffff; padding: 12px 20px; font-weight: 700; font-size: 14px;">
-        BOOKING DOSSIER &bull; REF #${ref}
+      <div style="background: #0f382c; color: #ffffff; padding: 12px 20px; font-weight: 700; font-size: 14px; letter-spacing: 0.5px;">
+        COMPLETE TRIP & CUSTOMER DOSSIER &bull; REF #${ref}
       </div>
       <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
         <tr style="border-bottom: 1px solid #edf2f7;">
-          <td style="padding: 12px 20px; color: #718096; width: 40%;">Customer Name</td>
-          <td style="padding: 12px 20px; color: #2d3748; font-weight: 700;">${customerName}</td>
+          <td style="padding: 12px 20px; color: #718096; width: 38%;">Customer Name</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 700; font-size: 15px;">${customerName}</td>
         </tr>
         <tr style="border-bottom: 1px solid #edf2f7;">
-          <td style="padding: 12px 20px; color: #718096;">Customer Email</td>
-          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.userEmail || booking.email || 'Not provided'}</td>
+          <td style="padding: 12px 20px; color: #718096;">Phone / WhatsApp</td>
+          <td style="padding: 12px 20px; color: #0f382c; font-weight: 700;">${customerPhone || 'Not provided'}</td>
         </tr>
         <tr style="border-bottom: 1px solid #edf2f7;">
-          <td style="padding: 12px 20px; color: #718096;">Customer Phone</td>
-          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.phone || 'Not provided'}</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #edf2f7;">
-          <td style="padding: 12px 20px; color: #718096;">Pickup Schedule</td>
-          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.pickupDate} &bull; ${booking.pickupTime || 'Morning'}</td>
+          <td style="padding: 12px 20px; color: #718096;">Email Address</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${customerEmail}</td>
         </tr>
         <tr style="border-bottom: 1px solid #edf2f7;">
           <td style="padding: 12px 20px; color: #718096;">Route</td>
-          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.pickupLocation || 'Guwahati'} &rarr; ${booking.dropLocation || booking.packageName || 'Destination'}</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 700;">${route}</td>
         </tr>
         <tr style="border-bottom: 1px solid #edf2f7;">
-          <td style="padding: 12px 20px; color: #718096;">Vehicle / Service</td>
-          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.vehicle} (${booking.serviceType})</td>
+          <td style="padding: 12px 20px; color: #718096;">Schedule</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${pickupSchedule}</td>
+        </tr>
+        ${booking.returnDate ? `
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Return Date</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.returnDate}</td>
+        </tr>` : ''}
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Vehicle & Service</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${vehicle} (${serviceType}${packageName ? ` • ${packageName}` : ''})</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Travelers Count</td>
+          <td style="padding: 12px 20px; color: #2d3748;">${booking.travelers || '1'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Payment Method</td>
+          <td style="padding: 12px 20px; color: #2d3748; font-weight: 600;">${booking.paymentMethod || 'Flexible'}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Estimated Fare</td>
+          <td style="padding: 12px 20px; color: #0f382c; font-weight: 700; font-size: 15px;">${amount}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 20px; color: #718096;">Customer Notes</td>
+          <td style="padding: 12px 20px; color: #4a5568; font-style: italic;">${notes}</td>
         </tr>
         <tr>
-          <td style="padding: 12px 20px; color: #718096;">Payment Method</td>
-          <td style="padding: 12px 20px; color: #0f382c; font-weight: 700;">${booking.paymentMethod || 'Flexible'}</td>
+          <td style="padding: 12px 20px; color: #718096;">Lead Created At</td>
+          <td style="padding: 12px 20px; color: #718096;">${alertTime} (IST)</td>
         </tr>
       </table>
     </div>
-
-    <p style="color: #4a5568; font-size: 14px;"><strong>Action Required:</strong> Log in to the Admin Dashboard to assign an available chauffeur and confirm the reservation.</p>
   `;
 
   const html = wrapEmailHtml({
     title: subject,
-    preheader: `New booking request #${ref} received from ${customerName}.`,
+    preheader: `🔥 Urgent Lead #${ref}: ${customerName} booked ${vehicle} for ${route}. Phone: ${customerPhone}`,
     contentHtml,
     actionUrl: 'https://rhinovoyage.com/admin-dashboard.html',
-    actionText: 'Assign Driver & Approve'
+    actionText: 'Open Admin Dashboard'
   });
 
   return sendBrevoEmail({
-    to: adminEmail,
-    toName: 'RhinoVoyage Operations',
+    to: founderEmail,
+    toName: 'RhinoVoyage Founder',
+    subject,
+    htmlContent: html
+  });
+}
+
+/**
+ * Send Real-Time Founder Alert on User Login / Sign-In Activity
+ */
+async function sendFounderLoginAlert(user, loginMethod = 'Web Portal') {
+  if (!user) return;
+  const founderEmail = process.env.FOUNDER_EMAIL || process.env.ADMIN_ALERT_EMAIL || 'jogeswarkalita20@gmail.com';
+
+  const userName = user.name || 'User';
+  const userEmail = user.email || 'Not provided';
+  const userPhone = user.phone || 'Not provided';
+  const userRole = (user.role || 'user').toUpperCase();
+  const loginTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+  const cleanPhone = (userPhone || '').replace(/\D/g, '');
+  const waPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+
+  const subject = `👤 User Signed In: ${userName} (${userRole}) — RhinoVoyage Activity`;
+
+  const contentHtml = `
+    <div style="background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;">
+      <strong style="color: #1e40af; font-size: 14px;">⚡ Founder Real-Time Activity Notice:</strong>
+      <span style="color: #1e3a8a; font-size: 13px;"> A user just signed in to RhinoVoyage.</span>
+    </div>
+
+    <h2 style="margin-top: 0; color: #0f382c; font-size: 20px; font-weight: 700;">User Active On Platform</h2>
+    <p style="color: #4a5568; font-size: 14px;">Below are the details of the active user session:</p>
+    
+    <div style="background: #ffffff; border: 1px solid #d4dfdb; border-radius: 12px; overflow: hidden; margin: 20px 0;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 18px; color: #718096; width: 38%;">User Name</td>
+          <td style="padding: 12px 18px; color: #2d3748; font-weight: 700;">${userName}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 18px; color: #718096;">Role</td>
+          <td style="padding: 12px 18px; color: #0f382c; font-weight: 700;">
+            <span style="background: #e6f4ea; color: #137333; padding: 3px 8px; border-radius: 4px; font-size: 12px;">${userRole}</span>
+          </td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 18px; color: #718096;">Email Address</td>
+          <td style="padding: 12px 18px; color: #2d3748; font-weight: 600;">${userEmail}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 18px; color: #718096;">Phone / WhatsApp</td>
+          <td style="padding: 12px 18px; color: #2d3748; font-weight: 600;">${userPhone}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #edf2f7;">
+          <td style="padding: 12px 18px; color: #718096;">Sign-In Method</td>
+          <td style="padding: 12px 18px; color: #2d3748;">${loginMethod}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 18px; color: #718096;">Timestamp</td>
+          <td style="padding: 12px 18px; color: #2d3748;">${loginTime} (IST)</td>
+        </tr>
+      </table>
+    </div>
+
+    ${cleanPhone ? `
+      <div style="text-align: center; margin: 20px 0;">
+        <a href="https://wa.me/${waPhone}?text=Hello%20${encodeURIComponent(userName)},%20welcome%20back%20to%20RhinoVoyage!" style="background: #25D366; color: #ffffff; text-decoration: none; padding: 10px 22px; border-radius: 30px; font-weight: 700; font-size: 13px; display: inline-block; margin-right: 8px;">
+          💬 WhatsApp User
+        </a>
+        <a href="tel:${cleanPhone}" style="background: #0f382c; color: #ffffff; text-decoration: none; padding: 10px 22px; border-radius: 30px; font-weight: 700; font-size: 13px; display: inline-block;">
+          📞 Call User
+        </a>
+      </div>
+    ` : ''}
+  `;
+
+  const html = wrapEmailHtml({
+    title: subject,
+    preheader: `${userName} (${userRole}) signed in to RhinoVoyage at ${loginTime}.`,
+    contentHtml,
+    actionUrl: 'https://rhinovoyage.com/admin-dashboard.html',
+    actionText: 'Open Admin Dashboard'
+  });
+
+  return sendBrevoEmail({
+    to: founderEmail,
+    toName: 'RhinoVoyage Founder',
     subject,
     htmlContent: html
   });
@@ -860,6 +1026,7 @@ module.exports = {
   sendAdminNewBookingAlert,
   sendBookingStatusEmail,
   sendDriverTripDispatchEmail,
-  sendCustomerDriverAssignedEmail
+  sendCustomerDriverAssignedEmail,
+  sendFounderLoginAlert
 };
 

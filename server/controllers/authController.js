@@ -4,7 +4,7 @@ const db = require('../config/db');
 const { syncUserLog } = require('../utils/sheets');
 const { saveBase64Image } = require('../utils/upload');
 const { OAuth2Client } = require('google-auth-library');
-const { sendWelcomeEmail, sendAdminNewUserAlert } = require('../utils/sendEmail');
+const { sendWelcomeEmail, sendAdminNewUserAlert, sendFounderLoginAlert } = require('../utils/sendEmail');
 
 const OLD_GOOGLE_CLIENT_ID = '948276512640-k0jviqs3neh01trevc0alctid7gg5qpk.apps.googleusercontent.com';
 const REAL_GOOGLE_CLIENT_ID = '594259583569-3pj03um6vqosf6qe9v44r64jj80gtq4b.apps.googleusercontent.com';
@@ -150,6 +150,9 @@ exports.login = async (req, res) => {
     // Sync user login to Google Sheet
     syncUserLog(user, 'login').catch(err => console.error('Login sheet sync error:', err));
 
+    // Send instant real-time login alert to founder (jogeswarkalita20@gmail.com)
+    sendFounderLoginAlert(user, 'Standard Web Login').catch(err => console.error('Founder login alert error:', err));
+
     sendTokenResponse(user, 200, res);
   } catch (error) {
     console.error('Login controller error:', error);
@@ -221,6 +224,8 @@ exports.googleSignIn = async (req, res) => {
       sendAdminNewUserAlert(user).catch(err => console.error('Google user admin alert error:', err));
     } else {
       console.log(`[Google Auth] Existing user ${user.email} logged in. Welcome email skipped.`);
+      // Send real-time login alert to founder
+      sendFounderLoginAlert(user, 'Google OAuth Sign-In').catch(err => console.error('Founder Google login alert error:', err));
     }
 
     sendTokenResponse(user, 200, res);
