@@ -85,3 +85,93 @@ exports.deleteCar = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error deleting car.' });
   }
 };
+
+// @desc    Get Current Fleet Partner's Cars
+// @route   GET /api/cars/my-fleet
+// @access  Private (fleet / admin)
+exports.getMyFleetCars = async (req, res) => {
+  try {
+    const user = req.user || {};
+    if (!user.id) {
+      return res.status(401).json({ success: false, message: 'Unauthorized. Partner profile not found.' });
+    }
+
+    let cars = [];
+    if (user.role === 'admin') {
+      cars = await db.find('cars');
+    } else {
+      const allCars = await db.find('cars');
+      const userEmail = (user.email || '').toLowerCase().trim();
+      const userPhone = (user.phone || '').trim();
+      cars = allCars.filter(c => {
+        const cEmail = (c.ownerEmail || '').toLowerCase().trim();
+        const cPhone = (c.ownerPhone || '').trim();
+        return (c.userId && c.userId === user.id) || 
+               (userEmail && cEmail === userEmail) || 
+               (userPhone && cPhone === userPhone);
+      });
+    }
+    res.status(200).json({ success: true, count: cars.length, cars });
+  } catch (error) {
+    console.error('Get my fleet cars error:', error);
+    res.status(500).json({ success: false, message: 'Server error retrieving fleet vehicles.' });
+  }
+};
+
+// @desc    Attach a new car to Fleet Partner account
+// @route   POST /api/cars/attach-vehicle
+// @access  Private (fleet / admin)
+exports.attachFleetCar = async (req, res) => {
+  try {
+    const { modelName, plateNumber, category, rcPhoto, carImage } = req.body;
+    const user = req.user || {};
+    if (!user.id) {
+      return res.status(401).json({ success: false, message: 'Unauthorized. Partner profile not found.' });
+    }
+
+    if (!modelName || !plateNumber || !category || !rcPhoto) {
+      return res.status(400).json({ success: false, message: 'Please provide model name, plate number, category, and RC photo.' });
+    }
+
+    const cleanPlate = plateNumber.toUpperCase().trim();
+    const allCars = await db.find('cars');
+    const existing = allCars.find(c => (c.plateNumber || '').toUpperCase().trim() === cleanPlate);
+    if (existing) {
+      return res.status(400).json({ success: false, message: `Vehicle with plate number ${cleanPlate} is already registered in the fleet.` });
+    }
+
+    let savedRcPath = '';
+    let savedCarImagePath = '';
+    try {
+      savedRcPath = saveBase64Image(rcPhoto, 'rc');
+      savedCarImagePath = carImage ? saveBase64Image(carImage, 'car') : savedRcPath;
+    } catch (uploadErr) {
+      return res.status(400).json({ success: false, message: uploadErr.message });
+    }
+
+    const newCar = await db.insert('cars', {
+      owner: user.name || '',
+      ownerEmail: (user.email || '').toLowerCase().trim(),
+      ownerPhone: user.phone || '',
+      userId: user.id,
+      modelName: modelName.trim(),
+      plateNumber: cleanPlate,
+      category,
+      rcPhoto: savedRcPath,
+      carImage: savedCarImagePath,
+      status: 'Pending',
+      entryDate: new Date().toISOString().split('T')[0]
+    });
+
+    syncCar(newCar, 'Fleet Vehicle Attached by Partner').catch(err => console.error('Car sheet sync error:', err));
+
+    res.status(201).json({
+      success: true,
+      message: 'Vehicle attached successfully and submitted for verification.',
+      car: newCar
+    });
+  } catch (error) {
+    console.error('Attach car error:', error);
+    res.status(500).json({ success: false, message: 'Server error attaching vehicle.' });
+  }
+};

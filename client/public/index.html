@@ -998,6 +998,7 @@
           <li><a href="#sivasagar">Sivasagar Tour</a></li>
           <li><a href="#booking">Book Now</a></li>
           <li><a href="driver-login.html" style="color: var(--orange, #E8651A); font-weight: 600;">Driver Partner Portal</a></li>
+          <li><a href="fleet-login.html" style="color: var(--orange, #E8651A); font-weight: 600;">Fleet Partner Portal (Attach Taxi)</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1026,7 +1027,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2026 RhinoVoyage. All rights reserved. | <a href="driver-login.html">Driver Portal</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a>
+      <p>© 2026 RhinoVoyage. All rights reserved. | <a href="driver-login.html">Driver Portal</a> · <a href="fleet-login.html">Fleet Portal</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a>
         · <a href="cancellation.html">Cancellation</a> · <a href="refund.html">Refunds</a> · <a href="billing.html">GST
           & Billing</a></p>
       <div class="social-links">
@@ -1584,7 +1585,11 @@
 
     if (navToken && navUser) {
       if (portalLink) portalLink.parentElement.style.display = 'none'; // Hide "Login / Join"
-      const dashUrl = navUser.role === 'admin' ? 'admin-dashboard.html' : (navUser.role === 'driver' ? 'driver-dashboard.html' : 'user-dashboard.html');
+      const dashUrl = navUser.role === 'admin' 
+        ? 'admin-dashboard.html' 
+        : (navUser.role === 'fleet' 
+          ? 'fleet-dashboard.html' 
+          : (navUser.role === 'driver' ? 'driver-dashboard.html' : 'user-dashboard.html'));
       if (navProfile) {
         navProfile.style.display = 'flex';
         document.getElementById('nav-profile-name').innerText = navUser.name.split(' ')[0];

@@ -208,6 +208,61 @@ exports.getUserBookings = async (req, res) => {
       }).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
       return res.status(200).json({ success: true, count: enriched.length, bookings: enriched });
+    } else if (req.user.role === 'fleet') {
+      // Find all vehicles belonging to this fleet partner
+      const allCars = await db.find('cars');
+      const userEmail = (req.user.email || '').toLowerCase().trim();
+      const userPhone = (req.user.phone || '').trim();
+      const partnerCars = allCars.filter(c => {
+        const cEmail = (c.ownerEmail || '').toLowerCase().trim();
+        const cPhone = (c.ownerPhone || '').trim();
+        return (c.userId && c.userId === req.user.id) ||
+               (userEmail && cEmail === userEmail) ||
+               (userPhone && cPhone === userPhone);
+      });
+
+      const partnerPlates = partnerCars.map(c => (c.plateNumber || '').toUpperCase().trim()).filter(Boolean);
+      const partnerCarIds = partnerCars.map(c => c.id).filter(Boolean);
+
+      // Find all bookings matching fleet partner
+      const allBookings = await db.find('bookings');
+      bookings = allBookings.filter(b => {
+        const bFleetEmail = (b.fleetPartnerEmail || '').toLowerCase().trim();
+        const bFleetPhone = (b.fleetPartnerPhone || '').trim();
+        const bPlate = (b.carNumber || '').toUpperCase().trim();
+        const bCarId = b.carId;
+
+        return (userEmail && bFleetEmail === userEmail) ||
+               (userPhone && bFleetPhone === userPhone) ||
+               (bPlate && partnerPlates.includes(bPlate)) ||
+               (bCarId && partnerCarIds.includes(bCarId));
+      });
+
+      // Enrich and sanitize for fleet partner (hide customer billing/margins)
+      const enriched = bookings.map(b => {
+        const { pickup, drop } = extractLocations(b.details, b.pickupLocation, b.dropLocation);
+        const { invoice, totalAmount, subtotal, gstAmount, baseAmount, ...safeFields } = b;
+        return {
+          ...safeFields,
+          pickupLocation: pickup,
+          dropLocation: drop,
+          fleetPayment: Number(b.fleetPayment || 0),
+          fleetPayStatus: b.fleetPayStatus || 'Pending',
+          fleetPayMode: b.fleetPayMode || 'Online',
+          fleetPayTxn: b.fleetPayTxn || '',
+          fleetPaidAt: b.fleetPaidAt || null,
+          fleetNotes: b.fleetNotes || '',
+          carModel: b.carModel || '',
+          carNumber: b.carNumber || ''
+        };
+      }).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+      return res.status(200).json({
+        success: true,
+        count: enriched.length,
+        bookings: enriched,
+        cars: partnerCars
+      });
     } else {
       bookings = await db.find('bookings', { userId: req.user.id });
     }

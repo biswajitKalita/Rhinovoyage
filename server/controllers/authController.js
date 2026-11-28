@@ -45,7 +45,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, phone, role, aadhar, license, aadharPhoto, licensePhoto } = req.body;
+    const { name, email, password, phone, role, aadhar, license, aadharPhoto, licensePhoto, plateNumber, modelName, category, rcPhoto } = req.body;
 
     if (!name || !email || !password || !phone) {
       return res.status(400).json({ success: false, message: 'Please provide all required fields (name, email, password, phone).' });
@@ -60,6 +60,21 @@ exports.register = async (req, res) => {
       }
     }
 
+    if (role === 'fleet') {
+      if (!aadhar) {
+        return res.status(400).json({ success: false, message: 'Please provide your Aadhar Card Number.' });
+      }
+      if (!plateNumber || !modelName || !category) {
+        return res.status(400).json({ success: false, message: 'Please provide your vehicle details (Car Number, Model Name, and Category).' });
+      }
+      if (!aadharPhoto) {
+        return res.status(400).json({ success: false, message: 'Please upload your Aadhar Card photo.' });
+      }
+      if (!rcPhoto) {
+        return res.status(400).json({ success: false, message: 'Please upload your Vehicle RC document/photo.' });
+      }
+    }
+
     // Check if user already exists
     const existingUser = await db.findOne('users', { email: email.toLowerCase() });
     if (existingUser) {
@@ -71,7 +86,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create user data
-    const userRole = role === 'driver' ? 'driver' : 'user';
+    const userRole = role === 'driver' ? 'driver' : (role === 'fleet' ? 'fleet' : 'user');
     const insertData = {
       name,
       email: email.toLowerCase().trim(),
@@ -92,9 +107,41 @@ exports.register = async (req, res) => {
       } catch (uploadErr) {
         return res.status(400).json({ success: false, message: uploadErr.message });
       }
+    } else if (userRole === 'fleet') {
+      try {
+        insertData.aadhar = aadhar;
+        insertData.aadharPhoto = saveBase64Image(aadharPhoto, 'aadhar');
+        insertData.verificationStatus = 'Pending';
+      } catch (uploadErr) {
+        return res.status(400).json({ success: false, message: uploadErr.message });
+      }
     }
 
     const newUser = await db.insert('users', insertData);
+
+    // If fleet partner, automatically register initial vehicle in cars collection
+    if (userRole === 'fleet') {
+      try {
+        const savedRcPath = saveBase64Image(rcPhoto, 'rc');
+        const initialCar = await db.insert('cars', {
+          owner: name,
+          ownerEmail: email.toLowerCase().trim(),
+          ownerPhone: phone,
+          userId: newUser.id,
+          modelName: modelName.trim(),
+          plateNumber: plateNumber.toUpperCase().trim(),
+          category,
+          rcPhoto: savedRcPath,
+          carImage: savedRcPath,
+          status: 'Pending',
+          entryDate: new Date().toISOString().split('T')[0]
+        });
+        const { syncCar } = require('../utils/sheets');
+        syncCar(initialCar, 'Fleet Partner Vehicle Registered').catch(err => console.error('Car sheet sync error:', err));
+      } catch (carErr) {
+        console.error('Initial fleet car registration notice:', carErr);
+      }
+    }
 
     // Sync user registration to Google Sheet
     syncUserLog(newUser, 'register').catch(err => console.error('Register sheet sync error:', err));

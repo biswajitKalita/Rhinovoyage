@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0D281E">
+  <title>Fleet Partner Dashboard — RhinoVoyage Operations</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="./config.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Space Grotesk', monospace;
+
+      --bg: #F4F6F8;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+      --border-subtle: #EDF2F7;
+
+      --green-dark: #0D281E;
+      --green: #1B4332;
+      --green-mid: #2D6A4F;
+      --emerald: #10B981;
+      --emerald-dark: #059669;
+      --emerald-pale: #ECFDF5;
+
+      --orange: #EA580C;
+      --orange-pale: #FFF7ED;
+
+      --blue: #2563EB;
+      --blue-pale: #EFF6FF;
+
+      --amber: #D97706;
+      --amber-pale: #FFFBEB;
+
+      --purple: #7C3AED;
+      --purple-pale: #F5F3FF;
+
+      --rose: #E11D48;
+      --rose-pale: #FFF1F2;
+
+      --text: #0F172A;
+      --text-sub: #475569;
+      --text-muted: #64748B;
+
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 10px 25px -4px rgba(15, 23, 42, 0.1), 0 4px 8px -2px rgba(15, 23, 42, 0.06);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-pill: 9999px;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    /* Header */
+    header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      height: 34px;
+      object-fit: contain;
+    }
+
+    .brand-text-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .header-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      background: #FEF3C7;
+      color: #92400E;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: inline-block;
+      width: fit-content;
+      margin-top: 2px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      padding: 4px 12px 4px 5px;
+      border-radius: var(--radius-pill);
+    }
+
+    .user-chip-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-chip-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-header-action {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      height: 36px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-header-action:hover {
+      background: #F1F5F9;
+      color: var(--text);
+    }
+
+    .btn-logout {
+      color: #DC2626;
+      border-color: #FECACA;
+    }
+
+    .btn-logout:hover {
+      background: #FEF2F2;
+      color: #991B1B;
+    }
+
+    /* Container */
+    main {
+      flex: 1;
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem 1rem;
+    }
+
+    /* Alert Banner */
+    .status-banner {
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
+      color: #92400E;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-banner i {
+      font-size: 1.25rem;
+      color: #D97706;
+      flex-shrink: 0;
+    }
+
+    /* Metrics Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.75rem;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .kpi-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+
+    .kpi-icon.vehicles { background: var(--blue-pale); color: var(--blue); }
+    .kpi-icon.trips { background: var(--purple-pale); color: var(--purple); }
+    .kpi-icon.earned { background: var(--emerald-pale); color: var(--emerald-dark); }
+    .kpi-icon.pending { background: var(--amber-pale); color: var(--amber); }
+    .kpi-icon.cleared { background: #ECFDF5; color: #047857; }
+
+    .kpi-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--text);
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .kpi-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* Segmented Navigation Tabs */
+    .tabs-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-pills {
+      display: inline-flex;
+      background: #E2E8F0;
+      padding: 4px;
+      border-radius: var(--radius-pill);
+      gap: 4px;
+    }
+
+    .tab-pill-btn {
+      background: transparent;
+      border: none;
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      padding: 7px 16px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab-pill-btn.active {
+      background: #FFFFFF;
+      color: var(--green);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    .tab-badge {
+      font-size: 0.7rem;
+      background: var(--border);
+      color: var(--text-sub);
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      font-weight: 800;
+    }
+
+    .tab-pill-btn.active .tab-badge {
+      background: var(--green-pale);
+      color: var(--green);
+    }
+
+    .btn-action-primary {
+      background: var(--green);
+      color: #FFFFFF;
+      border: none;
+      padding: 8px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 2px 6px rgba(27, 67, 50, 0.2);
+    }
+
+    .btn-action-primary:hover {
+      background: var(--green-dark);
+      transform: translateY(-1px);
+    }
+
+    /* Content Panels */
+    .dashboard-panel {
+      display: none;
+    }
+
+    .dashboard-panel.active {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* VEHICLES PANEL */
+    .vehicles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .vehicle-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.35rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .vehicle-card:hover {
+      border-color: var(--green-mid);
+      box-shadow: var(--shadow-md);
+    }
+
+    .vehicle-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .plate-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0F172A;
+      color: #F8FAFC;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.05em;
+      border: 1.5px solid #334155;
+    }
+
+    .plate-badge i {
+      color: #E2E8F0;
+    }
+
+    .status-pill {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-pill.verified { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
+    .status-pill.pending { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+
+    .vehicle-model {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .vehicle-category {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    .vehicle-stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: #F8FAFC;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      text-align: center;
+      gap: 4px;
+    }
+
+    .v-stat-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .v-stat-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .v-stat-val {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .vehicle-actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .vehicle-date {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .btn-view-doc {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+
+    .btn-view-doc:hover {
+      background: var(--green-pale);
+      border-color: var(--green-light);
+    }
+
+    /* TRIPS PANEL & FILTERS */
+    .filter-bar {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .filter-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .filter-select, .filter-input {
+      width: 100%;
+      height: 38px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      color: var(--text);
+      outline: none;
+      background: #FFFFFF;
+    }
+
+    .filter-select:focus, .filter-input:focus {
+      border-color: var(--green);
+    }
+
+    /* Table Styles */
+    .table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    th {
+      background: #F8FAFC;
+      color: var(--text-sub);
+      font-weight: 800;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #FAFAFA;
+    }
+
+    .trip-id-badge {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--green);
+      font-size: 0.82rem;
+    }
+
+    .route-display {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .route-pickup {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .route-drop {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+    }
+
+    .pay-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+    }
+
+    .pay-badge.paid { background: #ECFDF5; color: #047857; }
+    .pay-badge.pending { background: #FFFBEB; color: #B45309; }
+
+    .amount-display {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    /* PAYOUTS PANEL */
+    .payouts-summary-box {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .payout-box-col h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.8;
+      font-weight: 700;
+    }
+
+    .payout-box-col .big-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      margin-top: 4px;
+    }
+
+    .payout-box-metrics {
+      display: flex;
+      gap: 24px;
+    }
+
+    .p-metric-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .p-metric-label {
+      font-size: 0.74rem;
+      opacity: 0.75;
+      font-weight: 600;
+    }
+
+    .p-metric-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+
+    /* PROFILE PANEL */
+    .profile-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      max-width: 680px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .profile-avatar-lg {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #FFFFFF;
+      font-size: 1.4rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-title-col h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .profile-title-col p {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+    }
+
+    .profile-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-field-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .profile-field-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 3px;
+    }
+
+    .support-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .support-text h4 {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .support-text p {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+
+    .support-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-support-pill {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .btn-support-pill.whatsapp {
+      background: #25D366;
+      color: #FFFFFF;
+      border-color: #25D366;
+    }
+
+    .btn-support-pill:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      padding: 1.75rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .input-control {
+      width: 100%;
+      height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .input-control:focus {
+      border-color: var(--green);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--border-focus);
+    }
+
+    .empty-state p {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <img src="./logo.png" alt="RhinoVoyage Logo" class="logo-img">
+        <div class="brand-text-col">
+          <span class="brand-title">RhinoVoyage</span>
+          <span class="header-badge">Fleet Operations</span>
+        </div>
+      </a>
+
+      <div class="header-right">
+        <div class="user-chip">
+          <div class="user-chip-avatar" id="partnerAvatar">?</div>
+          <span class="user-chip-name" id="partnerName">Fleet Partner</span>
+        </div>
+
+        <button class="btn-header-action" onclick="fetchDashboardData()" title="Refresh Dashboard">
+          <i class="ph-bold ph-arrows-clockwise"></i>
+        </button>
+
+        <button class="btn-header-action btn-logout" onclick="handleLogout()" title="Log Out">
+          <i class="ph-bold ph-sign-out"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Verification Status Banner (Shown if any vehicle is Pending) -->
+    <div class="status-banner" id="verificationBanner" style="display: none;">
+      <i class="ph-bold ph-shield-check"></i>
+      <div>
+        <strong>Fleet Verification in Progress:</strong> Your uploaded documents are under review by RhinoVoyage Operations. Once approved, trips assigned to your vehicles will be listed here automatically.
+      </div>
+    </div>
+
+    <!-- Top KPI Summary Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Attached Vehicles</span>
+          <div class="kpi-icon vehicles"><i class="ph-bold ph-car"></i></div>
+        </div>
+        <div class="kpi-value" id="kpiVehicleCount">0</div>
+        <div class="kpi-sub" id="kpiVehicleSub">0 active in fleet</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Completed Trips</span>
+          <div class="kpi-icon trips"><i class="ph-bold ph-steering-wheel"></i></div>
+        </div>
+        <div class="kpi-value" id="kpiTripCount">0</div>
+        <div class="kpi-sub">Across all vehicles</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Total Earnings</span>
+          <div class="kpi-icon earned"><i class="ph-bold ph-currency-inr"></i></div>
+        </div>
+        <div class="kpi-value" id="kpiTotalEarnings">₹0</div>
+        <div class="kpi-sub">Gross fleet revenue</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Pending Payout</span>
+          <div class="kpi-icon pending"><i class="ph-bold ph-hourglass-high"></i></div>
+        </div>
+        <div class="kpi-value" id="kpiPendingPayout" style="color: var(--amber);">₹0</div>
+        <div class="kpi-sub">Awaiting settlement</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">Cleared Payouts</span>
+          <div class="kpi-icon cleared"><i class="ph-bold ph-check-circle"></i></div>
+        </div>
+        <div class="kpi-value" id="kpiClearedPayout" style="color: var(--emerald-dark);">₹0</div>
+        <div class="kpi-sub">Transferred to account</div>
+      </div>
+    </div>
+
+    <!-- Tabs Header -->
+    <div class="tabs-wrapper">
+      <div class="tab-pills">
+        <button class="tab-pill-btn active" id="tabBtnVehicles" onclick="switchTab('vehicles')">
+          <i class="ph-bold ph-car"></i> My Vehicles <span class="tab-badge" id="badgeVehicles">0</span>
+        </button>
+        <button class="tab-pill-btn" id="tabBtnTrips" onclick="switchTab('trips')">
+          <i class="ph-bold ph-navigation-arrow"></i> Trips & Bookings <span class="tab-badge" id="badgeTrips">0</span>
+        </button>
+        <button class="tab-pill-btn" id="tabBtnPayouts" onclick="switchTab('payouts')">
+          <i class="ph-bold ph-bank"></i> Payouts & Statements
+        </button>
+        <button class="tab-pill-btn" id="tabBtnProfile" onclick="switchTab('profile')">
+          <i class="ph-bold ph-user"></i> Partner Profile
+        </button>
+      </div>
+
+      <div>
+        <button class="btn-action-primary" onclick="openAttachCarModal()">
+          <i class="ph-bold ph-plus-circle"></i> Attach Another Car
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: VEHICLES -->
+    <div class="dashboard-panel active" id="panelVehicles">
+      <div class="vehicles-grid" id="vehiclesGridContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- TAB 2: TRIPS & ASSIGNMENTS -->
+    <div class="dashboard-panel" id="panelTrips">
+      <div class="filter-bar">
+        <div class="filter-item">
+          <span class="filter-label">Vehicle:</span>
+          <select id="tripFilterVehicle" class="filter-select" onchange="filterTrips()">
+            <option value="All">All Vehicles (All Plates)</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">Status:</span>
+          <select id="tripFilterStatus" class="filter-select" onchange="filterTrips()">
+            <option value="All">All Trip Statuses</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+            <option value="Confirmed">Confirmed</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <span class="filter-label">Search:</span>
+          <input type="text" id="tripSearchInput" class="filter-input" placeholder="Search route, city, ID..." oninput="filterTrips()">
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Trip ID</th>
+              <th>Date & Time</th>
+              <th>Vehicle</th>
+              <th>Route / Journey</th>
+              <th>Trip Status</th>
+              <th>Payout Share</th>
+              <th>Payout Status</th>
+            </tr>
+          </thead>
+          <tbody id="tripsTableBody">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: PAYOUTS & STATEMENTS -->
+    <div class="dashboard-panel" id="panelPayouts">
+      <!-- Payout Top Summary Banner -->
+      <div class="payouts-summary-box">
+        <div class="payout-box-col">
+          <h3>Total Settled to Bank / UPI</h3>
+          <div class="big-val" id="payoutBannerCleared">₹0</div>
+        </div>
+        <div class="payout-box-metrics">
+          <div class="p-metric-item">
+            <span class="p-metric-label">Pending Releases</span>
+            <span class="p-metric-val" id="payoutBannerPending" style="color: #FDE68A;">₹0</span>
+          </div>
+          <div class="p-metric-item">
+            <span class="p-metric-label">Gross Revenue</span>
+            <span class="p-metric-val" id="payoutBannerTotal">₹0</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; color: var(--green);">
+        <i class="ph-bold ph-chart-pie"></i> Earnings Breakdown Per Vehicle
+      </h3>
+      <div class="table-container" style="margin-bottom: 2rem;">
+        <table>
+          <thead>
+            <tr>
+              <th>Vehicle Plate</th>
+              <th>Model & Category</th>
+              <th>Total Trips</th>
+              <th>Total Earned (₹)</th>
+              <th>Cleared Payouts (₹)</th>
+              <th>Pending Balance (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="vehicleBreakdownBody">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; color: var(--green);">
+        <i class="ph-bold ph-receipt"></i> Recent Payout Settlements
+      </h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Vehicle</th>
+              <th>Trip ID</th>
+              <th>Payout (₹)</th>
+              <th>Mode</th>
+              <th>Txn / UTR Ref</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="payoutHistoryBody">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 4: PARTNER PROFILE -->
+    <div class="dashboard-panel" id="panelProfile">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar-lg" id="profileAvatarLg">?</div>
+          <div class="profile-title-col">
+            <h2 id="profileName">Owner Name</h2>
+            <p>Verified Fleet Partner · RhinoVoyage Operations</p>
+          </div>
+        </div>
+
+        <div class="profile-info-grid">
+          <div>
+            <div class="profile-field-label">Email Address</div>
+            <div class="profile-field-val" id="profileEmail">—</div>
+          </div>
+          <div>
+            <div class="profile-field-label">Phone Number</div>
+            <div class="profile-field-val" id="profilePhone">—</div>
+          </div>
+          <div>
+            <div class="profile-field-label">Aadhar Card Number</div>
+            <div class="profile-field-val" id="profileAadhar">•••• •••• ••••</div>
+          </div>
+          <div>
+            <div class="profile-field-label">Partner Account Status</div>
+            <div class="profile-field-val" id="profileStatus">
+              <span class="status-pill verified">Active Partner</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="support-box">
+          <div class="support-text">
+            <h4><i class="ph-bold ph-headset"></i> Partner Helpdesk & Fleet Dispatch</h4>
+            <p>Need assistance with vehicle attachment, route changes, or payout queries?</p>
+          </div>
+          <div class="support-actions">
+            <a href="https://wa.me/919954253585?text=Hello%20RhinoVoyage%20Support,%20I%20am%20a%20Fleet%20Partner." target="_blank" class="btn-support-pill whatsapp">
+              <i class="ph-bold ph-whatsapp-logo"></i> WhatsApp Us
+            </a>
+            <a href="tel:+919954253585" class="btn-support-pill">
+              <i class="ph-bold ph-phone"></i> Call Operations
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL: ATTACH ANOTHER VEHICLE -->
+  <div class="modal-backdrop" id="attachCarModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="ph-bold ph-car"></i> Attach New Vehicle</h3>
+        <button class="modal-close-btn" onclick="closeAttachCarModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); submitAttachCar();">
+        <div class="form-group">
+          <label>Car Plate Number</label>
+          <input type="text" id="modalPlateNo" class="input-control" required placeholder="e.g. AS-01-AG-9999" style="text-transform: uppercase;">
+        </div>
+
+        <div class="form-group">
+          <label>Vehicle Make & Model</label>
+          <input type="text" id="modalModelName" class="input-control" required placeholder="e.g. Maruti Suzuki Dzire VXI">
+        </div>
+
+        <div class="form-group">
+          <label>Vehicle Category</label>
+          <select id="modalCategory" class="input-control" required>
+            <option value="SUV">SUV (Innova, Scorpio, Ertiga)</option>
+            <option value="Sedan">Sedan (Dzire, Etios, Amaze)</option>
+            <option value="Luxury">Luxury (Innova Crysta, Fortuner)</option>
+            <option value="Traveller">Traveller / Winger</option>
+            <option value="Hatchback">Hatchback (WagonR, Swift)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Vehicle RC Document Photo</label>
+          <input type="file" id="modalRcFile" class="input-control" required accept="image/*" style="padding: 7px 10px;">
+        </div>
+
+        <button type="submit" class="btn-action-primary" id="modalSubmitBtn" style="width: 100%; justify-content: center; height: 46px; margin-top: 1rem;">
+          <i class="ph-bold ph-upload"></i> Attach Vehicle to Fleet
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: IMAGE PREVIEW -->
+  <div class="modal-backdrop" id="previewModal">
+    <div class="modal-card" style="text-align: center; max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="previewModalTitle">Document Preview</h3>
+        <button class="modal-close-btn" onclick="closePreviewModal()"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <img id="previewModalImg" src="" alt="Document" style="max-width: 100%; max-height: 70vh; border-radius: 8px; object-fit: contain;">
+    </div>
+  </div>
+
+  <script>
+    const getApi = () => (typeof window.getRhinoApiUrl === 'function') 
+      ? window.getRhinoApiUrl() 
+      : (window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api');
+
+    let allCars = [];
+    let allTrips = [];
+    let currentUser = null;
+
+    // Check Auth
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      const userStr = localStorage.getItem('user');
+
+      if (!token || !userStr) {
+        window.location.href = 'fleet-login.html';
+        return null;
+      }
+
+      currentUser = JSON.parse(userStr);
+      if (currentUser.role !== 'fleet' && currentUser.role !== 'admin') {
+        if (currentUser.role === 'driver') {
+          window.location.href = 'driver-dashboard.html';
+        } else {
+          window.location.href = 'user-dashboard.html';
+        }
+        return null;
+      }
+
+      // Populate Header & Profile
+      document.getElementById('partnerName').innerText = currentUser.name.split(' ')[0];
+      document.getElementById('partnerAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
+
+      document.getElementById('profileName').innerText = currentUser.name;
+      document.getElementById('profileAvatarLg').innerText = currentUser.name.charAt(0).toUpperCase();
+      document.getElementById('profileEmail').innerText = currentUser.email || '—';
+      document.getElementById('profilePhone').innerText = currentUser.phone || '—';
+      if (currentUser.aadhar) {
+        const masked = currentUser.aadhar.length === 12 
+          ? `•••• •••• ${currentUser.aadhar.slice(8)}` 
+          : currentUser.aadhar;
+        document.getElementById('profileAadhar').innerText = masked;
+      }
+
+      return token;
+    }
+
+    // Switch Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pill-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.dashboard-panel').forEach(p => p.classList.remove('active'));
+
+      if (tabId === 'vehicles') {
+        document.getElementById('tabBtnVehicles').classList.add('active');
+        document.getElementById('panelVehicles').classList.add('active');
+      } else if (tabId === 'trips') {
+        document.getElementById('tabBtnTrips').classList.add('active');
+        document.getElementById('panelTrips').classList.add('active');
+      } else if (tabId === 'payouts') {
+        document.getElementById('tabBtnPayouts').classList.add('active');
+        document.getElementById('panelPayouts').classList.add('active');
+      } else if (tabId === 'profile') {
+        document.getElementById('tabBtnProfile').classList.add('active');
+        document.getElementById('panelProfile').classList.add('active');
+      }
+    }
+
+    // Fetch Dashboard Data
+    async function fetchDashboardData() {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const apiBase = getApi();
+        // Fetch both my bookings (trips) and my vehicles in parallel
+        const [tripsRes, carsRes] = await Promise.all([
+          fetch(`${apiBase}/bookings/my-bookings`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch(`${apiBase}/cars/my-fleet`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+        ]);
+
+        if (tripsRes.status === 401 || carsRes.status === 401) {
+          localStorage.clear();
+          window.location.href = 'fleet-login.html';
+          return;
+        }
+
+        const tripsData = await tripsRes.json();
+        const carsData = await carsRes.json();
+
+        allCars = carsData.cars || [];
+        allTrips = tripsData.bookings || [];
+
+        // If cars were also embedded in trips response fallback
+        if (allCars.length === 0 && tripsData.cars) {
+          allCars = tripsData.cars;
+        }
+
+        renderDashboard();
+      } catch (err) {
+        console.error('Fetch dashboard error:', err);
+      }
+    }
+
+    // Render Dashboard
+    function renderDashboard() {
+      // 1. Calculate Metrics
+      const totalVehicles = allCars.length;
+      const completedTrips = allTrips.filter(t => t.status === 'Completed').length;
+
+      let totalEarned = 0;
+      let pendingPayout = 0;
+      let clearedPayout = 0;
+
+      allTrips.forEach(t => {
+        const amt = Number(t.fleetPayment || 0);
+        totalEarned += amt;
+        if (t.fleetPayStatus === 'Paid') {
+          clearedPayout += amt;
+        } else {
+          pendingPayout += amt;
+        }
+      });
+
+      // Update KPI Cards
+      document.getElementById('kpiVehicleCount').innerText = totalVehicles;
+      document.getElementById('kpiVehicleSub').innerText = `${totalVehicles} registered in fleet`;
+      document.getElementById('kpiTripCount').innerText = completedTrips;
+      document.getElementById('kpiTotalEarnings').innerText = `₹${totalEarned.toLocaleString('en-IN')}`;
+      document.getElementById('kpiPendingPayout').innerText = `₹${pendingPayout.toLocaleString('en-IN')}`;
+      document.getElementById('kpiClearedPayout').innerText = `₹${clearedPayout.toLocaleString('en-IN')}`;
+
+      // Update Tab Badges
+      document.getElementById('badgeVehicles').innerText = totalVehicles;
+      document.getElementById('badgeTrips').innerText = allTrips.length;
+
+      // Payouts Banner
+      document.getElementById('payoutBannerCleared').innerText = `₹${clearedPayout.toLocaleString('en-IN')}`;
+      document.getElementById('payoutBannerPending').innerText = `₹${pendingPayout.toLocaleString('en-IN')}`;
+      document.getElementById('payoutBannerTotal').innerText = `₹${totalEarned.toLocaleString('en-IN')}`;
+
+      // Check for pending verification
+      const hasPendingVehicle = allCars.some(c => c.status === 'Pending');
+      const banner = document.getElementById('verificationBanner');
+      if (hasPendingVehicle) {
+        banner.style.display = 'flex';
+      } else {
+        banner.style.display = 'none';
+      }
+
+      // Render Sub-Views
+      renderVehiclesGrid();
+      populateVehicleFilter();
+      filterTrips();
+      renderPayoutBreakdown();
+    }
+
+    // Render Vehicles Grid
+    function renderVehiclesGrid() {
+      const container = document.getElementById('vehiclesGridContainer');
+      if (allCars.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <i class="ph-bold ph-car"></i>
+            <p>No vehicles attached yet. Click <strong>"Attach Another Car"</strong> to list your taxi.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = allCars.map(c => {
+        const plate = (c.plateNumber || 'AS-01-XX-0000').toUpperCase();
+        const model = c.modelName || 'Vehicle';
+        const category = c.category || 'Taxi';
+        const isVerified = c.status !== 'Pending';
+
+        // Filter trips for this vehicle
+        const carTrips = allTrips.filter(t => (t.carNumber || '').toUpperCase().trim() === plate || t.carId === c.id);
+        const carCompleted = carTrips.filter(t => t.status === 'Completed').length;
+        const carEarnings = carTrips.reduce((acc, t) => acc + Number(t.fleetPayment || 0), 0);
+        const carPending = carTrips.filter(t => t.fleetPayStatus !== 'Paid').reduce((acc, t) => acc + Number(t.fleetPayment || 0), 0);
+
+        return `
+          <div class="vehicle-card">
+            <div class="vehicle-card-top">
+              <span class="plate-badge"><i class="ph-bold ph-identification-badge"></i> ${plate}</span>
+              <span class="status-pill ${isVerified ? 'verified' : 'pending'}">
+                ${isVerified ? '✓ Verified' : 'Under Review'}
+              </span>
+            </div>
+
+            <div>
+              <div class="vehicle-model">${model}</div>
+              <div class="vehicle-category">${category} Class</div>
+            </div>
+
+            <div class="vehicle-stats-row">
+              <div class="v-stat-col">
+                <span class="v-stat-label">Trips</span>
+                <span class="v-stat-val">${carCompleted}</span>
+              </div>
+              <div class="v-stat-col">
+                <span class="v-stat-label">Earned</span>
+                <span class="v-stat-val">₹${carEarnings.toLocaleString('en-IN')}</span>
+              </div>
+              <div class="v-stat-col">
+                <span class="v-stat-label">Pending</span>
+                <span class="v-stat-val" style="color:var(--amber);">₹${carPending.toLocaleString('en-IN')}</span>
+              </div>
+            </div>
+
+            <div class="vehicle-actions-row">
+              <span class="vehicle-date">Attached: ${c.entryDate || 'Recent'}</span>
+              ${c.rcPhoto ? `
+                <button class="btn-view-doc" onclick="viewDocument('${c.rcPhoto}', 'Vehicle RC — ${plate}')">
+                  <i class="ph-bold ph-file-text"></i> View RC
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Populate Vehicle Dropdown Filter
+    function populateVehicleFilter() {
+      const select = document.getElementById('tripFilterVehicle');
+      const currentVal = select.value;
+      select.innerHTML = '<option value="All">All Vehicles (All Plates)</option>';
+
+      allCars.forEach(c => {
+        const plate = (c.plateNumber || '').toUpperCase().trim();
+        if (plate) {
+          const opt = document.createElement('option');
+          opt.value = plate;
+          opt.innerText = `${plate} — ${c.modelName}`;
+          select.appendChild(opt);
+        }
+      });
+
+      if (currentVal) select.value = currentVal;
+    }
+
+    // Filter and Render Trips
+    function filterTrips() {
+      const selectedVehicle = document.getElementById('tripFilterVehicle').value;
+      const selectedStatus = document.getElementById('tripFilterStatus').value;
+      const search = (document.getElementById('tripSearchInput').value || '').toLowerCase().trim();
+
+      const tbody = document.getElementById('tripsTableBody');
+
+      let filtered = allTrips.filter(t => {
+        const tPlate = (t.carNumber || '').toUpperCase().trim();
+        const tStatus = t.status || '';
+        const matchVehicle = selectedVehicle === 'All' || tPlate === selectedVehicle;
+        const matchStatus = selectedStatus === 'All' || tStatus.toLowerCase() === selectedStatus.toLowerCase();
+        
+        const searchStr = `${t.id || ''} ${t.bookingId || ''} ${t.pickupLocation || ''} ${t.dropLocation || ''} ${t.carModel || ''} ${tPlate}`.toLowerCase();
+        const matchSearch = !search || searchStr.includes(search);
+
+        return matchVehicle && matchStatus && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state">
+              <i class="ph-bold ph-navigation-arrow"></i>
+              <p>No trips found matching the selected criteria.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => {
+        const tripId = t.bookingId || (t.id ? t.id.slice(-6).toUpperCase() : 'TRIP');
+        const dateStr = t.pickupDate ? `${t.pickupDate} ${t.pickupTime || ''}` : '—';
+        const carInfo = t.carNumber ? `${t.carNumber} (${t.carModel || 'Car'})` : 'Assigned Vehicle';
+        const payoutAmt = Number(t.fleetPayment || 0);
+        const isPaid = t.fleetPayStatus === 'Paid';
+
+        return `
+          <tr>
+            <td><span class="trip-id-badge">#${tripId}</span></td>
+            <td><div style="font-weight:600;">${dateStr}</div></td>
+            <td><strong>${t.carNumber || '—'}</strong><br><span style="font-size:0.75rem;color:var(--text-muted);">${t.carModel || ''}</span></td>
+            <td>
+              <div class="route-display">
+                <span class="route-pickup"><i class="ph-bold ph-map-pin" style="color:var(--green);"></i> ${t.pickupLocation || 'Pickup'}</span>
+                <span class="route-drop">↳ ${t.dropLocation || 'Destination'}</span>
+              </div>
+            </td>
+            <td>
+              <span class="status-pill ${t.status === 'Completed' ? 'verified' : 'pending'}">${t.status || 'Pending'}</span>
+            </td>
+            <td><span class="amount-display">₹${payoutAmt.toLocaleString('en-IN')}</span></td>
+            <td>
+              <span class="pay-badge ${isPaid ? 'paid' : 'pending'}">
+                ${isPaid ? '✓ Paid' : '⏳ Pending'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Render Payout Breakdown Per Vehicle and Settlement Ledger
+    function renderPayoutBreakdown() {
+      const breakdownBody = document.getElementById('vehicleBreakdownBody');
+      const historyBody = document.getElementById('payoutHistoryBody');
+
+      if (allCars.length === 0) {
+        breakdownBody.innerHTML = `<tr><td colspan="6" class="empty-state"><p>No vehicle data to display.</p></td></tr>`;
+      } else {
+        breakdownBody.innerHTML = allCars.map(c => {
+          const plate = (c.plateNumber || '').toUpperCase().trim();
+          const carTrips = allTrips.filter(t => (t.carNumber || '').toUpperCase().trim() === plate || t.carId === c.id);
+          const tripsCount = carTrips.filter(t => t.status === 'Completed').length;
+          const totalAmt = carTrips.reduce((acc, t) => acc + Number(t.fleetPayment || 0), 0);
+          const clearedAmt = carTrips.filter(t => t.fleetPayStatus === 'Paid').reduce((acc, t) => acc + Number(t.fleetPayment || 0), 0);
+          const pendingAmt = totalAmt - clearedAmt;
+
+          return `
+            <tr>
+              <td><strong>${plate}</strong></td>
+              <td>${c.modelName} <span style="font-size:0.75rem;color:var(--text-muted);">(${c.category})</span></td>
+              <td><strong>${tripsCount}</strong> trips</td>
+              <td><span class="amount-display">₹${totalAmt.toLocaleString('en-IN')}</span></td>
+              <td><span class="amount-display" style="color:var(--emerald-dark);">₹${clearedAmt.toLocaleString('en-IN')}</span></td>
+              <td><span class="amount-display" style="color:var(--amber);">₹${pendingAmt.toLocaleString('en-IN')}</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Render Payout Settlements Ledger
+      const paidTrips = allTrips.filter(t => Number(t.fleetPayment || 0) > 0);
+      if (paidTrips.length === 0) {
+        historyBody.innerHTML = `<tr><td colspan="7" class="empty-state"><p>No payout transactions recorded yet.</p></td></tr>`;
+      } else {
+        historyBody.innerHTML = paidTrips.map(t => {
+          const date = t.fleetPaidAt ? t.fleetPaidAt.split('T')[0] : (t.pickupDate || '—');
+          const isPaid = t.fleetPayStatus === 'Paid';
+          const tripRef = t.bookingId || (t.id ? t.id.slice(-6).toUpperCase() : 'TRIP');
+
+          return `
+            <tr>
+              <td>${date}</td>
+              <td><strong>${t.carNumber || '—'}</strong></td>
+              <td>#${tripRef}</td>
+              <td><span class="amount-display">₹${Number(t.fleetPayment || 0).toLocaleString('en-IN')}</span></td>
+              <td>${t.fleetPayMode || 'Online / UPI'}</td>
+              <td><code>${t.fleetPayTxn || '—'}</code></td>
+              <td>
+                <span class="pay-badge ${isPaid ? 'paid' : 'pending'}">${isPaid ? 'Paid' : 'Pending'}</span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    // Modal Handlers
+    function openAttachCarModal() {
+      document.getElementById('attachCarModal').classList.add('show');
+    }
+
+    function closeAttachCarModal() {
+      document.getElementById('attachCarModal').classList.remove('show');
+    }
+
+    function viewDocument(url, title) {
+      document.getElementById('previewModalTitle').innerText = title;
+      document.getElementById('previewModalImg').src = url;
+      document.getElementById('previewModal').classList.add('show');
+    }
+
+    function closePreviewModal() {
+      document.getElementById('previewModal').classList.remove('show');
+    }
+
+    // Image compression helper
+    function compressImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve('');
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+            if (width > maxWidth || height > maxHeight) {
+              if (width > height) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              } else {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = () => resolve(e.target.result);
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Submit Attach Car
+    async function submitAttachCar() {
+      const plateNumber = document.getElementById('modalPlateNo').value.trim().toUpperCase();
+      const modelName = document.getElementById('modalModelName').value.trim();
+      const category = document.getElementById('modalCategory').value;
+      const rcFileInput = document.getElementById('modalRcFile');
+
+      if (!rcFileInput.files || rcFileInput.files.length === 0) {
+        alert('Please select an RC document photo.');
+        return;
+      }
+
+      const btn = document.getElementById('modalSubmitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Processing & Uploading...';
+
+      try {
+        const rcPhoto = await compressImage(rcFileInput.files[0], 1200, 1200, 0.82);
+        const token = localStorage.getItem('token');
+        const apiBase = getApi();
+
+        const response = await fetch(`${apiBase}/cars/attach-vehicle`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            plateNumber,
+            modelName,
+            category,
+            rcPhoto
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Failed to attach vehicle.');
+
+        alert('🎉 Vehicle attached successfully! It is now submitted for operations verification.');
+        closeAttachCarModal();
+        fetchDashboardData();
+
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ph-bold ph-upload"></i> Attach Vehicle to Fleet';
+      }
+    }
+
+    // Logout
+    function handleLogout() {
+      if (confirm('Are you sure you want to log out of your Fleet Partner Portal?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'fleet-login.html';
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      if (checkAuth()) {
+        fetchDashboardData();
+      }
+    });
+  </script>
+</body>
+</html>

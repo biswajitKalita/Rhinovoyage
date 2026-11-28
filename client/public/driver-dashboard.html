@@ -1579,7 +1579,7 @@
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || 'null');
 
-    if (!token || !user || user.role !== 'driver') {
+    if (!token || !user || (user.role !== 'driver' && user.role !== 'admin')) {
       localStorage.clear();
       window.location.href = 'driver-login.html';
     }

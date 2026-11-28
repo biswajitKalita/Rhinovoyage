@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fleet Partner Portal — Attach Your Taxi | RhinoVoyage</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="./config.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-serif: 'Playfair Display', Georgia, serif;
+
+      --bg-slate: #F8FAFC;
+      --surface-white: #FFFFFF;
+      --border-subtle: #E2E8F0;
+      --border-focus: #CBD5E1;
+
+      --green-dark: #0D281E;
+      --green: #1B4332;
+      --green-mid: #2D6A4F;
+      --green-light: #52B788;
+      --green-pale: #EBF8F2;
+
+      --orange: #E8651A;
+      --orange-dark: #C4511A;
+      --orange-pale: #FFF7ED;
+
+      --text-main: #0F172A;
+      --text-sub: #475569;
+      --text-muted: #94A3B8;
+
+      --shadow-card: 0 20px 45px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 18px;
+      --radius-pill: 9999px;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-slate);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1rem;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 900px;
+      height: 420px;
+      background: radial-gradient(circle at 50% 0%, rgba(27, 67, 50, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .auth-wrapper {
+      width: 100%;
+      max-width: 580px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .brand-logo-img {
+      height: 48px;
+      object-fit: contain;
+      margin-bottom: 0.75rem;
+      transition: transform 0.2s;
+    }
+
+    .brand-logo-img:hover {
+      transform: scale(1.03);
+    }
+
+    .portal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(217, 119, 6, 0.2);
+      margin-bottom: 0.65rem;
+    }
+
+    .portal-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #D97706;
+    }
+
+    .portal-title {
+      font-family: var(--font-serif);
+      font-size: 1.95rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .portal-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      margin-top: 5px;
+      font-weight: 500;
+    }
+
+    .auth-card {
+      background: var(--surface-white);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-card);
+    }
+
+    @media (max-width: 520px) {
+      .auth-card {
+        padding: 1.5rem 1.25rem;
+      }
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      gap: 4px;
+      margin-bottom: 1.75rem;
+    }
+
+    .auth-tab-btn {
+      background: transparent;
+      border: none;
+      font-family: var(--font-main);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      padding: 0.7rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .auth-tab-btn.active {
+      background: var(--surface-white);
+      color: var(--green-dark);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    }
+
+    .form-pane {
+      display: none;
+    }
+
+    .form-pane.active {
+      display: block;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-field-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-field-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.45rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+      font-size: 0.95rem;
+      font-family: var(--font-main);
+      color: var(--text-main);
+      background: #FAFAFA;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus {
+      background: #FFFFFF;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.12);
+    }
+
+    .form-grid-dual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .form-grid-dual {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Section divider in form */
+    .form-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 1.5rem 0 1rem 0;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border-subtle);
+    }
+
+    .form-section-title i {
+      font-size: 1.1rem;
+      color: var(--orange);
+    }
+
+    /* File Upload Box */
+    .file-upload-box {
+      border: 1.5px dashed var(--border-focus);
+      background: #F8FAFC;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 48px;
+    }
+
+    .file-upload-box:hover {
+      border-color: var(--green);
+      background: var(--green-pale);
+    }
+
+    .file-upload-box.has-file {
+      border-color: #10B981;
+      background: #ECFDF5;
+    }
+
+    .file-upload-icon {
+      font-size: 1.25rem;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .file-upload-meta {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .file-upload-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-upload-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .file-upload-btn-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--green);
+      color: #FFFFFF;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      flex-shrink: 0;
+    }
+
+    .btn-auth-submit {
+      width: 100%;
+      height: 50px;
+      background: var(--green);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px rgba(27, 67, 50, 0.25);
+      margin-top: 1.5rem;
+    }
+
+    .btn-auth-submit:hover {
+      background: var(--green-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(27, 67, 50, 0.3);
+    }
+
+    .btn-auth-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-auth-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-alert {
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.4;
+    }
+
+    .auth-alert.show {
+      display: flex;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .alert-error {
+      background: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      color: #991B1B;
+    }
+
+    .alert-success {
+      background: #F0FDF4;
+      border: 1px solid #86EFAC;
+      color: #166534;
+    }
+
+    .partner-benefit-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 1.5rem;
+      justify-content: center;
+    }
+
+    .benefit-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #F1F5F9;
+      color: var(--text-sub);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .benefit-pill i {
+      color: #10B981;
+    }
+
+    .portal-footer-links {
+      text-align: center;
+      margin-top: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    .portal-footer-links a {
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .portal-footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .traveler-redirect-box {
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      text-align: center;
+      margin-top: 1.25rem;
+      line-height: 1.5;
+    }
+
+    .traveler-redirect-box a {
+      color: var(--orange-dark);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .traveler-redirect-box a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <!-- Brand Header -->
+    <div class="brand-header">
+      <a href="index.html">
+        <img src="./logo.png" alt="RhinoVoyage Logo" class="brand-logo-img">
+      </a>
+      <div>
+        <span class="portal-badge">Fleet Operations & Vendor Network</span>
+      </div>
+      <h1 class="portal-title">Fleet Partner Portal</h1>
+      <p class="portal-subtitle">Attach your cars, track daily trips, and manage payouts per vehicle.</p>
+    </div>
+
+    <!-- Alert Box -->
+    <div class="auth-alert alert-error" id="authErrorAlert">
+      <i class="ph-bold ph-warning-circle" style="font-size: 1.2rem; flex-shrink: 0;"></i>
+      <span id="authErrorMsg">Error message</span>
+    </div>
+    <div class="auth-alert alert-success" id="authSuccessAlert">
+      <i class="ph-bold ph-check-circle" style="font-size: 1.2rem; flex-shrink: 0;"></i>
+      <span id="authSuccessMsg">Success message</span>
+    </div>
+
+    <!-- Card Container -->
+    <div class="auth-card">
+      <div class="partner-benefit-pills">
+        <span class="benefit-pill"><i class="ph-bold ph-check"></i> Timely Payouts</span>
+        <span class="benefit-pill"><i class="ph-bold ph-check"></i> High Trip Demand</span>
+        <span class="benefit-pill"><i class="ph-bold ph-check"></i> Per-Vehicle Tracking</span>
+        <span class="benefit-pill"><i class="ph-bold ph-check"></i> Zero Onboarding Fee</span>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tab-login-btn" onclick="switchFleetMode('login')">
+          <i class="ph-bold ph-sign-in"></i> Partner Sign In
+        </button>
+        <button class="auth-tab-btn" id="tab-attach-btn" onclick="switchFleetMode('attach')">
+          <i class="ph-bold ph-car-profile"></i> Attach Your Taxi
+        </button>
+      </div>
+
+      <!-- PANE 1: FLEET SIGN IN -->
+      <div class="form-pane active" id="pane-fleet-login">
+        <form onsubmit="event.preventDefault(); handleFleetLoginSubmit();">
+          <div class="form-field-group">
+            <label for="flt-login-email">Registered Email Address</label>
+            <input type="email" id="flt-login-email" required class="form-input" placeholder="partner@email.com">
+          </div>
+
+          <div class="form-field-group">
+            <label for="flt-login-password">Password</label>
+            <input type="password" id="flt-login-password" required class="form-input" placeholder="••••••••">
+          </div>
+
+          <button type="submit" class="btn-auth-submit" id="fltLoginSubmitBtn">
+            <i class="ph-bold ph-sign-in"></i> Sign In to Fleet Dashboard
+          </button>
+        </form>
+
+        <div class="traveler-redirect-box">
+          Are you a driver or traveler? <br>
+          <a href="driver-login.html">Driver Portal →</a> &nbsp;|&nbsp; <a href="login.html">Traveler Portal →</a>
+        </div>
+      </div>
+
+      <!-- PANE 2: FLEET PARTNER REGISTRATION / ATTACH CAR -->
+      <div class="form-pane" id="pane-fleet-attach">
+        <form onsubmit="event.preventDefault(); handleFleetRegisterSubmit();">
+          
+          <!-- Section 1: Owner Details -->
+          <div class="form-field-group">
+            <label for="flt-reg-name">Vehicle Owner Full Name</label>
+            <input type="text" id="flt-reg-name" required class="form-input" placeholder="e.g. Biswajit Kalita">
+          </div>
+
+          <div class="form-grid-dual">
+            <div class="form-field-group">
+              <label for="flt-reg-phone">WhatsApp / Mobile No.</label>
+              <input type="tel" id="flt-reg-phone" required class="form-input" placeholder="10-digit number">
+            </div>
+            <div class="form-field-group">
+              <label for="flt-reg-email">Email Address</label>
+              <input type="email" id="flt-reg-email" required class="form-input" placeholder="owner@email.com">
+            </div>
+          </div>
+
+          <div class="form-field-group">
+            <label for="flt-reg-password">Create Account Password</label>
+            <input type="password" id="flt-reg-password" required class="form-input" placeholder="At least 6 characters">
+          </div>
+
+          <!-- Section 2: Owner Verification -->
+          <div class="form-section-title">
+            <i class="ph-bold ph-identification-card"></i> Owner KYC Verification
+          </div>
+
+          <div class="form-grid-dual">
+            <div class="form-field-group">
+              <label for="flt-reg-aadhar">Aadhar Card Number</label>
+              <input type="text" id="flt-reg-aadhar" required class="form-input" placeholder="12-digit number" pattern="\d{12}">
+            </div>
+            <div class="form-field-group">
+              <label>Aadhar Document Photo</label>
+              <input type="file" id="flt-reg-aadhar-file" required accept="image/*" style="display: none;" onchange="handleFileSelected(this, 'aadhar-filename', 'aadhar-upload-box')">
+              <div class="file-upload-box" id="aadhar-upload-box" onclick="document.getElementById('flt-reg-aadhar-file').click()">
+                <div class="file-upload-icon"><i class="ph-bold ph-upload-simple"></i></div>
+                <div class="file-upload-meta">
+                  <span class="file-upload-name" id="aadhar-filename">Upload Aadhar</span>
+                  <span class="file-upload-hint">JPG, PNG</span>
+                </div>
+                <span class="file-upload-btn-pill">Browse</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Vehicle Details -->
+          <div class="form-section-title">
+            <i class="ph-bold ph-car"></i> Vehicle Details to Attach
+          </div>
+
+          <div class="form-grid-dual">
+            <div class="form-field-group">
+              <label for="flt-reg-plateno">Car Plate Number</label>
+              <input type="text" id="flt-reg-plateno" required class="form-input" placeholder="e.g. AS-01-AG-1234" style="text-transform: uppercase;">
+            </div>
+            <div class="form-field-group">
+              <label for="flt-reg-category">Vehicle Category</label>
+              <select id="flt-reg-category" required class="form-select">
+                <option value="SUV">SUV (Innova, Scorpio, Ertiga)</option>
+                <option value="Sedan">Sedan (Dzire, Etios, Amaze)</option>
+                <option value="Luxury">Luxury (Innova Crysta, Fortuner)</option>
+                <option value="Traveller">Traveller / Winger (12-26 Seater)</option>
+                <option value="Hatchback">Hatchback (WagonR, Swift)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-field-group">
+            <label for="flt-reg-model">Car Make & Model</label>
+            <input type="text" id="flt-reg-model" required class="form-input" placeholder="e.g. Toyota Innova Crysta 2.4 VX">
+          </div>
+
+          <div class="form-field-group">
+            <label>Car Registration Certificate (RC) Photo</label>
+            <input type="file" id="flt-reg-rc-file" required accept="image/*" style="display: none;" onchange="handleFileSelected(this, 'rc-filename', 'rc-upload-box')">
+            <div class="file-upload-box" id="rc-upload-box" onclick="document.getElementById('flt-reg-rc-file').click()">
+              <div class="file-upload-icon"><i class="ph-bold ph-file-text"></i></div>
+              <div class="file-upload-meta">
+                <span class="file-upload-name" id="rc-filename">Upload Vehicle RC</span>
+                <span class="file-upload-hint">Front photo of RC card / book</span>
+              </div>
+              <span class="file-upload-btn-pill">Browse</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-auth-submit" id="fltRegisterSubmitBtn">
+            <i class="ph-bold ph-paper-plane-tilt"></i> Register Fleet & Attach Taxi
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Navigation Back Link -->
+    <div class="portal-footer-links">
+      <a href="index.html">
+        <i class="ph-bold ph-arrow-left"></i> Return to RhinoVoyage Homepage
+      </a>
+      <span>Authorized Fleet Operations & Partner Dispatch Portal</span>
+    </div>
+  </div>
+
+  <script>
+    const getApi = () => (typeof window.getRhinoApiUrl === 'function') 
+      ? window.getRhinoApiUrl() 
+      : (window.API_BASE_URL || 'https://rhinovoyage.onrender.com/api');
+
+    function showAlert(type, msg) {
+      const errBox = document.getElementById('authErrorAlert');
+      const succBox = document.getElementById('authSuccessAlert');
+      errBox.classList.remove('show');
+      succBox.classList.remove('show');
+
+      if (type === 'error') {
+        document.getElementById('authErrorMsg').innerHTML = msg;
+        errBox.classList.add('show');
+      } else {
+        document.getElementById('authSuccessMsg').innerHTML = msg;
+        succBox.classList.add('show');
+      }
+    }
+
+    function switchFleetMode(mode) {
+      document.getElementById('authErrorAlert').classList.remove('show');
+      document.getElementById('authSuccessAlert').classList.remove('show');
+
+      const loginPane = document.getElementById('pane-fleet-login');
+      const attachPane = document.getElementById('pane-fleet-attach');
+      const loginBtn = document.getElementById('tab-login-btn');
+      const attachBtn = document.getElementById('tab-attach-btn');
+
+      if (mode === 'login') {
+        loginPane.classList.add('active');
+        attachPane.classList.remove('active');
+        loginBtn.classList.add('active');
+        attachBtn.classList.remove('active');
+      } else {
+        loginPane.classList.remove('active');
+        attachPane.classList.add('active');
+        loginBtn.classList.remove('active');
+        attachBtn.classList.add('active');
+      }
+    }
+
+    function handleFileSelected(input, labelId, boxId) {
+      const labelEl = document.getElementById(labelId);
+      const boxEl = document.getElementById(boxId);
+      if (!input.files || input.files.length === 0) return;
+
+      const file = input.files[0];
+      if (labelEl) {
+        labelEl.innerText = `✓ ${file.name}`;
+      }
+      if (boxEl) {
+        boxEl.classList.add('has-file');
+        const pill = boxEl.querySelector('.file-upload-btn-pill');
+        if (pill) pill.innerText = 'Change';
+      }
+    }
+
+    // Canvas image compression for fast upload & low storage
+    function compressImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve('');
+        if (!file.type || !file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth || height > maxHeight) {
+              if (width > height) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              } else {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(dataUrl);
+          };
+          img.onerror = () => resolve(e.target.result);
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 1. FLEET LOGIN HANDLER
+    async function handleFleetLoginSubmit() {
+      const email = document.getElementById('flt-login-email').value.trim();
+      const password = document.getElementById('flt-login-password').value;
+      const submitBtn = document.getElementById('fltLoginSubmitBtn');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Authenticating...';
+
+      try {
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Invalid partner credentials.');
+
+        if (data.user.role !== 'fleet') {
+          if (data.user.role === 'admin') {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.href = 'admin-dashboard.html';
+            return;
+          }
+          if (data.user.role === 'driver') {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.href = 'driver-dashboard.html';
+            return;
+          }
+          throw new Error('This portal is reserved for Fleet Partners. Regular travelers, please sign in at the <a href="login.html" style="color:var(--orange-dark);font-weight:700;text-decoration:underline;">Traveler Portal</a>.');
+        }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        showAlert('success', 'Authentication successful! Loading your Fleet Dashboard...');
+        setTimeout(() => {
+          window.location.href = 'fleet-dashboard.html';
+        }, 600);
+
+      } catch (err) {
+        showAlert('error', err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="ph-bold ph-sign-in"></i> Sign In to Fleet Dashboard';
+      }
+    }
+
+    // 2. FLEET PARTNER REGISTRATION HANDLER
+    async function handleFleetRegisterSubmit() {
+      const name = document.getElementById('flt-reg-name').value.trim();
+      const phone = document.getElementById('flt-reg-phone').value.trim();
+      const email = document.getElementById('flt-reg-email').value.trim();
+      const password = document.getElementById('flt-reg-password').value;
+      const aadhar = document.getElementById('flt-reg-aadhar').value.trim();
+      const plateNumber = document.getElementById('flt-reg-plateno').value.trim().toUpperCase();
+      const category = document.getElementById('flt-reg-category').value;
+      const modelName = document.getElementById('flt-reg-model').value.trim();
+
+      const aadharFileInput = document.getElementById('flt-reg-aadhar-file');
+      const rcFileInput = document.getElementById('flt-reg-rc-file');
+
+      if (!aadharFileInput.files || aadharFileInput.files.length === 0) {
+        showAlert('error', 'Please upload a photo of your Aadhar Card.');
+        return;
+      }
+
+      if (!rcFileInput.files || rcFileInput.files.length === 0) {
+        showAlert('error', 'Please upload your Vehicle Registration Certificate (RC) photo.');
+        return;
+      }
+
+      const submitBtn = document.getElementById('fltRegisterSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Processing Documents...';
+
+      try {
+        const aadharPhoto = await compressImage(aadharFileInput.files[0], 1200, 1200, 0.82);
+        const rcPhoto = await compressImage(rcFileInput.files[0], 1200, 1200, 0.82);
+
+        submitBtn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i> Registering Fleet Account...';
+
+        const apiBase = getApi();
+        const response = await fetch(`${apiBase}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            email,
+            phone,
+            password,
+            role: 'fleet',
+            aadhar,
+            aadharPhoto,
+            plateNumber,
+            modelName,
+            category,
+            rcPhoto
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Registration failed. Please check your details.');
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        showAlert('success', '🎉 Congratulations! Your car is listed and fleet partner account created. Redirecting to your Fleet Dashboard...');
+        setTimeout(() => {
+          window.location.href = 'fleet-dashboard.html';
+        }, 1200);
+
+      } catch (err) {
+        showAlert('error', err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i> Register Fleet & Attach Taxi';
+      }
+    }
+  </script>
+</body>
+</html>

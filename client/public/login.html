@@ -551,6 +551,8 @@
       setTimeout(() => {
         if (data.user.role === 'admin') {
           window.location.href = 'admin-dashboard.html';
+        } else if (data.user.role === 'fleet') {
+          window.location.href = 'fleet-dashboard.html';
         } else if (data.user.role === 'driver') {
           window.location.href = 'driver-dashboard.html';
         } else {
@@ -635,7 +637,11 @@
       localStorage.setItem('user', JSON.stringify(data.user));
 
       setTimeout(() => {
-        if (data.user.role === 'driver') {
+        if (data.user.role === 'admin') {
+          window.location.href = 'admin-dashboard.html';
+        } else if (data.user.role === 'fleet') {
+          window.location.href = 'fleet-dashboard.html';
+        } else if (data.user.role === 'driver') {
           window.location.href = 'driver-dashboard.html';
         } else {
           const urlParams = new URLSearchParams(window.location.search);
@@ -759,6 +765,8 @@
         setTimeout(() => {
           if (data.user.role === 'admin') {
             window.location.href = 'admin-dashboard.html';
+          } else if (data.user.role === 'fleet') {
+            window.location.href = 'fleet-dashboard.html';
           } else if (data.user.role === 'driver') {
             window.location.href = 'driver-dashboard.html';
           } else {
